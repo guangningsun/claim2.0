@@ -1,17 +1,17 @@
 <template>
-	<view>
-		<cu-custom bgColor="bg-gradual-green" :isBack="false">
+	<view class="main_body">
+		<cu-custom bgColor="bg-gradual-blue" :isBack="false">
 			<block slot="content">物品申领平台</block>
 		</cu-custom>
 
 		<view v-show="!shouldShowContent && showCenterIcon">
 			<view class="justify-center l-center">
 				<image
-					src="../../static/auth_index_icon.png"
-					style="width: 300upx; height: 300upx;"
+					src="../../static/home_page_logo.png"
+					style="width: 330upx; height: 330upx;"
 				></image>
 				<button
-					class="bg-olive margin-bottom-sm text-df"
+					class="bg-light-blue margin-bottom-sm text-df margin-top-xl"
 					open-type="getPhoneNumber"
 					lang="zh_CN"
 					@getphonenumber="getPhoneNumber"
@@ -29,7 +29,7 @@
 
 		</view>
 
-		<view v-show="shouldShowContent">
+<!-- 		<view v-show="shouldShowContent">
 			<view
 				class="cu-list grid col-1 no-border"
 				style="margin-top: 70upx; padding-top: 40upx;"
@@ -45,7 +45,7 @@
 				</view>
 
 			</view>
-		</view>
+		</view> -->
 
 		<!-- 申请手机号modal -->
 		<view class="cu-modal bottom-modal" :class="modalName == 'PhoneModal' ? 'show' : ''">
@@ -93,7 +93,7 @@ export default {
 			showCenterIcon: true,
 
 			hint:
-				'登录后可以完整使用部门物品申领、审批服务。首次使用，需要授权获取您的手机号进行登录绑定。'
+				'登录后可以完整使用部门物品申领服务。首次使用，需要授权获取您的手机号进行登录绑定。'
 		};
 	},
 	onLoad: function(options) {
@@ -316,5 +316,8 @@ export default {
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+}
+page {
+background-color: #fcfff5;
 }
 </style>

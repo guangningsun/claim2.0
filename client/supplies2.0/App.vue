@@ -15,6 +15,7 @@
 			api_getWXInfo: 'weixin_gusi/',
 			api_get_approval_list:'get_approval_list/',
 			api_change_approval_status:'change_approval_status/',
+			api_get_apartment_list:'get_apartment_list',
 			
 			// 物品篮物品
 			cart_list_info: [],

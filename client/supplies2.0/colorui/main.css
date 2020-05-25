@@ -1220,8 +1220,13 @@ button.cuIcon.lg {
 
 .cu-list.menu-avatar>.cu-item>.cu-avatar {
 	position: absolute;
-	left: 30upx
+	left: 10upx
 }
+
+/* .cu-list.menu-avatar>.cu-item>.cu-avatar2 {
+	position: absolute;
+	left: 10upx
+} */
 
 .cu-list.menu-avatar>.cu-item .flex .text-cut {
 	max-width: 510upx
@@ -1231,6 +1236,12 @@ button.cuIcon.lg {
 	position: absolute;
 	left: 146upx;
 	width: calc(100% - 96upx - 60upx - 120upx - 20upx);
+	line-height: 1.6em;
+}
+
+.cu-list.menu-avatar>.cu-item .content2 {
+	position: absolute;
+	left: 120upx;
 	line-height: 1.6em;
 }
 
@@ -3418,6 +3429,11 @@ scroll-view.cu-steps .cu-item {
 	color: #333333;
 }
 
+.bg-light-yellow {
+	background-color: #fdfd79;
+	color: #ffffff;
+}
+
 .bg-olive {
 	background-color: #8dc63f;
 	color: #ffffff;
@@ -3435,6 +3451,11 @@ scroll-view.cu-steps .cu-item {
 
 .bg-blue {
 	background-color: #0081ff;
+	color: #ffffff;
+}
+
+.bg-light-blue {
+	background-color: #35a5ff;
 	color: #ffffff;
 }
 

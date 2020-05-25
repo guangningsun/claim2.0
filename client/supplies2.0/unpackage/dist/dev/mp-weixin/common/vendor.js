@@ -1,6 +1,6 @@
-(global["webpackJsonp"] = global["webpackJsonp"] || []).push([["common/vendor"],[
-/* 0 */,
-/* 1 */
+(global["webpackJsonp"] = global["webpackJsonp"] || []).push([["common/vendor"],{
+
+/***/ 1:
 /*!************************************************************!*\
   !*** ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js ***!
   \************************************************************/
@@ -720,10 +720,10 @@ function initVueComponent(Vue, vueOptions) {
   var VueComponent;
   if (isFn(vueOptions)) {
     VueComponent = vueOptions;
-    vueOptions = VueComponent.extendOptions;
   } else {
     VueComponent = Vue.extend(vueOptions);
   }
+  vueOptions = VueComponent.options;
   return [VueComponent, vueOptions];
 }
 
@@ -1409,6 +1409,10 @@ function parseBaseComponent(vueComponentOptions)
       __e: handleEvent } };
 
 
+  // externalClasses
+  if (vueOptions.externalClasses) {
+    componentOptions.externalClasses = vueOptions.externalClasses;
+  }
 
   if (Array.isArray(vueOptions.wxsCallMethods)) {
     vueOptions.wxsCallMethods.forEach(function (callMethod) {
@@ -1559,7 +1563,137 @@ var uni$1 = uni;var _default =
 uni$1;exports.default = _default;
 
 /***/ }),
-/* 2 */
+
+/***/ 10:
+/*!**********************************************************************************************************!*\
+  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/runtime/componentNormalizer.js ***!
+  \**********************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return normalizeComponent; });
+/* globals __VUE_SSR_CONTEXT__ */
+
+// IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
+// This module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle.
+
+function normalizeComponent (
+  scriptExports,
+  render,
+  staticRenderFns,
+  functionalTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier, /* server only */
+  shadowMode, /* vue-cli only */
+  components, // fixed by xxxxxx auto components
+  renderjs // fixed by xxxxxx renderjs
+) {
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // fixed by xxxxxx auto components
+  if (components) {
+    if (!options.components) {
+      options.components = {}
+    }
+    var hasOwn = Object.prototype.hasOwnProperty
+    for (var name in components) {
+      if (hasOwn.call(components, name) && !hasOwn.call(options.components, name)) {
+        options.components[name] = components[name]
+      }
+    }
+  }
+  // fixed by xxxxxx renderjs
+  if (renderjs) {
+    (renderjs.beforeCreate || (renderjs.beforeCreate = [])).unshift(function() {
+      this[renderjs.__module] = this
+    });
+    (options.mixins || (options.mixins = [])).push(renderjs)
+  }
+
+  // render functions
+  if (render) {
+    options.render = render
+    options.staticRenderFns = staticRenderFns
+    options._compiled = true
+  }
+
+  // functional template
+  if (functionalTemplate) {
+    options.functional = true
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = 'data-v-' + scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = shadowMode
+      ? function () { injectStyles.call(this, this.$root.$options.shadowRoot) }
+      : injectStyles
+  }
+
+  if (hook) {
+    if (options.functional) {
+      // for template-only hot-reload because in that case the render fn doesn't
+      // go through the normalizer
+      options._injectStyles = hook
+      // register for functioal component in vue file
+      var originalRender = options.render
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return originalRender(h, context)
+      }
+    } else {
+      // inject component registration as beforeCreate hook
+      var existing = options.beforeCreate
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    }
+  }
+
+  return {
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
+
+/***/ 2:
 /*!******************************************************************************************!*\
   !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/mp-vue/dist/mp.runtime.esm.js ***!
   \******************************************************************************************/
@@ -7588,7 +7722,19 @@ internalMixin(Vue);
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../../../webpack/buildin/global.js */ 3)))
 
 /***/ }),
-/* 3 */
+
+/***/ 25:
+/*!*************************************************************************************************!*\
+  !*** /Users/victor/HBuilderProjects/supplies2.0/claim2.0/client/supplies2.0/static/default.png ***!
+  \*************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIAEAYAAACk6Ai5AAAACXBIWXMAAAsTAAALEwEAmpwYAAAF6WlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDggNzkuMTY0MDM2LCAyMDE5LzA4LzEzLTAxOjA2OjU3ICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgMjEuMCAoTWFjaW50b3NoKSIgeG1wOkNyZWF0ZURhdGU9IjIwMjAtMDUtMTJUMjI6MzU6NTUrMDg6MDAiIHhtcDpNb2RpZnlEYXRlPSIyMDIwLTA1LTEyVDIyOjQyOjM5KzA4OjAwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDIwLTA1LTEyVDIyOjQyOjM5KzA4OjAwIiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyIgcGhvdG9zaG9wOklDQ1Byb2ZpbGU9InNSR0IgSUVDNjE5NjYtMi4xIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjc5ZDhhZWY1LTNjOTQtNGQ3Mi04ZTcyLTc4N2FlNTkxZTYzOCIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpiMzhjM2UxNy05YTdiLTRmZDgtOWU5NS05NTFiMGIxNDNhNjQiIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDpiMzhjM2UxNy05YTdiLTRmZDgtOWU5NS05NTFiMGIxNDNhNjQiPiA8eG1wTU06SGlzdG9yeT4gPHJkZjpTZXE+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJjcmVhdGVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOmIzOGMzZTE3LTlhN2ItNGZkOC05ZTk1LTk1MWIwYjE0M2E2NCIgc3RFdnQ6d2hlbj0iMjAyMC0wNS0xMlQyMjozNTo1NSswODowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDIxLjAgKE1hY2ludG9zaCkiLz4gPHJkZjpsaSBzdEV2dDphY3Rpb249InNhdmVkIiBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOjc5ZDhhZWY1LTNjOTQtNGQ3Mi04ZTcyLTc4N2FlNTkxZTYzOCIgc3RFdnQ6d2hlbj0iMjAyMC0wNS0xMlQyMjo0MjozOSswODowMCIgc3RFdnQ6c29mdHdhcmVBZ2VudD0iQWRvYmUgUGhvdG9zaG9wIDIxLjAgKE1hY2ludG9zaCkiIHN0RXZ0OmNoYW5nZWQ9Ii8iLz4gPC9yZGY6U2VxPiA8L3htcE1NOkhpc3Rvcnk+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+6NE1ZgAASNlJREFUeJzt3V2MXOmZH/aniz0UhxqNRiNqNBprZ+WxLMjyrixsFFlebBbGwtgAhmEEjhEYvjBy4YtcBMYiF8Yi8NUiCAxfGEEQGIFh5CIwDF8ZQS6MxUZYbDabDUVRI4rTbHJ6OJxms9msri5WV1dXV1dXV53OxTlnmsPhR39U1ak65/cjhFJzyOLbXV/n/b/v87wLGw92Hh8dHo0CAAAAKK1a0QMAAAAAJk8AAAAAABUgAAAAAIAKEAAAAABABQgAAAAAoAIEAAAAAFABAgAAAACoAAEAAAAA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"
+
+/***/ }),
+
+/***/ 3:
 /*!***********************************!*\
   !*** (webpack)/buildin/global.js ***!
   \***********************************/
@@ -7618,7 +7764,8 @@ module.exports = g;
 
 
 /***/ }),
-/* 4 */
+
+/***/ 4:
 /*!*****************************************************************************************!*\
   !*** /Users/victor/HBuilderProjects/supplies2.0/claim2.0/client/supplies2.0/pages.json ***!
   \*****************************************************************************************/
@@ -7627,1057 +7774,7 @@ module.exports = g;
 
 
 
-/***/ }),
-/* 5 */
-/*!*******************************************************!*\
-  !*** ./node_modules/@dcloudio/uni-stat/dist/index.js ***!
-  \*******************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {var _package = __webpack_require__(/*! ../package.json */ 6);function _createSuper(Derived) {return function () {var Super = _getPrototypeOf(Derived),result;if (_isNativeReflectConstruct()) {var NewTarget = _getPrototypeOf(this).constructor;result = Reflect.construct(Super, arguments, NewTarget);} else {result = Super.apply(this, arguments);}return _possibleConstructorReturn(this, result);};}function _possibleConstructorReturn(self, call) {if (call && (typeof call === "object" || typeof call === "function")) {return call;}return _assertThisInitialized(self);}function _assertThisInitialized(self) {if (self === void 0) {throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return self;}function _isNativeReflectConstruct() {if (typeof Reflect === "undefined" || !Reflect.construct) return false;if (Reflect.construct.sham) return false;if (typeof Proxy === "function") return true;try {Date.prototype.toString.call(Reflect.construct(Date, [], function () {}));return true;} catch (e) {return false;}}function _getPrototypeOf(o) {_getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {return o.__proto__ || Object.getPrototypeOf(o);};return _getPrototypeOf(o);}function _inherits(subClass, superClass) {if (typeof superClass !== "function" && superClass !== null) {throw new TypeError("Super expression must either be null or a function");}subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } });if (superClass) _setPrototypeOf(subClass, superClass);}function _setPrototypeOf(o, p) {_setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {o.__proto__ = p;return o;};return _setPrototypeOf(o, p);}function _classCallCheck(instance, Constructor) {if (!(instance instanceof Constructor)) {throw new TypeError("Cannot call a class as a function");}}function _defineProperties(target, props) {for (var i = 0; i < props.length; i++) {var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);}}function _createClass(Constructor, protoProps, staticProps) {if (protoProps) _defineProperties(Constructor.prototype, protoProps);if (staticProps) _defineProperties(Constructor, staticProps);return Constructor;}
-
-var STAT_VERSION = _package.version;
-var STAT_URL = 'https://tongji.dcloud.io/uni/stat';
-var STAT_H5_URL = 'https://tongji.dcloud.io/uni/stat.gif';
-var PAGE_PVER_TIME = 1800;
-var APP_PVER_TIME = 300;
-var OPERATING_TIME = 10;
-
-var UUID_KEY = '__DC_STAT_UUID';
-var UUID_VALUE = '__DC_UUID_VALUE';
-
-function getUuid() {
-  var uuid = '';
-  if (getPlatformName() === 'n') {
-    try {
-      uuid = plus.runtime.getDCloudId();
-    } catch (e) {
-      uuid = '';
-    }
-    return uuid;
-  }
-
-  try {
-    uuid = uni.getStorageSync(UUID_KEY);
-  } catch (e) {
-    uuid = UUID_VALUE;
-  }
-
-  if (!uuid) {
-    uuid = Date.now() + '' + Math.floor(Math.random() * 1e7);
-    try {
-      uni.setStorageSync(UUID_KEY, uuid);
-    } catch (e) {
-      uni.setStorageSync(UUID_KEY, UUID_VALUE);
-    }
-  }
-  return uuid;
-}
-
-var getSgin = function getSgin(statData) {
-  var arr = Object.keys(statData);
-  var sortArr = arr.sort();
-  var sgin = {};
-  var sginStr = '';
-  for (var i in sortArr) {
-    sgin[sortArr[i]] = statData[sortArr[i]];
-    sginStr += sortArr[i] + '=' + statData[sortArr[i]] + '&';
-  }
-  // const options = sginStr.substr(0, sginStr.length - 1)
-  // sginStr = sginStr.substr(0, sginStr.length - 1) + '&key=' + STAT_KEY;
-  // const si = crypto.createHash('md5').update(sginStr).digest('hex');
-  return {
-    sign: '',
-    options: sginStr.substr(0, sginStr.length - 1) };
-
-};
-
-var getSplicing = function getSplicing(data) {
-  var str = '';
-  for (var i in data) {
-    str += i + '=' + data[i] + '&';
-  }
-  return str.substr(0, str.length - 1);
-};
-
-var getTime = function getTime() {
-  return parseInt(new Date().getTime() / 1000);
-};
-
-var getPlatformName = function getPlatformName() {
-  var platformList = {
-    'app-plus': 'n',
-    'h5': 'h5',
-    'mp-weixin': 'wx',
-    'mp-alipay': 'ali',
-    'mp-baidu': 'bd',
-    'mp-toutiao': 'tt',
-    'mp-qq': 'qq' };
-
-  return platformList["mp-weixin"];
-};
-
-var getPackName = function getPackName() {
-  var packName = '';
-  if (getPlatformName() === 'wx' || getPlatformName() === 'qq') {
-    // 兼容微信小程序低版本基础库
-    if (uni.canIUse('getAccountInfoSync')) {
-      packName = uni.getAccountInfoSync().miniProgram.appId || '';
-    }
-  }
-  return packName;
-};
-
-var getVersion = function getVersion() {
-  return getPlatformName() === 'n' ? plus.runtime.version : '';
-};
-
-var getChannel = function getChannel() {
-  var platformName = getPlatformName();
-  var channel = '';
-  if (platformName === 'n') {
-    channel = plus.runtime.channel;
-  }
-  return channel;
-};
-
-var getScene = function getScene(options) {
-  var platformName = getPlatformName();
-  var scene = '';
-  if (options) {
-    return options;
-  }
-  if (platformName === 'wx') {
-    scene = uni.getLaunchOptionsSync().scene;
-  }
-  return scene;
-};
-var First__Visit__Time__KEY = 'First__Visit__Time';
-var Last__Visit__Time__KEY = 'Last__Visit__Time';
-
-var getFirstVisitTime = function getFirstVisitTime() {
-  var timeStorge = uni.getStorageSync(First__Visit__Time__KEY);
-  var time = 0;
-  if (timeStorge) {
-    time = timeStorge;
-  } else {
-    time = getTime();
-    uni.setStorageSync(First__Visit__Time__KEY, time);
-    uni.removeStorageSync(Last__Visit__Time__KEY);
-  }
-  return time;
-};
-
-var getLastVisitTime = function getLastVisitTime() {
-  var timeStorge = uni.getStorageSync(Last__Visit__Time__KEY);
-  var time = 0;
-  if (timeStorge) {
-    time = timeStorge;
-  } else {
-    time = '';
-  }
-  uni.setStorageSync(Last__Visit__Time__KEY, getTime());
-  return time;
-};
-
-
-var PAGE_RESIDENCE_TIME = '__page__residence__time';
-var First_Page_residence_time = 0;
-var Last_Page_residence_time = 0;
-
-
-var setPageResidenceTime = function setPageResidenceTime() {
-  First_Page_residence_time = getTime();
-  if (getPlatformName() === 'n') {
-    uni.setStorageSync(PAGE_RESIDENCE_TIME, getTime());
-  }
-  return First_Page_residence_time;
-};
-
-var getPageResidenceTime = function getPageResidenceTime() {
-  Last_Page_residence_time = getTime();
-  if (getPlatformName() === 'n') {
-    First_Page_residence_time = uni.getStorageSync(PAGE_RESIDENCE_TIME);
-  }
-  return Last_Page_residence_time - First_Page_residence_time;
-};
-var TOTAL__VISIT__COUNT = 'Total__Visit__Count';
-var getTotalVisitCount = function getTotalVisitCount() {
-  var timeStorge = uni.getStorageSync(TOTAL__VISIT__COUNT);
-  var count = 1;
-  if (timeStorge) {
-    count = timeStorge;
-    count++;
-  }
-  uni.setStorageSync(TOTAL__VISIT__COUNT, count);
-  return count;
-};
-
-var GetEncodeURIComponentOptions = function GetEncodeURIComponentOptions(statData) {
-  var data = {};
-  for (var prop in statData) {
-    data[prop] = encodeURIComponent(statData[prop]);
-  }
-  return data;
-};
-
-var Set__First__Time = 0;
-var Set__Last__Time = 0;
-
-var getFirstTime = function getFirstTime() {
-  var time = new Date().getTime();
-  Set__First__Time = time;
-  Set__Last__Time = 0;
-  return time;
-};
-
-
-var getLastTime = function getLastTime() {
-  var time = new Date().getTime();
-  Set__Last__Time = time;
-  return time;
-};
-
-
-var getResidenceTime = function getResidenceTime(type) {
-  var residenceTime = 0;
-  if (Set__First__Time !== 0) {
-    residenceTime = Set__Last__Time - Set__First__Time;
-  }
-
-  residenceTime = parseInt(residenceTime / 1000);
-  residenceTime = residenceTime < 1 ? 1 : residenceTime;
-  if (type === 'app') {
-    var overtime = residenceTime > APP_PVER_TIME ? true : false;
-    return {
-      residenceTime: residenceTime,
-      overtime: overtime };
-
-  }
-  if (type === 'page') {
-    var _overtime = residenceTime > PAGE_PVER_TIME ? true : false;
-    return {
-      residenceTime: residenceTime,
-      overtime: _overtime };
-
-  }
-
-  return {
-    residenceTime: residenceTime };
-
-
-};
-
-var getRoute = function getRoute() {
-  var pages = getCurrentPages();
-  var page = pages[pages.length - 1];
-  var _self = page.$vm;
-
-  if (getPlatformName() === 'bd') {
-    return _self.$mp && _self.$mp.page.is;
-  } else {
-    return _self.$scope && _self.$scope.route || _self.$mp && _self.$mp.page.route;
-  }
-};
-
-var getPageRoute = function getPageRoute(self) {
-  var pages = getCurrentPages();
-  var page = pages[pages.length - 1];
-  var _self = page.$vm;
-  var query = self._query;
-  var str = query && JSON.stringify(query) !== '{}' ? '?' + JSON.stringify(query) : '';
-  // clear
-  self._query = '';
-  if (getPlatformName() === 'bd') {
-    return _self.$mp && _self.$mp.page.is + str;
-  } else {
-    return _self.$scope && _self.$scope.route + str || _self.$mp && _self.$mp.page.route + str;
-  }
-};
-
-var getPageTypes = function getPageTypes(self) {
-  if (self.mpType === 'page' || self.$mp && self.$mp.mpType === 'page' || self.$options.mpType === 'page') {
-    return true;
-  }
-  return false;
-};
-
-var calibration = function calibration(eventName, options) {
-  //  login 、 share 、pay_success 、pay_fail 、register 、title
-  if (!eventName) {
-    console.error("uni.report \u7F3A\u5C11 [eventName] \u53C2\u6570");
-    return true;
-  }
-  if (typeof eventName !== 'string') {
-    console.error("uni.report [eventName] \u53C2\u6570\u7C7B\u578B\u9519\u8BEF,\u53EA\u80FD\u4E3A String \u7C7B\u578B");
-    return true;
-  }
-  if (eventName.length > 255) {
-    console.error("uni.report [eventName] \u53C2\u6570\u957F\u5EA6\u4E0D\u80FD\u5927\u4E8E 255");
-    return true;
-  }
-
-  if (typeof options !== 'string' && typeof options !== 'object') {
-    console.error("uni.report [options] \u53C2\u6570\u7C7B\u578B\u9519\u8BEF,\u53EA\u80FD\u4E3A String \u6216 Object \u7C7B\u578B");
-    return true;
-  }
-
-  if (typeof options === 'string' && options.length > 255) {
-    console.error("uni.report [options] \u53C2\u6570\u957F\u5EA6\u4E0D\u80FD\u5927\u4E8E 255");
-    return true;
-  }
-
-  if (eventName === 'title' && typeof options !== 'string') {
-    console.error('uni.report [eventName] 参数为 title 时，[options] 参数只能为 String 类型');
-    return true;
-  }
-};
-
-var PagesJson = __webpack_require__(/*! uni-pages?{"type":"style"} */ 7).default;
-var statConfig = __webpack_require__(/*! uni-stat-config */ 8).default || __webpack_require__(/*! uni-stat-config */ 8);
-
-var resultOptions = uni.getSystemInfoSync();var
-
-Util = /*#__PURE__*/function () {
-  function Util() {_classCallCheck(this, Util);
-    this.self = '';
-    this._retry = 0;
-    this._platform = '';
-    this._query = {};
-    this._navigationBarTitle = {
-      config: '',
-      page: '',
-      report: '',
-      lt: '' };
-
-    this._operatingTime = 0;
-    this._reportingRequestData = {
-      '1': [],
-      '11': [] };
-
-    this.__prevent_triggering = false;
-
-    this.__licationHide = false;
-    this.__licationShow = false;
-    this._lastPageRoute = '';
-    this.statData = {
-      uuid: getUuid(),
-      ut: getPlatformName(),
-      mpn: getPackName(),
-      ak: statConfig.appid,
-      usv: STAT_VERSION,
-      v: getVersion(),
-      ch: getChannel(),
-      cn: '',
-      pn: '',
-      ct: '',
-      t: getTime(),
-      tt: '',
-      p: resultOptions.platform === 'android' ? 'a' : 'i',
-      brand: resultOptions.brand || '',
-      md: resultOptions.model,
-      sv: resultOptions.system.replace(/(Android|iOS)\s/, ''),
-      mpsdk: resultOptions.SDKVersion || '',
-      mpv: resultOptions.version || '',
-      lang: resultOptions.language,
-      pr: resultOptions.pixelRatio,
-      ww: resultOptions.windowWidth,
-      wh: resultOptions.windowHeight,
-      sw: resultOptions.screenWidth,
-      sh: resultOptions.screenHeight };
-
-
-  }_createClass(Util, [{ key: "_applicationShow", value: function _applicationShow()
-
-    {
-      if (this.__licationHide) {
-        getLastTime();
-        var time = getResidenceTime('app');
-        if (time.overtime) {
-          var options = {
-            path: this._lastPageRoute,
-            scene: this.statData.sc };
-
-          this._sendReportRequest(options);
-        }
-        this.__licationHide = false;
-      }
-    } }, { key: "_applicationHide", value: function _applicationHide(
-
-    self, type) {
-
-      this.__licationHide = true;
-      getLastTime();
-      var time = getResidenceTime();
-      getFirstTime();
-      var route = getPageRoute(this);
-      this._sendHideRequest({
-        urlref: route,
-        urlref_ts: time.residenceTime },
-      type);
-    } }, { key: "_pageShow", value: function _pageShow()
-
-    {
-      var route = getPageRoute(this);
-      var routepath = getRoute();
-      this._navigationBarTitle.config = PagesJson &&
-      PagesJson.pages[routepath] &&
-      PagesJson.pages[routepath].titleNView &&
-      PagesJson.pages[routepath].titleNView.titleText ||
-      PagesJson &&
-      PagesJson.pages[routepath] &&
-      PagesJson.pages[routepath].navigationBarTitleText || '';
-
-      if (this.__licationShow) {
-        getFirstTime();
-        this.__licationShow = false;
-        // console.log('这是 onLauch 之后执行的第一次 pageShow ，为下次记录时间做准备');
-        this._lastPageRoute = route;
-        return;
-      }
-
-      getLastTime();
-      this._lastPageRoute = route;
-      var time = getResidenceTime('page');
-      if (time.overtime) {
-        var options = {
-          path: this._lastPageRoute,
-          scene: this.statData.sc };
-
-        this._sendReportRequest(options);
-      }
-      getFirstTime();
-    } }, { key: "_pageHide", value: function _pageHide()
-
-    {
-      if (!this.__licationHide) {
-        getLastTime();
-        var time = getResidenceTime('page');
-        this._sendPageRequest({
-          url: this._lastPageRoute,
-          urlref: this._lastPageRoute,
-          urlref_ts: time.residenceTime });
-
-        this._navigationBarTitle = {
-          config: '',
-          page: '',
-          report: '',
-          lt: '' };
-
-        return;
-      }
-    } }, { key: "_login", value: function _login()
-
-    {
-      this._sendEventRequest({
-        key: 'login' },
-      0);
-    } }, { key: "_share", value: function _share()
-
-    {
-      this._sendEventRequest({
-        key: 'share' },
-      0);
-    } }, { key: "_payment", value: function _payment(
-    key) {
-      this._sendEventRequest({
-        key: key },
-      0);
-    } }, { key: "_sendReportRequest", value: function _sendReportRequest(
-    options) {
-
-      this._navigationBarTitle.lt = '1';
-      var query = options.query && JSON.stringify(options.query) !== '{}' ? '?' + JSON.stringify(options.query) : '';
-      this.statData.lt = '1';
-      this.statData.url = options.path + query || '';
-      this.statData.t = getTime();
-      this.statData.sc = getScene(options.scene);
-      this.statData.fvts = getFirstVisitTime();
-      this.statData.lvts = getLastVisitTime();
-      this.statData.tvc = getTotalVisitCount();
-      if (getPlatformName() === 'n') {
-        this.getProperty();
-      } else {
-        this.getNetworkInfo();
-      }
-    } }, { key: "_sendPageRequest", value: function _sendPageRequest(
-
-    opt) {var
-
-      url =
-
-
-      opt.url,urlref = opt.urlref,urlref_ts = opt.urlref_ts;
-      this._navigationBarTitle.lt = '11';
-      var options = {
-        ak: this.statData.ak,
-        uuid: this.statData.uuid,
-        lt: '11',
-        ut: this.statData.ut,
-        url: url,
-        tt: this.statData.tt,
-        urlref: urlref,
-        urlref_ts: urlref_ts,
-        ch: this.statData.ch,
-        usv: this.statData.usv,
-        t: getTime(),
-        p: this.statData.p };
-
-      this.request(options);
-    } }, { key: "_sendHideRequest", value: function _sendHideRequest(
-
-    opt, type) {var
-
-      urlref =
-
-      opt.urlref,urlref_ts = opt.urlref_ts;
-      var options = {
-        ak: this.statData.ak,
-        uuid: this.statData.uuid,
-        lt: '3',
-        ut: this.statData.ut,
-        urlref: urlref,
-        urlref_ts: urlref_ts,
-        ch: this.statData.ch,
-        usv: this.statData.usv,
-        t: getTime(),
-        p: this.statData.p };
-
-      this.request(options, type);
-    } }, { key: "_sendEventRequest", value: function _sendEventRequest()
-
-
-
-    {var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},_ref$key = _ref.key,key = _ref$key === void 0 ? '' : _ref$key,_ref$value = _ref.value,value = _ref$value === void 0 ? "" : _ref$value;
-      var route = this._lastPageRoute;
-      var options = {
-        ak: this.statData.ak,
-        uuid: this.statData.uuid,
-        lt: '21',
-        ut: this.statData.ut,
-        url: route,
-        ch: this.statData.ch,
-        e_n: key,
-        e_v: typeof value === 'object' ? JSON.stringify(value) : value.toString(),
-        usv: this.statData.usv,
-        t: getTime(),
-        p: this.statData.p };
-
-      this.request(options);
-    } }, { key: "getNetworkInfo", value: function getNetworkInfo()
-
-    {var _this = this;
-      uni.getNetworkType({
-        success: function success(result) {
-          _this.statData.net = result.networkType;
-          _this.getLocation();
-        } });
-
-    } }, { key: "getProperty", value: function getProperty()
-
-    {var _this2 = this;
-      plus.runtime.getProperty(plus.runtime.appid, function (wgtinfo) {
-        _this2.statData.v = wgtinfo.version || '';
-        _this2.getNetworkInfo();
-      });
-    } }, { key: "getLocation", value: function getLocation()
-
-    {var _this3 = this;
-      if (statConfig.getLocation) {
-        uni.getLocation({
-          type: 'wgs84',
-          geocode: true,
-          success: function success(result) {
-            if (result.address) {
-              _this3.statData.cn = result.address.country;
-              _this3.statData.pn = result.address.province;
-              _this3.statData.ct = result.address.city;
-            }
-
-            _this3.statData.lat = result.latitude;
-            _this3.statData.lng = result.longitude;
-            _this3.request(_this3.statData);
-          } });
-
-      } else {
-        this.statData.lat = 0;
-        this.statData.lng = 0;
-        this.request(this.statData);
-      }
-    } }, { key: "request", value: function request(
-
-    data, type) {var _this4 = this;
-      var time = getTime();
-      var title = this._navigationBarTitle;
-      data.ttn = title.page;
-      data.ttpj = title.config;
-      data.ttc = title.report;
-
-      var requestData = this._reportingRequestData;
-      if (getPlatformName() === 'n') {
-        requestData = uni.getStorageSync('__UNI__STAT__DATA') || {};
-      }
-      if (!requestData[data.lt]) {
-        requestData[data.lt] = [];
-      }
-      requestData[data.lt].push(data);
-
-      if (getPlatformName() === 'n') {
-        uni.setStorageSync('__UNI__STAT__DATA', requestData);
-      }
-      if (getPageResidenceTime() < OPERATING_TIME && !type) {
-        return;
-      }
-      var uniStatData = this._reportingRequestData;
-      if (getPlatformName() === 'n') {
-        uniStatData = uni.getStorageSync('__UNI__STAT__DATA');
-      }
-      // 时间超过，重新获取时间戳
-      setPageResidenceTime();
-      var firstArr = [];
-      var contentArr = [];
-      var lastArr = [];var _loop = function _loop(
-
-      i) {
-        var rd = uniStatData[i];
-        rd.forEach(function (elm) {
-          var newData = getSplicing(elm);
-          if (i === 0) {
-            firstArr.push(newData);
-          } else if (i === 3) {
-            lastArr.push(newData);
-          } else {
-            contentArr.push(newData);
-          }
-        });};for (var i in uniStatData) {_loop(i);
-      }
-
-      firstArr.push.apply(firstArr, contentArr.concat(lastArr));
-      var optionsData = {
-        usv: STAT_VERSION, //统计 SDK 版本号
-        t: time, //发送请求时的时间戮
-        requests: JSON.stringify(firstArr) };
-
-
-      this._reportingRequestData = {};
-      if (getPlatformName() === 'n') {
-        uni.removeStorageSync('__UNI__STAT__DATA');
-      }
-
-      if (data.ut === 'h5') {
-        this.imageRequest(optionsData);
-        return;
-      }
-
-      if (getPlatformName() === 'n' && this.statData.p === 'a') {
-        setTimeout(function () {
-          _this4._sendRequest(optionsData);
-        }, 200);
-        return;
-      }
-      this._sendRequest(optionsData);
-    } }, { key: "_sendRequest", value: function _sendRequest(
-    optionsData) {var _this5 = this;
-      uni.request({
-        url: STAT_URL,
-        method: 'POST',
-        // header: {
-        //   'content-type': 'application/json' // 默认值
-        // },
-        data: optionsData,
-        success: function success() {
-          // if (process.env.NODE_ENV === 'development') {
-          //   console.log('stat request success');
-          // }
-        },
-        fail: function fail(e) {
-          if (++_this5._retry < 3) {
-            setTimeout(function () {
-              _this5._sendRequest(optionsData);
-            }, 1000);
-          }
-        } });
-
-    }
-    /**
-       * h5 请求
-       */ }, { key: "imageRequest", value: function imageRequest(
-    data) {
-      var image = new Image();
-      var options = getSgin(GetEncodeURIComponentOptions(data)).options;
-      image.src = STAT_H5_URL + '?' + options;
-    } }, { key: "sendEvent", value: function sendEvent(
-
-    key, value) {
-      // 校验 type 参数
-      if (calibration(key, value)) return;
-
-      if (key === 'title') {
-        this._navigationBarTitle.report = value;
-        return;
-      }
-      this._sendEventRequest({
-        key: key,
-        value: typeof value === 'object' ? JSON.stringify(value) : value },
-      1);
-    } }]);return Util;}();var
-
-
-
-Stat = /*#__PURE__*/function (_Util) {_inherits(Stat, _Util);var _super = _createSuper(Stat);_createClass(Stat, null, [{ key: "getInstance", value: function getInstance()
-    {
-      if (!this.instance) {
-        this.instance = new Stat();
-      }
-      return this.instance;
-    } }]);
-  function Stat() {var _this6;_classCallCheck(this, Stat);
-    _this6 = _super.call(this);
-    _this6.instance = null;
-    // 注册拦截器
-    if (typeof uni.addInterceptor === 'function' && "development" !== 'development') {
-      _this6.addInterceptorInit();
-      _this6.interceptLogin();
-      _this6.interceptShare(true);
-      _this6.interceptRequestPayment();
-    }return _this6;
-  }_createClass(Stat, [{ key: "addInterceptorInit", value: function addInterceptorInit()
-
-    {
-      var self = this;
-      uni.addInterceptor('setNavigationBarTitle', {
-        invoke: function invoke(args) {
-          self._navigationBarTitle.page = args.title;
-        } });
-
-    } }, { key: "interceptLogin", value: function interceptLogin()
-
-    {
-      var self = this;
-      uni.addInterceptor('login', {
-        complete: function complete() {
-          self._login();
-        } });
-
-    } }, { key: "interceptShare", value: function interceptShare(
-
-    type) {
-      var self = this;
-      if (!type) {
-        self._share();
-        return;
-      }
-      uni.addInterceptor('share', {
-        success: function success() {
-          self._share();
-        },
-        fail: function fail() {
-          self._share();
-        } });
-
-    } }, { key: "interceptRequestPayment", value: function interceptRequestPayment()
-
-    {
-      var self = this;
-      uni.addInterceptor('requestPayment', {
-        success: function success() {
-          self._payment('pay_success');
-        },
-        fail: function fail() {
-          self._payment('pay_fail');
-        } });
-
-    } }, { key: "report", value: function report(
-
-    options, self) {
-      this.self = self;
-      // if (process.env.NODE_ENV === 'development') {
-      //   console.log('report init');
-      // }
-      setPageResidenceTime();
-      this.__licationShow = true;
-      this._sendReportRequest(options, true);
-    } }, { key: "load", value: function load(
-
-    options, self) {
-      if (!self.$scope && !self.$mp) {
-        var page = getCurrentPages();
-        self.$scope = page[page.length - 1];
-      }
-      this.self = self;
-      this._query = options;
-    } }, { key: "show", value: function show(
-
-    self) {
-      this.self = self;
-      if (getPageTypes(self)) {
-        this._pageShow(self);
-      } else {
-        this._applicationShow(self);
-      }
-    } }, { key: "ready", value: function ready(
-
-    self) {
-      // this.self = self;
-      // if (getPageTypes(self)) {
-      //   this._pageShow(self);
-      // }
-    } }, { key: "hide", value: function hide(
-    self) {
-      this.self = self;
-      if (getPageTypes(self)) {
-        this._pageHide(self);
-      } else {
-        this._applicationHide(self, true);
-      }
-    } }, { key: "error", value: function error(
-    em) {
-      if (this._platform === 'devtools') {
-        if (true) {
-          console.info('当前运行环境为开发者工具，不上报数据。');
-        }
-        // return;
-      }
-      var emVal = '';
-      if (!em.message) {
-        emVal = JSON.stringify(em);
-      } else {
-        emVal = em.stack;
-      }
-      var options = {
-        ak: this.statData.ak,
-        uuid: this.statData.uuid,
-        lt: '31',
-        ut: this.statData.ut,
-        ch: this.statData.ch,
-        mpsdk: this.statData.mpsdk,
-        mpv: this.statData.mpv,
-        v: this.statData.v,
-        em: emVal,
-        usv: this.statData.usv,
-        t: getTime(),
-        p: this.statData.p };
-
-      this.request(options);
-    } }]);return Stat;}(Util);
-
-
-var stat = Stat.getInstance();
-var isHide = false;
-var lifecycle = {
-  onLaunch: function onLaunch(options) {
-    stat.report(options, this);
-  },
-  onReady: function onReady() {
-    stat.ready(this);
-  },
-  onLoad: function onLoad(options) {
-    stat.load(options, this);
-    // 重写分享，获取分享上报事件
-    if (this.$scope && this.$scope.onShareAppMessage) {
-      var oldShareAppMessage = this.$scope.onShareAppMessage;
-      this.$scope.onShareAppMessage = function (options) {
-        stat.interceptShare(false);
-        return oldShareAppMessage.call(this, options);
-      };
-    }
-  },
-  onShow: function onShow() {
-    isHide = false;
-    stat.show(this);
-  },
-  onHide: function onHide() {
-    isHide = true;
-    stat.hide(this);
-  },
-  onUnload: function onUnload() {
-    if (isHide) {
-      isHide = false;
-      return;
-    }
-    stat.hide(this);
-  },
-  onError: function onError(e) {
-    stat.error(e);
-  } };
-
-
-function main() {
-  if (true) {
-    uni.report = function (type, options) {};
-  } else { var Vue; }
-}
-
-main();
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
-
-/***/ }),
-/* 6 */
-/*!******************************************************!*\
-  !*** ./node_modules/@dcloudio/uni-stat/package.json ***!
-  \******************************************************/
-/*! exports provided: _from, _id, _inBundle, _integrity, _location, _phantomChildren, _requested, _requiredBy, _resolved, _shasum, _spec, _where, author, bugs, bundleDependencies, deprecated, description, devDependencies, files, gitHead, homepage, license, main, name, repository, scripts, version, default */
-/***/ (function(module) {
-
-module.exports = {"_from":"@dcloudio/uni-stat@next","_id":"@dcloudio/uni-stat@2.0.0-26920200424005","_inBundle":false,"_integrity":"sha512-FT8Z/C5xSmIxooqhV1v69jTkxATPz+FsRQIFOrbdlWekjGkrE73jfrdNMWm7gL5u41ALPJTVArxN1Re9by1bjQ==","_location":"/@dcloudio/uni-stat","_phantomChildren":{},"_requested":{"type":"tag","registry":true,"raw":"@dcloudio/uni-stat@next","name":"@dcloudio/uni-stat","escapedName":"@dcloudio%2funi-stat","scope":"@dcloudio","rawSpec":"next","saveSpec":null,"fetchSpec":"next"},"_requiredBy":["#USER","/","/@dcloudio/vue-cli-plugin-uni"],"_resolved":"https://registry.npmjs.org/@dcloudio/uni-stat/-/uni-stat-2.0.0-26920200424005.tgz","_shasum":"47f4375095eda3089cf4678b4b96fc656a7ab623","_spec":"@dcloudio/uni-stat@next","_where":"/Users/guoshengqiang/Documents/dcloud-plugins/release/uniapp-cli","author":"","bugs":{"url":"https://github.com/dcloudio/uni-app/issues"},"bundleDependencies":false,"deprecated":false,"description":"","devDependencies":{"@babel/core":"^7.5.5","@babel/preset-env":"^7.5.5","eslint":"^6.1.0","rollup":"^1.19.3","rollup-plugin-babel":"^4.3.3","rollup-plugin-clear":"^2.0.7","rollup-plugin-commonjs":"^10.0.2","rollup-plugin-copy":"^3.1.0","rollup-plugin-eslint":"^7.0.0","rollup-plugin-json":"^4.0.0","rollup-plugin-node-resolve":"^5.2.0","rollup-plugin-replace":"^2.2.0","rollup-plugin-uglify":"^6.0.2"},"files":["dist","package.json","LICENSE"],"gitHead":"94494d54ed23e2dcf9ab8e3245b48b770b4e98a9","homepage":"https://github.com/dcloudio/uni-app#readme","license":"Apache-2.0","main":"dist/index.js","name":"@dcloudio/uni-stat","repository":{"type":"git","url":"git+https://github.com/dcloudio/uni-app.git","directory":"packages/uni-stat"},"scripts":{"build":"NODE_ENV=production rollup -c rollup.config.js","dev":"NODE_ENV=development rollup -w -c rollup.config.js"},"version":"2.0.0-26920200424005"};
-
-/***/ }),
-/* 7 */
-/*!**********************************************************************************************************!*\
-  !*** /Users/victor/HBuilderProjects/supplies2.0/claim2.0/client/supplies2.0/pages.json?{"type":"style"} ***!
-  \**********************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "pages": { "pages/index/auth": { "navigationBarTitleText": "", "backgroundColor": "#EEEEEE" } }, "globalStyle": { "navigationBarBackgroundColor": "#0b988f", "navigationBarTitleText": "物品申领", "navigationStyle": "custom", "navigationBarTextStyle": "white" } };exports.default = _default;
-
-/***/ }),
-/* 8 */
-/*!*********************************************************************************************************!*\
-  !*** /Users/victor/HBuilderProjects/supplies2.0/claim2.0/client/supplies2.0/pages.json?{"type":"stat"} ***!
-  \*********************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _default = { "appid": "__UNI__E1E65E0" };exports.default = _default;
-
-/***/ }),
-/* 9 */,
-/* 10 */,
-/* 11 */,
-/* 12 */,
-/* 13 */,
-/* 14 */
-/*!**********************************************************************************************************!*\
-  !*** ./node_modules/@dcloudio/vue-cli-plugin-uni/packages/vue-loader/lib/runtime/componentNormalizer.js ***!
-  \**********************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return normalizeComponent; });
-/* globals __VUE_SSR_CONTEXT__ */
-
-// IMPORTANT: Do NOT use ES2015 features in this file (except for modules).
-// This module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle.
-
-function normalizeComponent (
-  scriptExports,
-  render,
-  staticRenderFns,
-  functionalTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier, /* server only */
-  shadowMode, /* vue-cli only */
-  components, // fixed by xxxxxx auto components
-  renderjs // fixed by xxxxxx renderjs
-) {
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // fixed by xxxxxx auto components
-  if (components) {
-    if (!options.components) {
-      options.components = {}
-    }
-    var hasOwn = Object.prototype.hasOwnProperty
-    for (var name in components) {
-      if (hasOwn.call(components, name) && !hasOwn.call(options.components, name)) {
-        options.components[name] = components[name]
-      }
-    }
-  }
-  // fixed by xxxxxx renderjs
-  if (renderjs) {
-    (renderjs.beforeCreate || (renderjs.beforeCreate = [])).unshift(function() {
-      this[renderjs.__module] = this
-    });
-    (options.mixins || (options.mixins = [])).push(renderjs)
-  }
-
-  // render functions
-  if (render) {
-    options.render = render
-    options.staticRenderFns = staticRenderFns
-    options._compiled = true
-  }
-
-  // functional template
-  if (functionalTemplate) {
-    options.functional = true
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = 'data-v-' + scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = shadowMode
-      ? function () { injectStyles.call(this, this.$root.$options.shadowRoot) }
-      : injectStyles
-  }
-
-  if (hook) {
-    if (options.functional) {
-      // for template-only hot-reload because in that case the render fn doesn't
-      // go through the normalizer
-      options._injectStyles = hook
-      // register for functioal component in vue file
-      var originalRender = options.render
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return originalRender(h, context)
-      }
-    } else {
-      // inject component registration as beforeCreate hook
-      var existing = options.beforeCreate
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    }
-  }
-
-  return {
-    exports: scriptExports,
-    options: options
-  }
-}
-
-
 /***/ })
-]]);
+
+}]);
 //# sourceMappingURL=../../.sourcemap/mp-weixin/common/vendor.js.map

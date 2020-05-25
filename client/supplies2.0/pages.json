@@ -5,11 +5,19 @@
 			"path": "pages/index/auth",
 			"style": {
 				"navigationBarTitleText": "",
-				"backgroundColor": "#EEEEEE"
+				"backgroundColor": "#f0e9bb"
 			}
 		}
 
-	],
+	    ,{
+            "path" : "pages/category/category",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/index/user_info",
+            "style" : {}
+        }
+    ],
 	"globalStyle": {
 		"mp-alipay": {
 			/* 支付宝小程序特有相关 */
