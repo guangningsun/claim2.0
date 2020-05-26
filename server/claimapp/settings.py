@@ -186,6 +186,10 @@ SIMPLEUI_CONFIG = {
             'url': 'AppModel/commoditycategory/',
             'icon': 'far fa-surprise'
         }, {
+            'name': '供应商管理',
+            'url': 'AppModel/supplierinfo/',
+            'icon': 'far fa-surprise'
+        },{
             'name': '统计查询',
             'url': 'AppModel/statisticsinfo/',
             'icon': 'fa fa-bell-slash'
