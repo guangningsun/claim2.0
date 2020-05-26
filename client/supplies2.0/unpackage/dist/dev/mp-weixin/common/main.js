@@ -218,7 +218,8 @@ var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 2));function _i
     api_getWXInfo: 'weixin_gusi/',
     api_get_approval_list: 'get_approval_list/',
     api_change_approval_status: 'change_approval_status/',
-    api_get_apartment_list: 'get_apartment_list',
+    api_get_apartment_list: 'get_apartment_list/',
+    api_submit_user_info: 'submit_user_info/',
 
     // 物品篮物品
     cart_list_info: [],

@@ -81,8 +81,8 @@
 									<text class="text-cut cu-tag line-yellow round sm">{{ item2.notice }}</text>
 								</view>
 								
-								<view v-show="item2.brand !== undefined && item2.brand !== null && item2.brand !== '' "	 class="text-sm flex">
-									<text class="text-grey">品牌: {{ item2.brand }}</text>
+								<view v-show="item2.asset_band !== undefined && item2.asset_band !== null && item2.asset_band !== '' "	 class="text-sm flex">
+									<text class="text-grey">品牌: {{ item2.asset_band }}</text>
 								</view>
 							</view>
 							<view >
@@ -114,6 +114,74 @@
 				@trigger="trigger"
 			/>
 		</view>
+		
+		<view class="cu-modal" :class="modalName == 'ChooseSupplierModal' ? 'show' : ''">
+			<view class="cu-dialog">
+				<view class="cu-bar bg-white justify-end">
+					<view class="content">选择供应商</view>
+					<view class="action" @tap="hideModal">
+						<text class="cuIcon-close text-light-purple"></text>
+					</view>
+				</view>
+			<view class="margin-top cu-list menu-avatar">
+				<view
+					class="cu-item padding-left"
+					style="height: 250upx;">
+					<view
+						class="cu-avatar xl"
+						:style="current_item_info.asset_image === null ? 'background-image:url(../../static/default.png);' : 'background-image:url(' + domain + current_item_info.asset_image + ');'"></view>
+					<view class="content3">
+						<view class="flex">
+							<view class="text-grey">{{ current_item_info.asset_name }}</view>
+							<view class="text-grey text-df margin-left-xs">| 库存:{{ current_item_info.asset_count }}</view>
+						</view>
+						
+						<view class="flex">
+							<view class="text-gray text-df flex">
+								<text class="text-cut">
+									规格:{{ current_item_info.asset_specification }}
+								</text>
+							</view>
+							<view class="text-gray text-df flex">
+								<text class="text-cut margin-left-xs">| 型号:{{ current_item_info.asset_type }}</text>
+							</view>
+						</view>
+						
+						<!-- <view v-show="current_item_info.notice !== undefined && current_item_info.notice !== null && current_item_info.notice !== '' " class="text-gray text-sm flex">
+							<text class="text-cut cu-tag line-yellow round df">{{ current_item_info.notice }}</text>
+						</view> -->
+						
+						<view v-show="current_item_info.asset_band !== undefined && current_item_info.asset_band !== null && current_item_info.asset_band !== '' "	 class="text-sm flex">
+							<text class="text-grey text-df">品牌: {{ current_item_info.asset_band }}</text>
+						</view>
+					</view>
+				</view>
+			</view>
+			
+		
+				
+			<radio-group class="block margin-bottom" @change="RadioChange">
+				<view class="cu-form-group" v-for="(item, index) in item.suppliers" :key="index">
+					<view class="">
+						<view class="title margin-top-xs">{{item.supplier_name}}</view>
+						<view class="flex margin-bottom-xs">
+							<text class="text-grey text-df">单价: {{item.supplier_price}}元</text>
+							<!-- <text class="text-grey text-df">累计: {{ current_item_info.asset_band }}</text> -->
+						</view>
+					</view>
+					<radio :class="radio==item.supplier_id?'checked':''" :checked="radio==item.supplier_id?true:false" :value="item.supplier_id"></radio>
+				</view>
+			</radio-group>
+	
+			<view class="cu-bar bg-white justify-end">
+				<view class="action">
+					<button class="cu-btn line-gray text-gray" @tap="hideModal">取消</button>
+					<button class="cu-btn bg-gradual-green margin-left" @tap="onAddToCart()">加入</button>
+				</view>
+			</view>
+			</view>
+		</view>
+		
 	</view>
 </template>
 
@@ -125,6 +193,10 @@ export default {
 	},
 	data() {
 		return {
+			modalName: null,
+			current_item_info:null,
+			supplier_id_radio: '',
+			
 			showEmpty: false,
 			showNoMore: false,
 
@@ -178,25 +250,37 @@ export default {
 		this.loadData();
 	},
 	methods: {
+		showModal(e) {
+			this.modalName = 'ChooseSupplierModal';
+			this.current_item_info = e;
+			console.log(e);
+			
+			// if (getApp().globalData.cart_list_info.length == 0) {
+			// 	getApp().globalData.cart_list_info.push(item);
+			// 	this.showToast('成功添加到物品篮');
+			// 	console.log(getApp().globalData.cart_list_info);
+			// 	return;
+			// }
+			
+			// for (var i = 0; i < getApp().globalData.cart_list_info.length; i++) {
+			// 	if (getApp().globalData.cart_list_info[i].asset_name == item.asset_name) {
+			// 		this.showToast(item.asset_name + ' 已添加过了，无须重复添加');
+			// 		console.log(getApp().globalData.cart_list_info);
+			// 		return;
+			// 	}
+			// }
+			
+			// getApp().globalData.cart_list_info.push(item);
+			// console.log(getApp().globalData.cart_list_info);
+			// this.showToast(item.asset_name + ' 成功添加到物品篮');
+		},
+		hideModal(e) {
+			this.modalName = null;
+		},
 		onAdd(item) {
-			if (getApp().globalData.cart_list_info.length == 0) {
-				getApp().globalData.cart_list_info.push(item);
-				this.showToast('成功添加到物品篮');
-				console.log(getApp().globalData.cart_list_info);
-				return;
-			}
-
-			for (var i = 0; i < getApp().globalData.cart_list_info.length; i++) {
-				if (getApp().globalData.cart_list_info[i].asset_name == item.asset_name) {
-					this.showToast(item.asset_name + ' 已添加过了，无须重复添加');
-					console.log(getApp().globalData.cart_list_info);
-					return;
-				}
-			}
-
-			getApp().globalData.cart_list_info.push(item);
-			console.log(getApp().globalData.cart_list_info);
-			this.showToast(item.asset_name + ' 成功添加到物品篮');
+			this.showModal(item);
+			
+			
 		},
 
 		onMinus(item) {

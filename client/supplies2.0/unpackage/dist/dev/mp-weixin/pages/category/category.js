@@ -251,12 +251,84 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 {
   components: {
     uniFab: _uniFab },
 
   data: function data() {
     return {
+      modalName: null,
+      current_item_info: null,
+      supplier_id_radio: '',
+
       showEmpty: false,
       showNoMore: false,
 
@@ -310,25 +382,37 @@ __webpack_require__.r(__webpack_exports__);
     this.loadData();
   },
   methods: {
+    showModal: function showModal(e) {
+      this.modalName = 'ChooseSupplierModal';
+      this.current_item_info = e;
+      console.log(e);
+
+      // if (getApp().globalData.cart_list_info.length == 0) {
+      // 	getApp().globalData.cart_list_info.push(item);
+      // 	this.showToast('成功添加到物品篮');
+      // 	console.log(getApp().globalData.cart_list_info);
+      // 	return;
+      // }
+
+      // for (var i = 0; i < getApp().globalData.cart_list_info.length; i++) {
+      // 	if (getApp().globalData.cart_list_info[i].asset_name == item.asset_name) {
+      // 		this.showToast(item.asset_name + ' 已添加过了，无须重复添加');
+      // 		console.log(getApp().globalData.cart_list_info);
+      // 		return;
+      // 	}
+      // }
+
+      // getApp().globalData.cart_list_info.push(item);
+      // console.log(getApp().globalData.cart_list_info);
+      // this.showToast(item.asset_name + ' 成功添加到物品篮');
+    },
+    hideModal: function hideModal(e) {
+      this.modalName = null;
+    },
     onAdd: function onAdd(item) {
-      if (getApp().globalData.cart_list_info.length == 0) {
-        getApp().globalData.cart_list_info.push(item);
-        this.showToast('成功添加到物品篮');
-        console.log(getApp().globalData.cart_list_info);
-        return;
-      }
+      this.showModal(item);
 
-      for (var i = 0; i < getApp().globalData.cart_list_info.length; i++) {
-        if (getApp().globalData.cart_list_info[i].asset_name == item.asset_name) {
-          this.showToast(item.asset_name + ' 已添加过了，无须重复添加');
-          console.log(getApp().globalData.cart_list_info);
-          return;
-        }
-      }
 
-      getApp().globalData.cart_list_info.push(item);
-      console.log(getApp().globalData.cart_list_info);
-      this.showToast(item.asset_name + ' 成功添加到物品篮');
     },
 
     onMinus: function onMinus(item) {

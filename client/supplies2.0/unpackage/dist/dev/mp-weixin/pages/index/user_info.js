@@ -128,7 +128,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; //
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0; //
 //
 //
 //
@@ -220,6 +220,7 @@ var _default =
       address: '',
       apartment_picker_index: -1,
       apartment_picker: ['a', 'b', 'c'],
+      apartment_info_list: [],
 
       btn_disabled: true };
 
@@ -242,7 +243,7 @@ var _default =
     },
     successCb: function successCb(rsp) {
       if (rsp.data.error === 0) {
-        var apartment_info_list = rsp.data.msg.apartment_list;
+        this.apartment_info_list = rsp.data.msg.apartment_list;
         console.log(this.apartment_info_list);
 
         var apartments = this.apartment_picker;
@@ -279,7 +280,48 @@ var _default =
       } else {
         this.btn_disabled = false;
       }
-    } } };exports.default = _default;
+    },
+    onSubmit: function onSubmit() {
+      if (this.apartment_picker[this.apartment_picker_index] !== undefined) {
+        this.apartment = this.apartment_picker[this.apartment_picker_index];
+      }
+
+      uni.showLoading({
+        title: '正在提交信息' });
+
+
+      var params = {
+        open_id: uni.getStorageSync('key_wx_openid'),
+        nickname: this.nickname,
+        tel_num: this.tel_num,
+        user_name: this.user_name,
+        apartment: this.apartment,
+        apartment_id: this.apartment_info_list[this.apartment_picker_index] };
+
+
+      this.requestWithMethod(
+      getApp().globalData.api_submit_user_info,
+      "PUT",
+      params,
+      this.successCallback,
+      this.failCallback,
+      this.completeCallback);
+    },
+    successCallback: function successCallback(rsp) {
+      uni.hideLoading();
+      if (rsp.data.error === 0) {
+        uni.showToast({
+          title: '提交成功' });
+
+      }
+    },
+    failCallback: function failCallback(err) {
+      uni.hideLoading();
+      this.showToast(err);
+      console.log('api_submit_user_info failed', err);
+    },
+    completeCallback: function completeCallback(rsp) {} } };exports.default = _default;
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
 /***/ })
 

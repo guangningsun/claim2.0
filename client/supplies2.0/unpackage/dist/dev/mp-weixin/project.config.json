@@ -34,8 +34,8 @@
         },
         {
           "id": 1,
-          "name": "pages/index/user_info",
-          "pathName": "pages/index/user_info",
+          "name": "pages/category/category",
+          "pathName": "pages/category/category",
           "query": ""
         }
       ]

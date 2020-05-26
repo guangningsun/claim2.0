@@ -1220,6 +1220,11 @@ to {
 	left: 120rpx;
 	line-height: 1.6em;
 }
+.cu-list.menu-avatar>.cu-item .content3 {
+	position: absolute;
+	left: 160rpx;
+	line-height: 1.6em;
+}
 .cu-list.menu-avatar>.cu-item .content.flex-sub {
 	width: calc(100% - 96rpx - 60rpx - 20rpx);
 }

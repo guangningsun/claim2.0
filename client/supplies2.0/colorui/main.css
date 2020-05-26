@@ -1245,6 +1245,12 @@ button.cuIcon.lg {
 	line-height: 1.6em;
 }
 
+.cu-list.menu-avatar>.cu-item .content3 {
+	position: absolute;
+	left: 160upx;
+	line-height: 1.6em;
+}
+
 .cu-list.menu-avatar>.cu-item .content.flex-sub {
 	width: calc(100% - 96upx - 60upx - 20upx);
 }
