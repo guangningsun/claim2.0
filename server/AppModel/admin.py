@@ -200,6 +200,17 @@ class PostAdmin(admin.ModelAdmin):
 admin.site.register(Category , MPTTModelAdmin)
 
 
+
+# 供应商管理
+@admin.register(SupplierInfo)
+class SupplierInfoAdmin(ImportExportModelAdmin): 
+    list_display=['id','supplier_name','supplier_short']
+    search_fields =('supplier_name','supplier_short')
+    fieldsets = [
+       ('用户数据', {'fields': ['supplier_name','supplier_short'], 'classes': ['']}),
+    ]
+    list_per_page = 15
+
 admin.site.register(CommodityCategory , MPTTModelAdmin)
 # @admin.register(CommodityCategory)
 # class CommodityCategoryAdmin(admin.ModelAdmin):
