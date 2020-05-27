@@ -22,6 +22,7 @@ urlpatterns = [
     path('commoditycategory/', views.commoditycategory_detail),
     path('get_approval_list/', views.get_approval_list),
     path('change_approval_status/', views.change_approval_status),
+    path('get_category/', views.get_category),
     
     
     

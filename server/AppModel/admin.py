@@ -26,11 +26,11 @@ logger.addHandler(handler)
 # 资产管理
 @admin.register(AssetInfo)
 class AssetInfoAdmin(ImportExportModelAdmin):
-    list_display=['asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_ccategory','asset_limit_nu']
+    list_display=['asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_ccategory','asset_limit_nu','asset_limit_price']
     # list_editable = ['asset_name','asset_count']
-    search_fields =('asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_limit_nu')
+    search_fields =('asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_limit_nu','asset_limit_price')
     fieldsets = [
-       ('用户数据', {'fields': ['asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_ccategory','asset_limit_nu'], 'classes': ['']}),
+       ('用户数据', {'fields': ['asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_ccategory','asset_limit_nu','asset_limit_price'], 'classes': ['']}),
     ]
     list_display_links = ('asset_name',)
     list_per_page = 20
@@ -149,10 +149,10 @@ class ClaimRecordAdmin(ImportExportModelAdmin):
 # 用户管理
 @admin.register(UserInfo)
 class UserInfoAdmin(ImportExportModelAdmin): 
-    list_display=['id','nick_name','user_name','weixin_openid','phone_number','category','auth']
-    search_fields =('nick_name','user_name','weixin_openid','phone_number','category','auth')
+    list_display=['id','nick_name','user_name','weixin_openid','phone_number','category','auth','address']
+    search_fields =('nick_name','user_name','weixin_openid','phone_number','category','auth','address')
     fieldsets = [
-       ('用户数据', {'fields': ['nick_name','user_name','weixin_openid','phone_number','category','auth'], 'classes': ['']}),
+       ('用户数据', {'fields': ['nick_name','user_name','weixin_openid','phone_number','category','auth','address'], 'classes': ['']}),
     ]
     list_per_page = 15
 

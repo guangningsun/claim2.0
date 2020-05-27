@@ -7,13 +7,13 @@ class AssetSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = AssetInfo
-        fields = ('id','asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_limit_nu')
+        fields = ('id','asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_limit_nu','asset_limit_price')
 
 class UserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = UserInfo
-        fields = ('login_name','weixin_id','phone_number','category')
+        fields = ('login_name','weixin_id','phone_number','category','address')
 
 class ClaimSerializer(serializers.ModelSerializer):
     
@@ -28,3 +28,10 @@ class CommodityCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = CommodityCategory
         fields = ('id','name','parent','slug','image')
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Category
+        fields = ('id','name','parent','slug')

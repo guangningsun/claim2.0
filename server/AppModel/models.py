@@ -21,6 +21,7 @@ class UserInfo(models.Model):
     phone_number = models.CharField(max_length=200,verbose_name='手机号')
     category = TreeForeignKey('Category',on_delete=models.CASCADE,null=True,blank=True,verbose_name='所属部门')
     auth = models.CharField(max_length=200, choices=AUTH_CHOICES,verbose_name='用户权限')
+    address = models.CharField(max_length=200,verbose_name='常用地址')
 
     class Meta:
         verbose_name = '用户信息'
@@ -42,6 +43,7 @@ class AssetInfo(models.Model):
     asset_image = models.ImageField(u'物品图片',null=True, blank=True, upload_to='asset_image')
     asset_ccategory = models.ForeignKey('CommodityCategory',on_delete=models.CASCADE,null=True,blank=True,verbose_name='类别标签')
     asset_limit_nu = models.CharField(max_length=200,verbose_name='申领数量限制')
+    asset_limit_price = models.CharField(max_length=200,verbose_name='申领单价限制')
 
 
 

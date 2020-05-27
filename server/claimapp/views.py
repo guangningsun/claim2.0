@@ -70,6 +70,16 @@ def asset_by_cid(request,cid):
                     "asset_info": serializer.data }}
         return Response(res_json)
 
+# 获取部门列表
+@api_view(['GET'])
+def get_category(request):
+    if request.method == 'GET':
+        assetset = Category.objects.all()
+        serializer = CategorySerializer(assetset, many=True)
+        res_json = {"error": 0,"msg": {
+                    "category_info": serializer.data }}
+        return Response(res_json)
+
 
 # 物品申领功能
 @api_view(['POST'])
