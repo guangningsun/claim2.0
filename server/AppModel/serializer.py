@@ -15,6 +15,13 @@ class SupplierSerializer(serializers.ModelSerializer):
         model = AssetInfo
         fields = ('asset_supplier','asset_price','asset_unit')
 
+class UserInfoSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = UserInfo
+        fields = ('nick_name','user_name','weixin_openid','phone_number','category','auth','address')
+
+
 class UserSerializer(serializers.ModelSerializer):
     
     class Meta:

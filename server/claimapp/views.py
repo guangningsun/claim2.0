@@ -170,7 +170,18 @@ def submit_user_info(request):
             return Response(res_json)
 
         
-        
+
+# 通过微信id获取用户信息
+@api_view(['GET'])
+def get_user_info_by_wxid(request,weixin_id):
+    if request.method == 'GET':
+        userset = UserInfo.objects.filter(weixin_openid=weixin_id)
+        serializer = UserInfoSerializer(userset, many=True)
+        res_json = {"error": 0,"msg": {
+                    "user_info": serializer.data }}
+        return Response(res_json)
+
+
 
 # 用户注册功能
 @api_view(['GET', 'POST'])
