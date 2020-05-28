@@ -144,7 +144,33 @@ def claim_asset(request):
             return _generate_json_message(True, "申领成功")
         except :
             return _generate_json_message(False, "仓库中没有该类型商品")
-    
+
+
+# 完善用户信息
+@api_view([ 'POST'])
+def submit_user_info(request):
+    if request.method == 'POST':
+        openid = request.POST['openid']
+        nickname = request.POST['nickname']
+        username = request.POST['username']
+        apartment = request.POST['apartment']
+        address = request.POST['address']
+        import pdb;pdb.set_trace()
+        try:
+            userinfo = UserInfo.objects.get(weixin_openid=openid)
+            userinfo.nick_name=nickname
+            userinfo.user_name=username
+            userinfo.category=Category.objects.get(id=apartment)
+            userinfo.address=address
+            userinfo.save()
+            res_json = {"error": 0,"msg": {"更新用户信息成功"}}
+            return Response(res_json)
+        except:
+            res_json = {"error": 0,"msg": {"更新用户信息失败"}}
+            return Response(res_json)
+
+        
+        
 
 # 用户注册功能
 @api_view(['GET', 'POST'])
