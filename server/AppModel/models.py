@@ -44,6 +44,8 @@ class AssetInfo(models.Model):
     asset_ccategory = models.ForeignKey('CommodityCategory',on_delete=models.CASCADE,null=True,blank=True,verbose_name='类别标签')
     asset_limit_nu = models.CharField(max_length=200,verbose_name='申领数量限制')
     asset_limit_price = models.CharField(max_length=200,verbose_name='申领单价限制')
+    asset_supplier = models.ForeignKey('SupplierInfo',on_delete=models.CASCADE,null=True,blank=True,verbose_name='供应商')
+    asset_price = models.CharField(max_length=200,verbose_name='报价')
 
 
 
@@ -158,6 +160,8 @@ class Category(MPTTModel):
       name = models.CharField(max_length=50, unique=True,verbose_name='名称')
       parent = TreeForeignKey('self', null=True, blank=True,on_delete=models.CASCADE, related_name='children', db_index=True,verbose_name='上级部门')
       slug = models.SlugField(verbose_name='标签')
+      surplus = models.CharField(max_length=200, verbose_name='余额')
+
     
       class MPTTMeta:
         order_insertion_by = ['name']
@@ -204,3 +208,11 @@ class SupplierInfo(models.Model):
   supplier_name = models.CharField(max_length=120,verbose_name='供应商名称')
   supplier_short = models.CharField(max_length=120,verbose_name='供应商简称')
   if_deactivate = models.BooleanField(verbose_name='是否停用',default="False") 
+
+
+  class Meta:
+        verbose_name = '供应商信息'
+        verbose_name_plural = '供应商信息'
+  
+  def __str__(self):
+        return self.supplier_name

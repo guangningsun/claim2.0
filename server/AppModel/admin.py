@@ -26,11 +26,11 @@ logger.addHandler(handler)
 # 资产管理
 @admin.register(AssetInfo)
 class AssetInfoAdmin(ImportExportModelAdmin):
-    list_display=['asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_ccategory','asset_limit_nu','asset_limit_price']
+    list_display=['asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_ccategory','asset_limit_nu','asset_limit_price','asset_supplier','asset_price']
     # list_editable = ['asset_name','asset_count']
-    search_fields =('asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_limit_nu','asset_limit_price')
+    search_fields =('asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_limit_nu','asset_limit_price','asset_supplier','asset_price')
     fieldsets = [
-       ('用户数据', {'fields': ['asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_ccategory','asset_limit_nu','asset_limit_price'], 'classes': ['']}),
+       ('用户数据', {'fields': ['asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_ccategory','asset_limit_nu','asset_limit_price','asset_supplier','asset_price'], 'classes': ['']}),
     ]
     list_display_links = ('asset_name',)
     list_per_page = 20

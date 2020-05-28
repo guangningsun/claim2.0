@@ -457,7 +457,37 @@ def commoditycategory_detail(request):
         res_json = {"error": 0,"msg": {
                     "commoditycategory": serializer.data }}
         return Response(res_json)
-    
+
+
+# 获取部门余额
+@api_view(['GET'])
+def get_category_surplus(request,cid):
+    if request.method == 'GET':
+        categoryset = Category.objects.filter(id=cid)
+        serializer = CategorySerializer(categoryset, many=True)
+        res_json = {"error": 0,"msg": {
+                    "claim_record_info": serializer.data }}
+        return Response(res_json)
+
+# 获取供应商列表
+@api_view(['GET'])
+def get_supplier(request,sn):
+    if request.method == 'GET':
+        assetset = AssetInfo.objects.filter(asset_sn=sn)
+        serializer = SupplierSerializer(assetset, many=True)
+        for i in range (0,len(serializer.data)):
+            sup_name=""
+            for k,v in serializer.data[i].items():
+                if k == "asset_supplier":
+                    supplier_obj = SupplierInfo.objects.get(id=v)
+                    sup_name = supplier_obj.supplier_name
+            serializer.data[i]['supplier_name']=sup_name
+                        # supplier_name.append(supplier_obj.supplier_name)
+        res_json = {"error": 0,"msg": {
+                    "supplier_list": serializer.data }}
+        return Response(res_json)
+
+
 
 # weixin 登录
 @api_view(['POST'])
