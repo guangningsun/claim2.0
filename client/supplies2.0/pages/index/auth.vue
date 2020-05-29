@@ -86,6 +86,7 @@ export default {
 			user_nickname: '',
 			user_phone: '',
 			user_auth: '',
+			user_info:null,
 			
 			apartmentId:'',
 
@@ -97,6 +98,7 @@ export default {
 		};
 	},
 	onLoad: function(options) {
+		console.log('==============');
 		console.log(options.q);
 		var scene = decodeURIComponent(options.q); // 使用decodeURIComponent解析  获取当前二维码的网址
 		var arr1 = scene.split('/');
@@ -135,12 +137,15 @@ export default {
 		},
 
 		successCb(rsp) {
+			console.log('weixin_sns success');
 			console.log(rsp);
 			if (rsp.data.error === 0) {
 				this.openid = rsp.data.openid;
 				let is_login = rsp.data.is_login;
 				let user_auth = rsp.data.auth;
 
+				// console.log(this.openid);
+				
 				uni.setStorage({
 					key: 'key_user_auth',
 					data: user_auth
@@ -152,25 +157,48 @@ export default {
 				});
 
 				////////
-				if (is_login === '0') {
+				console.log('is_login:' + is_login);
+				if (is_login == 0) {
 					this.showPhoneModal('PhoneModal');
 				} else {
 					console.log('auth:' + user_auth);
 					uni.showLoading({
-						title: '登录中...'
+						title: '登录中.......'
 					});
-					if (user_auth === '0') {
-						//如果是微信扫一扫过来的，拿到了部门id之后，直接跳转到分类页
+					this.requestUserInfo();
+				}
+			}
+		},
+		failCb(err) {
+			console.log('api_login failed', err);
+		},
+		completeCb(rsp) {},
+/////
+		successGetUserInfoCb(rsp) {
+			uni.hideLoading();
+			if (rsp.data.error === 0) {
+				this.user_info = rsp.data.msg.user_info;
+				console.log(this.user_info);
+				
+				let user_name = this.user_info.user_name;
+				if(this.isEmpty(user_name)){
+					uni.navigateTo({
+						url:'./user_info'
+					});
+				}else{
+					let user_auth = uni.getStorageSync('key_user_auth')
+					if (user_auth == 0) {
+						console.log('apart: ' + +this.apartmentId);
 						if(!this.isEmpty(this.apartmentId)){
 							uni.hideLoading();
 							uni.navigateTo({
-								url:'../category/category_all'
+								url:'../category/category'
 							})
 						}else{
 							uni.hideLoading();
 							this.shouldShowContent = true;
 						}
-					} else if (user_auth === '1' || user_auth === '2' || user_auth === '3') {
+					} else if (user_auth == 1 || user_auth == 2 || user_auth == 3) {
 						uni.hideLoading();
 						uni.navigateTo({
 							url: '../approve/approve'
@@ -181,11 +209,24 @@ export default {
 				}
 			}
 		},
-		failCb(err) {
-			console.log('api_login failed', err);
+		failGetUserInfoCb(err) {
+			uni.hideLoading();
+			console.log('get_user_info failed', err);
 		},
-		completeCb(rsp) {},
-
+		completeGetUserInfoCb(rsp) {},
+		
+		requestUserInfo() {
+			let param
+			this.requestWithMethod(
+				getApp().globalData.get_user_info + this.openid,
+				'GET',
+				'',
+				this.successGetUserInfoCb,
+				this.failGetUserInfoCb,
+				this.completeGetUserInfoCb
+			);
+		},
+//////////
 		onClickScan() {
 			uni.showLoading({
 				title: '跳转中'
@@ -236,7 +277,8 @@ export default {
 
 		// 0: 普通用户， 1:主管,  2:办公室主任   3: 管理员
 		successPhoneCb(rsp) {
-			console.log('api_phone success');
+			console.log('api_phone success, rsp======');
+			console.log(rsp);
 			this.showCenterIcon = false;
 
 			if (this.containsStr(rsp.errMsg, 'ok')) {
@@ -252,21 +294,22 @@ export default {
 				let auth = rsp.data.auth;
 				console.log('phone cb auth: ' + auth);
 				uni.hideLoading();
-				if (auth === '0') {
-					//如果是微信扫一扫过来的，拿到了部门id之后，直接跳转到分类页
-					if(!this.isEmpty(this.apartmentId)){
-						uni.hideLoading();
-						uni.navigateTo({
-							url:'../category/category_all'
-						})
-					}else{
-						this.shouldShowContent = true;
-					}
-				} else if (auth === '1' || auth === '2' || auth === '3') {
-					uni.navigateTo({
-						url: '../approve/approve'
-					});
-				}
+				this.requestUserInfo();
+				// if (auth === '0') {
+				// 	//如果是微信扫一扫过来的，拿到了部门id之后，直接跳转到分类页
+				// 	if(!this.isEmpty(this.apartmentId)){
+				// 		uni.hideLoading();
+				// 		uni.navigateTo({
+				// 			url:'../category/category'
+				// 		})
+				// 	}else{
+				// 		this.shouldShowContent = true;
+				// 	}
+				// } else if (auth === '1' || auth === '2' || auth === '3') {
+				// 	uni.navigateTo({
+				// 		url: '../approve/approve'
+				// 	});
+				// }
 			}
 		},
 		failPhoneCb(err) {

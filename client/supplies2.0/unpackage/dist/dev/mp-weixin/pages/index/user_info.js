@@ -243,12 +243,12 @@ var _default =
     },
     successCb: function successCb(rsp) {
       if (rsp.data.error === 0) {
-        this.apartment_info_list = rsp.data.msg.apartment_list;
+        this.apartment_info_list = rsp.data.msg.category_info;
         console.log(this.apartment_info_list);
 
         var apartments = this.apartment_picker;
         apartment_info_list.map(function (item) {
-          apartments.push(item.apartment_name);
+          apartments.push(item.name);
         });
       }
     },
@@ -301,7 +301,7 @@ var _default =
 
       this.requestWithMethod(
       getApp().globalData.api_submit_user_info,
-      "PUT",
+      "POST",
       params,
       this.successCallback,
       this.failCallback,

@@ -3,8 +3,11 @@
 	export default {
 		globalData: {
 			user_id:'',
-			domain_port: 'https://brilliantlife.com.cn/',
-			domain:'https://brilliantlife.com.cn',
+			// domain_port: 'https://brilliantlife.com.cn/',
+			// domain:'https://brilliantlife.com.cn',
+			
+			domain_port: 'https://brilliantlife.com.cn:8016/',
+			domain:'https://brilliantlife.com.cn:8016',
 			
 			// API 接口
 			api_login: 'weixin_sns/',
@@ -15,8 +18,11 @@
 			api_getWXInfo: 'weixin_gusi/',
 			api_get_approval_list:'get_approval_list/',
 			api_change_approval_status:'change_approval_status/',
-			api_get_apartment_list:'get_apartment_list/',
-			api_submit_user_info:'submit_user_info/',
+			api_get_apartment_list:'get_category/',
+			api_submit_user_info:'userinfo/',
+			api_get_supplier:'get_supplier/',
+			get_user_info:'get_user_info_by_wxid/',
+			
 			
 			// 物品篮物品
 			cart_list_info: [],

@@ -9,7 +9,7 @@
   "compileType": "miniprogram",
   "libVersion": "2.9.2",
   "appid": "wx6254d1bf84ba6106",
-  "projectname": "supplies2.0",
+  "projectname": "物品申领平台",
   "condition": {
     "search": {
       "current": -1,

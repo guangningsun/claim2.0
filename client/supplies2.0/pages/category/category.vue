@@ -77,8 +77,8 @@
 									</view>
 								</view>
 								
-								<view v-show="item2.notice !== undefined && item2.notice !== null && item2.notice !== '' " class="text-gray text-sm flex">
-									<text class="text-cut cu-tag line-yellow round sm">{{ item2.notice }}</text>
+								<view v-show="item2.asset_limit_price !== undefined && item2.asset_limit_price !== null && item2.asset_limit_price !== '' " class="text-gray text-sm flex">
+									<text class="text-cut cu-tag line-yellow round sm">{{ item2.asset_limit_price }}</text>
 								</view>
 								
 								<view v-show="item2.asset_band !== undefined && item2.asset_band !== null && item2.asset_band !== '' "	 class="text-sm flex">
