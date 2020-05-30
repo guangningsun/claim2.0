@@ -155,7 +155,6 @@ def submit_user_info(request):
         username = request.POST['username']
         apartment = request.POST['apartment']
         address = request.POST['address']
-        import pdb;pdb.set_trace()
         try:
             userinfo = UserInfo.objects.get(weixin_openid=openid)
             userinfo.nick_name=nickname
@@ -482,9 +481,8 @@ def commoditycategory_detail(request):
     if request.method == 'GET':
         commoditycategoryset = CommodityCategory.objects.all()
         serializer = CommodityCategorySerializer(commoditycategoryset, many=True)
-        # import pdb;pdb.set_trace()
         for i in range(0,len(serializer.data)):
-            assetset = AssetInfo.objects.filter(asset_ccategory=serializer.data[i]['id'])
+            assetset = AssetInfo.objects.filter(asset_ccategory=serializer.data[i]['id']).distinct('asset_sn')
             asset_serializer = AssetSerializer(assetset, many=True)
             serializer.data[i]["asset_info"]= asset_serializer.data
             if serializer.data[i]['parent'] == None:
@@ -494,6 +492,29 @@ def commoditycategory_detail(request):
         res_json = {"error": 0,"msg": {
                     "commoditycategory": serializer.data }}
         return Response(res_json)
+
+
+# 提交订单
+@api_view(['POST'])
+def submit_order(request):
+    if request.method == 'POST':
+        order_apartment = request.POST['order_apartment']
+        order_exceed_reason = request.POST['order_exceed_reason']
+        order_is_special = request.POST['order_is_special']
+        order_image = request.POST['order_image']
+        order_item_list = request.POST['order_item_list']
+        try:
+            order_info = OrderInfo(category=order_apartment)
+            order_info.save()
+            for order_item in json.loads(order_item_list):
+                commodity_id = order_item['item_id']
+
+            res_json = {"error": 0,"msg": {"更新用户信息成功"}}
+            return Response(res_json)
+        except:
+            res_json = {"error": 0,"msg": {"更新用户信息失败"}}
+            return Response(res_json)
+
 
 
 # 获取部门余额

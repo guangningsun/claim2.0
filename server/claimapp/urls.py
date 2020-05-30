@@ -27,7 +27,8 @@ urlpatterns = [
     path('get_category_surplus/<int:cid>', views.get_category_surplus),
     path('get_supplier/<int:sn>', views.get_supplier),
     path('submit_user_info/', views.submit_user_info),
-    path('get_user_info_by_wxid/<int:weixin_id>', views.get_user_info_by_wxid),
+    path('get_user_info_by_wxid/<weixin_id>', views.get_user_info_by_wxid),
+    path('submit_order/', views.submit_order),
     
 
     

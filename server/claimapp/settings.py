@@ -99,6 +99,20 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'claim',
+#         'USER': 'root',
+#         'PASSWORD': 'root',
+#         'HOST': '127.0.0.1',
+#         'PORT': '3306',
+#         'TEST': {
+#             'CHARSET' : 'utf8',
+#             'COLLATION':'utf8_general_ci'
+#         }
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -166,16 +180,20 @@ SIMPLEUI_CONFIG = {
         'name': '系统管理',
         'icon': 'fab fa-dashcube',
         'models': [{
-            'name': '物品管理',
+            'name': '物品类型管理',
             'url': 'AppModel/assetinfo',
+            'icon': 'fa fa-server'
+        },{
+            'name': '供应商库存管理',
+            'url': 'AppModel/supplierassetinfo',
             'icon': 'fa fa-server'
         },{
             'name': '部门管理',
             'url': 'AppModel/category',
             'icon': 'fa fa-tags'
         }, {
-            'name': '领用记录',
-            'url': 'AppModel/claimrecord',
+            'name': '订单列表',
+            'url': 'AppModel/orderinfo',
             'icon': 'fa fa-id-card'
         }, {
             'name': '用户管理',
