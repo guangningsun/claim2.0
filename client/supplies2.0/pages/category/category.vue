@@ -45,9 +45,7 @@
 					:id="'main-' + item.id"
 				>
 					<view class="solid-bottom bg-white">
-						<view class="text-blac padding-sm">
-							{{ item.name }}
-						</view>
+						<view class="text-blac padding-sm">{{ item.name }}</view>
 					</view>
 					<view class="cu-list menu-avatar">
 						<view
@@ -58,14 +56,23 @@
 						>
 							<view
 								class="cu-avatar lg"
-								:style="item2.asset_image === null ? 'background-image:url(../../static/default.png);' : 'background-image:url(' + domain + item2.asset_image + ');'"
+								:style="
+									item2.asset_image === null
+										? 'background-image:url(../../static/default.png);'
+										: 'background-image:url(' +
+										  domain +
+										  item2.asset_image +
+										  ');'
+								"
 							></view>
 							<view class="content2">
 								<view class="flex">
 									<view class="text-grey">{{ item2.asset_name }}</view>
-									<view class="text-grey text-sm margin-left-xs">| 库存:{{ item2.asset_count }}</view>
+									<view class="text-grey text-sm margin-left-xs">
+										| 库存:{{ item2.asset_count }}
+									</view>
 								</view>
-								
+
 								<view class="flex">
 									<view class="text-gray text-sm flex">
 										<text class="text-cut">
@@ -73,32 +80,55 @@
 										</text>
 									</view>
 									<view class="text-gray text-sm flex">
-										<text class="text-cut margin-left-xs">| 型号:{{ item2.asset_type }}</text>
+										<text class="text-cut margin-left-xs">
+											| 型号:{{ item2.asset_type }}
+										</text>
 									</view>
 								</view>
-								
-								<view v-show="item2.asset_limit_price !== undefined && item2.asset_limit_price !== null && item2.asset_limit_price !== '' " class="text-gray text-sm flex">
-									<text class="text-cut cu-tag line-yellow round sm">{{ item2.asset_limit_price }}</text>
-								</view>
-								
-								<view v-show="item2.asset_band !== undefined && item2.asset_band !== null && item2.asset_band !== '' "	 class="text-sm flex">
-									<text class="text-grey">品牌: {{ item2.asset_band }}</text>
-								</view>
-							</view>
-							<view >
+
 								<view
-									class="cuIcon-cartfill round padding-xs bg-olive margin-bottom-xs"
-									@tap="onAdd(item2)"
-								></view>
-								<view
-									class="cuIcon-deletefill round padding-xs bg-orange margin-top-sm margin-bottom-xs"
-									@tap="onMinus(item2)"
-								></view>
+									v-show="
+										item2.asset_limit_price !== undefined &&
+											item2.asset_limit_price !== null &&
+											item2.asset_limit_price !== ''
+									"
+									class="text-gray text-sm flex"
+								>
+									<text class="text-cut cu-tag line-yellow round sm">
+										{{ item2.asset_limit_price }}
+									</text>
+								</view>
+
+								<view class="flex">
+									<view
+										v-show="
+											item2.asset_band !== undefined &&
+												item2.asset_band !== null &&
+												item2.asset_band !== ''
+										"
+										class="text-sm flex"
+									>
+										<text class="text-grey">品牌: {{ item2.asset_band }}</text>
+									</view>
+
+									<view
+										class="cuIcon-cartfill round padding-xs bg-olive margin-bottom-xs"
+										@tap="onAdd(item2)"
+									></view>
+									<view
+										class="cuIcon-deletefill round padding-xs bg-orange margin-top-sm margin-bottom-xs"
+										@tap="onMinus(item2)"
+									></view>
+								</view>
 							</view>
 						</view>
 					</view>
 				</view>
-				<view v-show="showNoMore" class="margin-top-xl margin-bottom-xl text-gray " style="margin-left: 100upx;">
+				<view
+					v-show="showNoMore"
+					class="margin-top-xl margin-bottom-xl text-gray "
+					style="margin-left: 100upx;"
+				>
 					----- 没有更多了 -----
 				</view>
 			</scroll-view>
@@ -114,7 +144,7 @@
 				@trigger="trigger"
 			/>
 		</view>
-		
+
 		<view class="cu-modal" :class="modalName == 'ChooseSupplierModal' ? 'show' : ''">
 			<view class="cu-dialog">
 				<view class="cu-bar bg-white justify-end">
@@ -123,65 +153,93 @@
 						<text class="cuIcon-close text-light-purple"></text>
 					</view>
 				</view>
-			<view class="margin-top cu-list menu-avatar">
-				<view
-					class="cu-item padding-left"
-					style="height: 250upx;">
-					<view
-						class="cu-avatar xl"
-						:style="current_item_info.asset_image === null ? 'background-image:url(../../static/default.png);' : 'background-image:url(' + domain + current_item_info.asset_image + ');'"></view>
-					<view class="content3">
-						<view class="flex">
-							<view class="text-grey">{{ current_item_info.asset_name }}</view>
-							<view class="text-grey text-df margin-left-xs">| 库存:{{ current_item_info.asset_count }}</view>
-						</view>
-						
-						<view class="flex">
-							<view class="text-gray text-df flex">
-								<text class="text-cut">
-									规格:{{ current_item_info.asset_specification }}
-								</text>
+				<view class="margin-top cu-list menu-avatar">
+					<view class="cu-item padding-left" style="height: 250upx;">
+						<view
+							class="cu-avatar xl"
+							:style="
+								current_item_info.asset_image === null
+									? 'background-image:url(../../static/default.png);'
+									: 'background-image:url(' +
+									  domain +
+									  current_item_info.asset_image +
+									  ');'
+							"
+						></view>
+						<view class="content3">
+							<view class="flex">
+								<view class="text-grey">{{ current_item_info.asset_name }}</view>
+								<view class="text-grey text-df margin-left-xs">
+									| 库存:{{ current_item_info.asset_count }}
+								</view>
 							</view>
-							<view class="text-gray text-df flex">
-								<text class="text-cut margin-left-xs">| 型号:{{ current_item_info.asset_type }}</text>
+
+							<view class="flex">
+								<view class="text-gray text-df flex">
+									<text class="text-cut">
+										规格:{{ current_item_info.asset_specification }}
+									</text>
+								</view>
+								<view class="text-gray text-df flex">
+									<text class="text-cut margin-left-xs">
+										| 型号:{{ current_item_info.asset_type }}
+									</text>
+								</view>
 							</view>
-						</view>
-						
-						<!-- <view v-show="current_item_info.notice !== undefined && current_item_info.notice !== null && current_item_info.notice !== '' " class="text-gray text-sm flex">
+
+							<!-- <view v-show="current_item_info.notice !== undefined && current_item_info.notice !== null && current_item_info.notice !== '' " class="text-gray text-sm flex">
 							<text class="text-cut cu-tag line-yellow round df">{{ current_item_info.notice }}</text>
 						</view> -->
-						
-						<view v-show="current_item_info.asset_band !== undefined && current_item_info.asset_band !== null && current_item_info.asset_band !== '' "	 class="text-sm flex">
-							<text class="text-grey text-df">品牌: {{ current_item_info.asset_band }}</text>
+
+							<view
+								v-show="
+									current_item_info.asset_band !== undefined &&
+										current_item_info.asset_band !== null &&
+										current_item_info.asset_band !== ''
+								"
+								class="text-sm flex"
+							>
+								<text class="text-grey text-df">
+									品牌: {{ current_item_info.asset_band }}
+								</text>
+							</view>
 						</view>
 					</view>
 				</view>
-			</view>
-			
-		
-				
-			<radio-group class="block margin-bottom" @change="RadioChange">
-				<view class="cu-form-group" v-for="(item, index) in item.suppliers" :key="index">
-					<view class="">
-						<view class="title margin-top-xs">{{item.supplier_name}}</view>
-						<view class="flex margin-bottom-xs">
-							<text class="text-grey text-df">单价: {{item.supplier_price}}元</text>
-							<!-- <text class="text-grey text-df">累计: {{ current_item_info.asset_band }}</text> -->
+
+				<radio-group class="block margin-bottom" @change="RadioChange">
+					<view
+						class="cu-form-group"
+						v-for="(item, index) in item.suppliers"
+						:key="index"
+					>
+						<view class="">
+							<view class="title margin-top-xs">{{ item.supplier_name }}</view>
+							<view class="flex margin-bottom-xs">
+								<text class="text-grey text-df">
+									单价: {{ item.supplier_price }}元
+								</text>
+								<!-- <text class="text-grey text-df">累计: {{ current_item_info.asset_band }}</text> -->
+							</view>
 						</view>
+						<radio
+							:class="radio == item.supplier_id ? 'checked' : ''"
+							:checked="radio == item.supplier_id ? true : false"
+							:value="item.supplier_id"
+						></radio>
 					</view>
-					<radio :class="radio==item.supplier_id?'checked':''" :checked="radio==item.supplier_id?true:false" :value="item.supplier_id"></radio>
+				</radio-group>
+
+				<view class="cu-bar bg-white justify-end">
+					<view class="action">
+						<button class="cu-btn line-gray text-gray" @tap="hideModal">取消</button>
+						<button class="cu-btn bg-gradual-green margin-left" @tap="onAddToCart()">
+							加入
+						</button>
+					</view>
 				</view>
-			</radio-group>
-	
-			<view class="cu-bar bg-white justify-end">
-				<view class="action">
-					<button class="cu-btn line-gray text-gray" @tap="hideModal">取消</button>
-					<button class="cu-btn bg-gradual-green margin-left" @tap="onAddToCart()">加入</button>
-				</view>
-			</view>
 			</view>
 		</view>
-		
 	</view>
 </template>
 
@@ -194,9 +252,9 @@ export default {
 	data() {
 		return {
 			modalName: null,
-			current_item_info:null,
+			current_item_info: null,
 			supplier_id_radio: '',
-			
+
 			showEmpty: false,
 			showNoMore: false,
 
@@ -243,7 +301,7 @@ export default {
 		this.cart_item_id_list = getApp().globalData.cart_list_info.map(item => {
 			return Object.assign({ id: item.id });
 		});
-		
+
 		getApp().globalData.cart_item_id_list = this.cart_item_id_list;
 	},
 	onShow() {
@@ -254,14 +312,14 @@ export default {
 			this.modalName = 'ChooseSupplierModal';
 			this.current_item_info = e;
 			console.log(e);
-			
+
 			// if (getApp().globalData.cart_list_info.length == 0) {
 			// 	getApp().globalData.cart_list_info.push(item);
 			// 	this.showToast('成功添加到物品篮');
 			// 	console.log(getApp().globalData.cart_list_info);
 			// 	return;
 			// }
-			
+
 			// for (var i = 0; i < getApp().globalData.cart_list_info.length; i++) {
 			// 	if (getApp().globalData.cart_list_info[i].asset_name == item.asset_name) {
 			// 		this.showToast(item.asset_name + ' 已添加过了，无须重复添加');
@@ -269,7 +327,7 @@ export default {
 			// 		return;
 			// 	}
 			// }
-			
+
 			// getApp().globalData.cart_list_info.push(item);
 			// console.log(getApp().globalData.cart_list_info);
 			// this.showToast(item.asset_name + ' 成功添加到物品篮');
@@ -279,8 +337,6 @@ export default {
 		},
 		onAdd(item) {
 			this.showModal(item);
-			
-			
 		},
 
 		onMinus(item) {
@@ -315,7 +371,7 @@ export default {
 				console.log(this.catList);
 				getApp().globalData.catList = this.cartList;
 
-				if(this.catList.length > 0){
+				if (this.catList.length > 0) {
 					this.showNoMore = true;
 				}
 
@@ -396,7 +452,6 @@ export default {
 </script>
 
 <style>
-	
 .fixed {
 	position: fixed;
 	z-index: 99;

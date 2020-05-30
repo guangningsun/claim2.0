@@ -222,7 +222,7 @@ var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 2));function _i
     api_get_approval_list: 'get_approval_list/',
     api_change_approval_status: 'change_approval_status/',
     api_get_apartment_list: 'get_category/',
-    api_submit_user_info: 'userinfo/',
+    api_submit_user_info: 'submit_user_info/',
     api_get_supplier: 'get_supplier/',
     get_user_info: 'get_user_info_by_wxid/',
 

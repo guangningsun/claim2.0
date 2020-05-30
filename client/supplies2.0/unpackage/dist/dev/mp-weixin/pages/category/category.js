@@ -319,6 +319,64 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 {
   components: {
     uniFab: _uniFab },
@@ -411,8 +469,6 @@ __webpack_require__.r(__webpack_exports__);
     },
     onAdd: function onAdd(item) {
       this.showModal(item);
-
-
     },
 
     onMinus: function onMinus(item) {

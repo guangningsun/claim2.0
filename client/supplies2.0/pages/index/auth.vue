@@ -180,7 +180,8 @@ export default {
 				this.user_info = rsp.data.msg.user_info;
 				console.log(this.user_info);
 				
-				let user_name = this.user_info.user_name;
+				let user_name = this.user_info[0].user_name;
+				console.log('user_name====' + user_name);
 				if(this.isEmpty(user_name)){
 					uni.navigateTo({
 						url:'./user_info'
@@ -188,7 +189,8 @@ export default {
 				}else{
 					let user_auth = uni.getStorageSync('key_user_auth')
 					if (user_auth == 0) {
-						console.log('apart: ' + +this.apartmentId);
+						this.apartmentId = this.user_info[0].category;
+						console.log('apart: ' + this.apartmentId);
 						if(!this.isEmpty(this.apartmentId)){
 							uni.hideLoading();
 							uni.navigateTo({

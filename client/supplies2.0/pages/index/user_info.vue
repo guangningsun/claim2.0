@@ -21,6 +21,7 @@
 							class="text-right"
 							@input="checkBtnEnable"
 							v-model="tel_num"
+							:disabled="true"
 						/>
 					</view>
 					<view class="cu-form-group">
@@ -62,6 +63,7 @@
 						<input
 							placeholder="选填,请填写工作地点具体门牌号"
 							name="input"
+							class="text-right"
 							v-model="address"
 						/>
 					</view>
@@ -89,7 +91,7 @@ export default {
 			apartment: '',
 			address: '',
 			apartment_picker_index: -1,
-			apartment_picker: ['a', 'b', 'c'],
+			apartment_picker: [],
 			apartment_info_list:[],
 
 			btn_disabled: true
@@ -98,6 +100,7 @@ export default {
 
 	onLoad() {
 		this.requestApartment();
+		this.tel_num = uni.getStorageSync('key_phone_num');
 	},
 
 	methods: {
@@ -117,9 +120,11 @@ export default {
 				console.log(this.apartment_info_list);
 
 				var apartments = this.apartment_picker;
-				apartment_info_list.map(function(item) {
+				this.apartment_info_list.map(function(item) {
 					apartments.push(item.name);
 				});
+				console.log("==apart==");
+				console.log(apartments);
 			}
 		},
 		failCb(err) {
@@ -137,6 +142,7 @@ export default {
 				this.apartment_picker_index = parseInt(e.detail.value);
 			}
 			this.checkBtnEnable();
+			
 		},
 		checkBtnEnable() {
 			if (
@@ -160,13 +166,15 @@ export default {
 				title: '正在提交信息',
 			})
 			
+			let info = this.apartment_info_list[this.apartment_picker_index];
+			let apart_id = info.id;
+			
 			let params = {
-				open_id: uni.getStorageSync('key_wx_openid'),
+				openid: uni.getStorageSync('key_wx_openid'),
 				nickname: this.nickname,
-				tel_num: this.tel_num,
-				user_name: this.user_name,
-				apartment: this.apartment,
-				apartment_id: this.apartment_info_list[this.apartment_picker_index]
+				username: this.user_name,
+				address: this.address,
+				apartment: apart_id
 			};
 			
 			this.requestWithMethod(
@@ -182,6 +190,9 @@ export default {
 			if (rsp.data.error === 0) {
 				uni.showToast({
 					title:'提交成功'
+				})
+				uni.navigateTo({
+					url:'../category/category'
 				})
 			}
 		},

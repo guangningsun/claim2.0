@@ -209,6 +209,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 var _default =
 {
   data: function data() {
@@ -219,7 +221,7 @@ var _default =
       apartment: '',
       address: '',
       apartment_picker_index: -1,
-      apartment_picker: ['a', 'b', 'c'],
+      apartment_picker: [],
       apartment_info_list: [],
 
       btn_disabled: true };
@@ -228,6 +230,7 @@ var _default =
 
   onLoad: function onLoad() {
     this.requestApartment();
+    this.tel_num = uni.getStorageSync('key_phone_num');
   },
 
   methods: {
@@ -247,9 +250,11 @@ var _default =
         console.log(this.apartment_info_list);
 
         var apartments = this.apartment_picker;
-        apartment_info_list.map(function (item) {
+        this.apartment_info_list.map(function (item) {
           apartments.push(item.name);
         });
+        console.log("==apart==");
+        console.log(apartments);
       }
     },
     failCb: function failCb(err) {
@@ -267,6 +272,7 @@ var _default =
         this.apartment_picker_index = parseInt(e.detail.value);
       }
       this.checkBtnEnable();
+
     },
     checkBtnEnable: function checkBtnEnable() {
       if (
@@ -290,13 +296,15 @@ var _default =
         title: '正在提交信息' });
 
 
+      var info = this.apartment_info_list[this.apartment_picker_index];
+      var apart_id = info.id;
+
       var params = {
-        open_id: uni.getStorageSync('key_wx_openid'),
+        openid: uni.getStorageSync('key_wx_openid'),
         nickname: this.nickname,
-        tel_num: this.tel_num,
-        user_name: this.user_name,
-        apartment: this.apartment,
-        apartment_id: this.apartment_info_list[this.apartment_picker_index] };
+        username: this.user_name,
+        address: this.address,
+        apartment: apart_id };
 
 
       this.requestWithMethod(
@@ -312,6 +320,9 @@ var _default =
       if (rsp.data.error === 0) {
         uni.showToast({
           title: '提交成功' });
+
+        uni.navigateTo({
+          url: '../category/category' });
 
       }
     },
