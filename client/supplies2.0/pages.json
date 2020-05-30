@@ -9,15 +9,18 @@
 			}
 		}
 
-	    ,{
-            "path" : "pages/category/category",
-            "style" : {}
-        }
-        ,{
-            "path" : "pages/index/user_info",
-            "style" : {}
-        }
-    ],
+		, {
+			"path": "pages/category/category",
+			"style": {}
+		}, {
+			"path": "pages/index/user_info",
+			"style": {}
+		}, {
+			"path": "pages/cart/cart",
+			"style": {}
+		}
+
+	],
 	"globalStyle": {
 		"mp-alipay": {
 			/* 支付宝小程序特有相关 */

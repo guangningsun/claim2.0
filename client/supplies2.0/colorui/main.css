@@ -3890,6 +3890,12 @@ scroll-view.cu-steps .cu-item {
 	color: #0081ff;
 }
 
+.text-dark-blue,
+.line-dark-blue,
+.lines-dark-blue {
+	color: #094484;
+}
+
 .text-purple,
 .line-purple,
 .lines-purple {

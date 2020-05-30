@@ -1,0 +1,8 @@
+
+.card-margin {
+	margin-top: -30rpx;
+}
+.text-wrapper {
+	white-space: pre-wrap;
+}
+

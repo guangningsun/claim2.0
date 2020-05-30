@@ -377,6 +377,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+
+
+
+
+
+
 {
   components: {
     uniFab: _uniFab },
@@ -385,7 +391,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       modalName: null,
       current_item_info: null,
-      supplier_id_radio: '',
+      supplier_id_radio: -1,
 
       showEmpty: false,
       showNoMore: false,
@@ -395,6 +401,8 @@ __webpack_require__.r(__webpack_exports__);
       mainCur: 0,
       verticalNavTop: 0,
       load: true,
+
+      item_supplier_list: [],
 
       cart_item_id_list: getApp().globalData.cart_item_id_list,
       cartList: [],
@@ -440,35 +448,76 @@ __webpack_require__.r(__webpack_exports__);
     this.loadData();
   },
   methods: {
+    RadioChange: function RadioChange(e) {
+      console.log(e);
+      this.supplier_id_radio = e.detail.value;
+      console.log('select supplier: ' + this.supplier_id_radio);
+
+    },
+    /**
+        * 获取商品供应商列表
+        */
+    requestSupplierList: function requestSupplierList(itemSN) {
+      this.item_supplier_list = [];
+
+      this.requestWithMethod(
+      getApp().globalData.api_get_supplier + itemSN,
+      'GET',
+      '',
+      this.successSupplierCb,
+      this.failSupplierCb,
+      this.completeSupplierCb);
+
+    },
+    successSupplierCb: function successSupplierCb(rsp) {
+      if (rsp.data.error === 0) {
+        this.item_supplier_list = rsp.data.msg.supplier_list;
+        console.log('supplier list:');
+        console.log(this.item_supplier_list);
+      }
+    },
+    failSupplierCb: function failSupplierCb(err) {
+      console.log('api_get_supplier failed', err);
+    },
+    completeSupplierCb: function completeSupplierCb(rsp) {},
+
+    ////////////
+
     showModal: function showModal(e) {
       this.modalName = 'ChooseSupplierModal';
       this.current_item_info = e;
       console.log(e);
-
-      // if (getApp().globalData.cart_list_info.length == 0) {
-      // 	getApp().globalData.cart_list_info.push(item);
-      // 	this.showToast('成功添加到物品篮');
-      // 	console.log(getApp().globalData.cart_list_info);
-      // 	return;
-      // }
-
-      // for (var i = 0; i < getApp().globalData.cart_list_info.length; i++) {
-      // 	if (getApp().globalData.cart_list_info[i].asset_name == item.asset_name) {
-      // 		this.showToast(item.asset_name + ' 已添加过了，无须重复添加');
-      // 		console.log(getApp().globalData.cart_list_info);
-      // 		return;
-      // 	}
-      // }
-
-      // getApp().globalData.cart_list_info.push(item);
-      // console.log(getApp().globalData.cart_list_info);
-      // this.showToast(item.asset_name + ' 成功添加到物品篮');
+      this.requestSupplierList(this.current_item_info.asset_sn);
     },
     hideModal: function hideModal(e) {
       this.modalName = null;
     },
     onAdd: function onAdd(item) {
       this.showModal(item);
+    },
+
+    onAddToCart: function onAddToCart() {
+      if (getApp().globalData.cart_list_info.length == 0) {
+        getApp().globalData.cart_list_info.push(this.current_item_info);
+        this.showToast('成功添加到物品篮');
+        console.log(getApp().globalData.cart_list_info);
+        this.hideModal();
+        return;
+      }
+
+      for (var i = 0; i < getApp().globalData.cart_list_info.length; i++) {
+        if (getApp().globalData.cart_list_info[i].asset_name == this.current_item_info.asset_name) {
+          this.showToast(this.current_item_info.asset_name + ' 已添加过了，无须重复添加');
+          console.log(getApp().globalData.cart_list_info);
+          this.hideModal();
+          return;
+        }
+      }
+
+      getApp().globalData.cart_list_info.push(item);
+      console.log(getApp().globalData.cart_list_info);
+      this.showToast(this.current_item_info.asset_name + ' 成功添加到物品篮');
+      this.hideModal();
     },
 
     onMinus: function onMinus(item) {
@@ -499,7 +548,7 @@ __webpack_require__.r(__webpack_exports__);
       uni.hideLoading();
       if (rsp.data.error === 0) {
         this.catList = rsp.data.msg.commoditycategory;
-
+        console.log('commoditycategory:');
         console.log(this.catList);
         getApp().globalData.catList = this.cartList;
 
@@ -514,7 +563,7 @@ __webpack_require__.r(__webpack_exports__);
 
         for (var i = 0; i < this.catList.length; i++) {
           var newArr = this.catList[i].asset_info.map(function (item, stock, number) {
-            return Object.assign(item, { stock: stock }, { number: 0 });
+            return Object.assign(item, { stock: stock }, { number: 0 }, { selected_supplier: -1 }, { selected_supplier_name: '' });
           });
           newArr.map(function (item) {
             item.stock = parseInt(item.asset_count);

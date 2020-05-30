@@ -45,7 +45,9 @@
 					:id="'main-' + item.id"
 				>
 					<view class="solid-bottom bg-white">
-						<view class="text-blac padding-sm">{{ item.name }}</view>
+						<view class="text-blac padding-sm text-dark-blue text-bold">
+							{{ item.name }}
+						</view>
 					</view>
 					<view class="cu-list menu-avatar">
 						<view
@@ -65,7 +67,7 @@
 										  ');'
 								"
 							></view>
-							<view class="content2">
+							<view class="content2" style="width: calc(100% - 70px);">
 								<view class="flex">
 									<view class="text-grey">{{ item2.asset_name }}</view>
 									<view class="text-grey text-sm margin-left-xs">
@@ -99,7 +101,7 @@
 									</text>
 								</view>
 
-								<view class="flex">
+								<view class="flex justify-between align-center ">
 									<view
 										v-show="
 											item2.asset_band !== undefined &&
@@ -111,14 +113,18 @@
 										<text class="text-grey">品牌: {{ item2.asset_band }}</text>
 									</view>
 
-									<view
-										class="cuIcon-cartfill round padding-xs bg-olive margin-bottom-xs"
-										@tap="onAdd(item2)"
-									></view>
-									<view
-										class="cuIcon-deletefill round padding-xs bg-orange margin-top-sm margin-bottom-xs"
-										@tap="onMinus(item2)"
-									></view>
+									<view class="flex">
+										<view
+											class="cuIcon-cartfill radius bg-olive  margin-bottom-xs margin-right-sm"
+											style="padding-left: 30upx; padding-right: 30upx; padding-top: 8upx; padding-bottom: 8upx;"
+											@tap="onAdd(item2)"
+										></view>
+										<view
+											class="cuIcon-deletefill radius bg-orange margin-bottom-xs margin-right-sm"
+											style="padding-left: 30upx; padding-right: 30upx; padding-top: 8upx; padding-bottom: 8upx;"
+											@tap="onMinus(item2)"
+										></view>
+									</view>
 								</view>
 							</view>
 						</view>
@@ -210,22 +216,22 @@
 				<radio-group class="block margin-bottom" @change="RadioChange">
 					<view
 						class="cu-form-group"
-						v-for="(item, index) in item.suppliers"
+						v-for="(item, index) in item_supplier_list"
 						:key="index"
 					>
 						<view class="">
 							<view class="title margin-top-xs">{{ item.supplier_name }}</view>
 							<view class="flex margin-bottom-xs">
 								<text class="text-grey text-df">
-									单价: {{ item.supplier_price }}元
+									单价: {{ item.asset_price }}元 / {{ item.asset_unit }}
 								</text>
 								<!-- <text class="text-grey text-df">累计: {{ current_item_info.asset_band }}</text> -->
 							</view>
 						</view>
 						<radio
-							:class="radio == item.supplier_id ? 'checked' : ''"
-							:checked="radio == item.supplier_id ? true : false"
-							:value="item.supplier_id"
+							:class="supplier_id_radio == item.asset_supplier ? 'checked' : ''"
+							:checked="supplier_id_radio == item.asset_supplier ? true : false"
+							:value="item.asset_supplier"
 						></radio>
 					</view>
 				</radio-group>
@@ -234,7 +240,7 @@
 					<view class="action">
 						<button class="cu-btn line-gray text-gray" @tap="hideModal">取消</button>
 						<button class="cu-btn bg-gradual-green margin-left" @tap="onAddToCart()">
-							加入
+							添加
 						</button>
 					</view>
 				</view>
@@ -253,7 +259,7 @@ export default {
 		return {
 			modalName: null,
 			current_item_info: null,
-			supplier_id_radio: '',
+			supplier_id_radio: -1,
 
 			showEmpty: false,
 			showNoMore: false,
@@ -263,6 +269,8 @@ export default {
 			mainCur: 0,
 			verticalNavTop: 0,
 			load: true,
+
+			item_supplier_list: [],
 
 			cart_item_id_list: getApp().globalData.cart_item_id_list,
 			cartList: [],
@@ -308,35 +316,76 @@ export default {
 		this.loadData();
 	},
 	methods: {
+		RadioChange(e) {
+			console.log(e);
+			this.supplier_id_radio = e.detail.value;
+			console.log('select supplier: ' + this.supplier_id_radio);
+			
+		},
+		/**
+		 * 获取商品供应商列表
+		 */
+		requestSupplierList(itemSN) {
+			this.item_supplier_list = [];
+
+			this.requestWithMethod(
+				getApp().globalData.api_get_supplier + itemSN,
+				'GET',
+				'',
+				this.successSupplierCb,
+				this.failSupplierCb,
+				this.completeSupplierCb
+			);
+		},
+		successSupplierCb(rsp) {
+			if (rsp.data.error === 0) {
+				this.item_supplier_list = rsp.data.msg.supplier_list;
+				console.log('supplier list:');
+				console.log(this.item_supplier_list);
+			}
+		},
+		failSupplierCb(err) {
+			console.log('api_get_supplier failed', err);
+		},
+		completeSupplierCb(rsp) {},
+
+		////////////
+
 		showModal(e) {
 			this.modalName = 'ChooseSupplierModal';
 			this.current_item_info = e;
 			console.log(e);
-
-			// if (getApp().globalData.cart_list_info.length == 0) {
-			// 	getApp().globalData.cart_list_info.push(item);
-			// 	this.showToast('成功添加到物品篮');
-			// 	console.log(getApp().globalData.cart_list_info);
-			// 	return;
-			// }
-
-			// for (var i = 0; i < getApp().globalData.cart_list_info.length; i++) {
-			// 	if (getApp().globalData.cart_list_info[i].asset_name == item.asset_name) {
-			// 		this.showToast(item.asset_name + ' 已添加过了，无须重复添加');
-			// 		console.log(getApp().globalData.cart_list_info);
-			// 		return;
-			// 	}
-			// }
-
-			// getApp().globalData.cart_list_info.push(item);
-			// console.log(getApp().globalData.cart_list_info);
-			// this.showToast(item.asset_name + ' 成功添加到物品篮');
+			this.requestSupplierList(this.current_item_info.asset_sn);
 		},
 		hideModal(e) {
 			this.modalName = null;
 		},
 		onAdd(item) {
 			this.showModal(item);
+		},
+
+		onAddToCart() {
+			if (getApp().globalData.cart_list_info.length == 0) {
+				getApp().globalData.cart_list_info.push(this.current_item_info);
+				this.showToast('成功添加到物品篮');
+				console.log(getApp().globalData.cart_list_info);
+				this.hideModal();
+				return;
+			}
+
+			for (var i = 0; i < getApp().globalData.cart_list_info.length; i++) {
+				if (getApp().globalData.cart_list_info[i].asset_name == this.current_item_info.asset_name) {
+					this.showToast(this.current_item_info.asset_name + ' 已添加过了，无须重复添加');
+					console.log(getApp().globalData.cart_list_info);
+					this.hideModal();
+					return;
+				}
+			}
+
+			getApp().globalData.cart_list_info.push(item);
+			console.log(getApp().globalData.cart_list_info);
+			this.showToast(this.current_item_info.asset_name + ' 成功添加到物品篮');
+			this.hideModal();
 		},
 
 		onMinus(item) {
@@ -367,7 +416,7 @@ export default {
 			uni.hideLoading();
 			if (rsp.data.error === 0) {
 				this.catList = rsp.data.msg.commoditycategory;
-
+				console.log('commoditycategory:');
 				console.log(this.catList);
 				getApp().globalData.catList = this.cartList;
 
@@ -382,7 +431,7 @@ export default {
 
 				for (var i = 0; i < this.catList.length; i++) {
 					let newArr = this.catList[i].asset_info.map((item, stock, number) => {
-						return Object.assign(item, { stock: stock }, { number: 0 });
+						return Object.assign(item, { stock: stock }, { number: 0 },{selected_supplier:-1},{selected_supplier_name:''});
 					});
 					newArr.map(item => {
 						item.stock = parseInt(item.asset_count);
