@@ -188,6 +188,10 @@ SIMPLEUI_CONFIG = {
             'url': 'AppModel/supplierassetinfo',
             'icon': 'fa fa-server'
         },{
+            'name': '供应商订单管理',
+            'url': 'AppModel/commodityinfo',
+            'icon': 'fa fa-server'
+        },{
             'name': '部门管理',
             'url': 'AppModel/category',
             'icon': 'fa fa-tags'

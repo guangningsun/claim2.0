@@ -482,7 +482,7 @@ def commoditycategory_detail(request):
         commoditycategoryset = CommodityCategory.objects.all()
         serializer = CommodityCategorySerializer(commoditycategoryset, many=True)
         for i in range(0,len(serializer.data)):
-            assetset = AssetInfo.objects.filter(asset_ccategory=serializer.data[i]['id']).distinct('asset_sn')
+            assetset = AssetInfo.objects.filter(asset_ccategory=serializer.data[i]['id'])
             asset_serializer = AssetSerializer(assetset, many=True)
             serializer.data[i]["asset_info"]= asset_serializer.data
             if serializer.data[i]['parent'] == None:
@@ -503,16 +503,27 @@ def submit_order(request):
         order_is_special = request.POST['order_is_special']
         order_image = request.POST['order_image']
         order_item_list = request.POST['order_item_list']
+        order_total_price = request.POST['order_total_price']
         try:
-            order_info = OrderInfo(category=order_apartment)
+            order_info = OrderInfo(order_apartment=order_apartment,
+                                    order_status=0,
+                                    order_is_special=order_is_special,
+                                    order_create_time=int(time.time()),
+                                    order_total_price=order_total_price,
+                                    order_image=order_image,
+                                    order_exceed_reason=order_exceed_reason,
+                                    )
             order_info.save()
             for order_item in json.loads(order_item_list):
                 commodity_id = order_item['item_id']
+                supplier_id = order_item['item_supplier_id']
+                commodity_num = order_item['item_num']
+                
 
-            res_json = {"error": 0,"msg": {"更新用户信息成功"}}
+            res_json = {"error": 0,"msg": {"提交订单成功"}}
             return Response(res_json)
         except:
-            res_json = {"error": 0,"msg": {"更新用户信息失败"}}
+            res_json = {"error": 0,"msg": {"提交订单失败"}}
             return Response(res_json)
 
 
@@ -531,18 +542,23 @@ def get_category_surplus(request,cid):
 @api_view(['GET'])
 def get_supplier(request,sn):
     if request.method == 'GET':
-        assetset = AssetInfo.objects.filter(asset_sn=sn)
-        serializer = SupplierSerializer(assetset, many=True)
+        assetinfo = AssetInfo.objects.get(asset_sn=sn)
+        supplierset = SupplierAssetInfo.objects.filter(assetinfo = assetinfo.id)
+        serializer = SupplierSerializer(supplierset, many=True)
+        res_json={}
         for i in range (0,len(serializer.data)):
             sup_name=""
-            for k,v in serializer.data[i].items():
-                if k == "asset_supplier":
-                    supplier_obj = SupplierInfo.objects.get(id=v)
-                    sup_name = supplier_obj.supplier_name
-            serializer.data[i]['supplier_name']=sup_name
-                        # supplier_name.append(supplier_obj.supplier_name)
-        res_json = {"error": 0,"msg": {
-                    "supplier_list": serializer.data }}
+            try:
+                for k,v in serializer.data[i].items():
+                    if k == "supplier_name":
+                        supplier_obj = SupplierInfo.objects.get(id=v)
+                        sup_name = supplier_obj.supplier_name
+                serializer.data[i]['supplier_name']=sup_name
+                serializer.data[i]['asset_unit']=assetinfo.asset_unit
+                res_json = {"error": 0,"msg": {
+                        "supplier_list": serializer.data }}
+            except:
+                res_json = {"error": 1,"msg": "暂无供应商" }
         return Response(res_json)
 
 

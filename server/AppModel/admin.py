@@ -242,7 +242,6 @@ class SupplierAssetInfoAdmin(admin.ModelAdmin):
     ]
 
     def get_queryset(self,request):
-        import pdb;pdb.set_trace()
         qs = super(SupplierAssetInfoAdmin, self).get_queryset(request)
         if request.user.is_superuser:
             return qs
@@ -251,6 +250,24 @@ class SupplierAssetInfoAdmin(admin.ModelAdmin):
         # super().queryset(self)
     list_per_page = 15
     list_display_links = ('supplier_name',)
+
+
+# 供应商订单管理
+@admin.register(CommodityInfo)
+class CommodityInfoAdmin(admin.ModelAdmin): 
+    list_display=['commodity_name','commodity_unit','commodity_image','commodity_total_price','commodity_specification','commodity_price','commodity_count','commodity_supplier','commodity_status','sys_username']
+    # search_fields =('supplier_name','price','assetinfo','asset_num','sys_username')
+    fieldsets = [
+       ('用户数据', {'fields': ['commodity_name','commodity_unit','commodity_image','commodity_total_price','commodity_specification','commodity_price','commodity_count','commodity_supplier','commodity_status','sys_username'], 'classes': ['']}),
+    ]
+
+    def get_queryset(self,request):
+        qs = super(CommodityInfoAdmin, self).get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(sys_username=request.user.username)
+    list_per_page = 15
+    list_display_links = ('commodity_name',)
 
 admin.site.register(CommodityCategory , MPTTModelAdmin)
 # @admin.register(CommodityCategory)

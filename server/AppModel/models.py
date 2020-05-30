@@ -224,6 +224,7 @@ class CommodityInfo(models.Model):
       ('0', '备货中'),
       ('1', '已派送'),
       ('2', '已签收'),
+      ('3', '待审批通过'),
       ]
       commodity_name = models.CharField(max_length=200, choices=ITEM_STATUS_CHOICES,verbose_name='商品名称')
       commodity_unit = models.CharField(max_length=200, verbose_name='商品单位',default="商品单位")
@@ -234,6 +235,7 @@ class CommodityInfo(models.Model):
       commodity_count = models.CharField(max_length=200, verbose_name='商品数量',default="商品数量")
       commodity_supplier = models.ForeignKey('SupplierInfo',on_delete=models.CASCADE,null=True,blank=True,verbose_name='所属供应商')
       commodity_status = models.CharField(max_length=200, choices=ITEM_STATUS_CHOICES ,verbose_name='商品状态')
+      sys_username = models.CharField(max_length=200, verbose_name='系统用户名',default="系统用户名")
     
       class Meta:
           verbose_name = '商品信息'

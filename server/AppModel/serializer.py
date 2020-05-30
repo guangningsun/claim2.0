@@ -7,13 +7,13 @@ class AssetSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = AssetInfo
-        fields = ('id','asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_limit_nu','asset_limit_price','asset_supplier','asset_price')
+        fields = ('id','asset_name','asset_count','asset_type','asset_sn','asset_band','asset_specification','asset_unit','asset_image','asset_limit_nu','asset_limit_price')
 
 class SupplierSerializer(serializers.ModelSerializer):
     
     class Meta:
-        model = AssetInfo
-        fields = ('asset_supplier','asset_price','asset_unit')
+        model = SupplierAssetInfo
+        fields = ('supplier_name','price')
 
 class UserInfoSerializer(serializers.ModelSerializer):
     
