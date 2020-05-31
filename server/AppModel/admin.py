@@ -169,12 +169,11 @@ class OrderInfoAdmin(ImportExportModelAdmin):
 
     # 获取物品清单列表
     def get_desc(self, obj):
-        pass
-        # if obj.id is not None:
-        #     claim_list = [Claimlist.objects.filter(id = cl.claimlist_id) for cl in MappingClaimLisToRecord.objects.filter(claimrecord_id=obj.id)]
-        #     return [ (("%s %s%s") % (cl[0].claim_name,cl[0].claim_count,cl[0].claim_unit)) for cl in claim_list]
-        # else:
-        #     return "-"
+        if obj.id is not None:
+            commodity_list = [CommodityInfo.objects.filter(id = cl.commodityinfo_id) for cl in MappingCommodityToOrder.objects.filter(orderinfo_id=obj.id)]
+            return [ (("%s%s%s*%s%s") % (cl[0].commodity_supplier,cl[0].commodity_name,cl[0].commodity_price,cl[0].commodity_count,cl[0].commodity_unit)) for cl in commodity_list]
+        else:
+            return "-"
     get_desc.short_description = "订单商品列表"
 
 

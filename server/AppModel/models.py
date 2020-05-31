@@ -264,6 +264,15 @@ class OrderInfo(models.Model):
           verbose_name = '订单信息'
           verbose_name_plural = '订单信息'
 
+# 订单对应商品列表类
+class MappingCommodityToOrder(models.Model):
+    commodityinfo = models.ForeignKey(CommodityInfo, models.DO_NOTHING,verbose_name='商品清单')
+    orderinfo = models.ForeignKey(OrderInfo, models.DO_NOTHING,verbose_name='订单')
+
+    class Meta:
+        managed = False
+        db_table = 'AppModel_orderinfo_order_items'
+        unique_together = (('commodityinfo', 'orderinfo'),)
 
 # 供应商库存表
 class SupplierAssetInfo(models.Model):
