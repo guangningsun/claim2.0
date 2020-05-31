@@ -194,27 +194,27 @@ SIMPLEUI_CONFIG = {
         },{
             'name': '部门管理',
             'url': 'AppModel/category',
-            'icon': 'fa fa-tags'
+            'icon': 'fa fa-server'
         }, {
             'name': '订单列表',
             'url': 'AppModel/orderinfo',
-            'icon': 'fa fa-id-card'
+            'icon': 'fa fa-server'
         }, {
             'name': '用户管理',
             'url': 'AppModel/userinfo/',
-            'icon': 'fa fa-user-circle'
+            'icon': 'fa fa-server'
         }, {
             'name': '物品分类管理',
             'url': 'AppModel/commoditycategory/',
-            'icon': 'far fa-surprise'
+            'icon': 'fa fa-server'
         }, {
             'name': '供应商管理',
             'url': 'AppModel/supplierinfo/',
-            'icon': 'far fa-surprise'
+            'icon': 'fa fa-server'
         },{
             'name': '统计查询',
             'url': 'AppModel/statisticsinfo/',
-            'icon': 'fa fa-bell-slash'
+            'icon': 'fa fa-server'
         }]
         },{
         'app': 'auth',

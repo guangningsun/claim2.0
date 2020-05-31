@@ -226,7 +226,7 @@ class CommodityInfo(models.Model):
       ('2', '已签收'),
       ('3', '待审批通过'),
       ]
-      commodity_name = models.CharField(max_length=200, choices=ITEM_STATUS_CHOICES,verbose_name='商品名称')
+      commodity_name = models.CharField(max_length=200,verbose_name='商品名称',default="商品名称")
       commodity_unit = models.CharField(max_length=200, verbose_name='商品单位',default="商品单位")
       commodity_image = models.ImageField(u'商品图片',null=True, blank=True, upload_to='commodity_image')
       commodity_total_price = models.CharField(max_length=200, verbose_name='商品总价',default="商品总价")

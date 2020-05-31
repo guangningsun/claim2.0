@@ -498,6 +498,7 @@ def commoditycategory_detail(request):
 @api_view(['POST'])
 def submit_order(request):
     if request.method == 'POST':
+        import pdb;pdb.set_trace()
         order_apartment = request.POST['order_apartment']
         order_exceed_reason = request.POST['order_exceed_reason']
         order_is_special = request.POST['order_is_special']
@@ -505,8 +506,8 @@ def submit_order(request):
         order_item_list = request.POST['order_item_list']
         order_total_price = request.POST['order_total_price']
         try:
-            order_info = OrderInfo(order_apartment=order_apartment,
-                                    order_status=0,
+            order_info = OrderInfo(order_apartment=Category.objects.get(id=order_apartment),
+                                    order_status='0',
                                     order_is_special=order_is_special,
                                     order_create_time=int(time.time()),
                                     order_total_price=order_total_price,
@@ -515,10 +516,27 @@ def submit_order(request):
                                     )
             order_info.save()
             for order_item in json.loads(order_item_list):
-                commodity_id = order_item['item_id']
+                asset_sn = order_item['item_sn']
                 supplier_id = order_item['item_supplier_id']
                 commodity_num = order_item['item_num']
-                
+                commodity_price = order_item['item_price']
+                asset_info = AssetInfo.objects.get(asset_sn=asset_sn)
+                supplierassetinfo_list = SupplierAssetInfo.objects.filter(supplier_name=supplier_id)
+                commodity_info = CommodityInfo(commodity_name=asset_info.asset_name ,
+                                                commodity_unit=asset_info.asset_unit ,
+                                                commodity_image=asset_info.asset_image ,
+                                                commodity_total_price=int(commodity_price)*int(commodity_num),
+                                                commodity_specification=asset_info.asset_specification,
+                                                commodity_price=commodity_price,
+                                                commodity_count=commodity_num,
+                                                commodity_supplier=SupplierInfo.objects.get(id=supplier_id),
+                                                commodity_status="3",
+                                                sys_username=supplierassetinfo_list[0].sys_username
+                                                )
+                commodity_info.save()
+                order_info.order_items.add(commodity_info)
+                order_info.save()
+
 
             res_json = {"error": 0,"msg": {"提交订单成功"}}
             return Response(res_json)
