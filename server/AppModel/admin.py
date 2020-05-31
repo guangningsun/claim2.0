@@ -175,6 +175,44 @@ class OrderInfoAdmin(ImportExportModelAdmin):
         else:
             return "-"
     get_desc.short_description = "订单商品列表"
+    
+    actions = ["supervisor_approval",'rejectted']
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if  request.user.is_superuser is not True:
+            if request.user.has_perm("AppModel.supervisor_approval"):
+                del actions['director_approval']
+                del actions['admin_approval']
+                del actions['issued_asset']
+            if request.user.has_perm("AppModel.director_approval"):
+                del actions['supervisor_approval']
+                del actions["admin_approval"]
+                del actions['issued_asset']
+            if request.user.has_perm("AppModel.admin_approval"):
+                del actions['director_approval']
+                del actions['supervisor_approval']
+        return actions
+
+    # 批准订单
+    def supervisor_approval(self, request, queryset):
+        rows_updated = queryset.update(order_status='1')
+        if rows_updated == 1:
+            message_bit = "订单审批通过"
+        else:
+            message_bit = "%s 条订单申请" % rows_updated
+        self.message_user(request, " %s 成功审批." % message_bit ,level=messages.SUCCESS)
+
+    supervisor_approval.short_description = "批准"
+
+    # 拒绝订单
+    def rejectted(self, request, queryset):
+        rows_updated = queryset.update(order_status='2')
+        if rows_updated == 1:
+            message_bit = "1 条订单申请"
+        else:
+            message_bit = "%s 条订单申请" % rows_updated
+        self.message_user(request," %s 成功拒绝." % message_bit, level=messages.SUCCESS)
+    rejectted.short_description = "拒绝"
 
 
 # 用户管理
