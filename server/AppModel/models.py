@@ -52,7 +52,7 @@ class AssetInfo(models.Model):
         verbose_name_plural = '物品信息'
     
     def __str__(self):
-          return self.asset_name
+          return (("%s %s") % (self.asset_name,self.asset_type))
     
 
 # class Claimlist(models.Model):
