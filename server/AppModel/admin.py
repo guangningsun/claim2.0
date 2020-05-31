@@ -279,7 +279,7 @@ class SupplierInfoAdmin(ImportExportModelAdmin):
 @admin.register(SupplierAssetInfo)
 class SupplierAssetInfoAdmin(ImportExportModelAdmin): 
     list_display=['supplier_name','price','assetinfo','asset_num','sys_username']
-    search_fields =('supplier_name','price','assetinfo','asset_num','sys_username')
+    search_fields =('supplier_name__supplier_name','price','assetinfo__asset_name','asset_num','sys_username')
     fieldsets = [
        ('用户数据', {'fields': ['supplier_name','price','assetinfo','asset_num','sys_username'], 'classes': ['']}),
     ]
