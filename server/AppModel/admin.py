@@ -163,7 +163,7 @@ class OrderInfoAdmin(ImportExportModelAdmin):
     list_display=['id','order_status','order_is_special','order_create_time','get_desc','order_total_price','order_image','order_apartment','order_exceed_reason']
     # search_fields =('nick_name','user_name','weixin_openid','phone_number','category','auth','address')
     fieldsets = [
-       ('用户数据', {'fields': ['id','order_status','order_is_special','order_create_time','order_total_price','order_image','order_apartment','order_exceed_reason'], 'classes': ['']}),
+       ('用户数据', {'fields': ['order_status','order_is_special','order_create_time','order_total_price','order_image','order_apartment','order_exceed_reason'], 'classes': ['']}),
     ]
     list_per_page = 15
 
@@ -196,6 +196,12 @@ class OrderInfoAdmin(ImportExportModelAdmin):
     # 批准订单
     def supervisor_approval(self, request, queryset):
         rows_updated = queryset.update(order_status='1')
+        for qs in queryset:
+            commodity_list = MappingCommodityToOrder.objects.filter(orderinfo_id=qs.id)
+            for cl in commodity_list:
+                ci = CommodityInfo.objects.get(id=cl.commodityinfo_id)
+                ci.commodity_status = '0'
+                ci.save()
         if rows_updated == 1:
             message_bit = "订单审批通过"
         else:
