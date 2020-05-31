@@ -498,7 +498,6 @@ def commoditycategory_detail(request):
 @api_view(['POST'])
 def submit_order(request):
     if request.method == 'POST':
-        import pdb;pdb.set_trace()
         order_apartment = request.POST['order_apartment']
         order_exceed_reason = request.POST['order_exceed_reason']
         order_is_special = request.POST['order_is_special']

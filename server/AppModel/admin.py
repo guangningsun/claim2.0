@@ -232,9 +232,9 @@ class SupplierInfoAdmin(ImportExportModelAdmin):
     list_per_page = 15
 
 
-# 供应商管理
+# 供应商库存管理
 @admin.register(SupplierAssetInfo)
-class SupplierAssetInfoAdmin(admin.ModelAdmin): 
+class SupplierAssetInfoAdmin(ImportExportModelAdmin): 
     list_display=['supplier_name','price','assetinfo','asset_num','sys_username']
     search_fields =('supplier_name','price','assetinfo','asset_num','sys_username')
     fieldsets = [
