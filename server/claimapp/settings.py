@@ -180,7 +180,7 @@ SIMPLEUI_CONFIG = {
         'name': '系统管理',
         'icon': 'fab fa-dashcube',
         'models': [{
-            'name': '物品类型管理',
+            'name': '商品类型管理',
             'url': 'AppModel/assetinfo',
             'icon': 'fa fa-server'
         },{
@@ -196,7 +196,7 @@ SIMPLEUI_CONFIG = {
             'url': 'AppModel/category',
             'icon': 'fa fa-server'
         }, {
-            'name': '订单列表',
+            'name': '全局订单管理',
             'url': 'AppModel/orderinfo',
             'icon': 'fa fa-server'
         }, {

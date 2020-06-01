@@ -524,7 +524,7 @@ def submit_order(request):
                 commodity_info = CommodityInfo(commodity_name=asset_info.asset_name ,
                                                 commodity_unit=asset_info.asset_unit ,
                                                 commodity_image=asset_info.asset_image ,
-                                                commodity_total_price=int(commodity_price)*int(commodity_num),
+                                                commodity_total_price=float(commodity_price)*int(commodity_num),
                                                 commodity_specification=asset_info.asset_specification,
                                                 commodity_price=commodity_price,
                                                 commodity_count=commodity_num,
