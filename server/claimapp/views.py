@@ -505,6 +505,8 @@ def submit_order(request):
         order_item_list = request.POST['order_item_list']
         order_total_price = request.POST['order_total_price']
         try:
+            #判断是否超限，如果超限order_status='0'
+            #如果未超限 order_status='3',commodity_status=0
             order_info = OrderInfo(order_apartment=Category.objects.get(id=order_apartment),
                                     order_status='0',
                                     order_is_special=order_is_special,

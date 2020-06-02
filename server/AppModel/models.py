@@ -250,6 +250,7 @@ class OrderInfo(models.Model):
       ('0', '待审批'),
       ('1', '审批通过'),
       ('2', '未通过'),
+      ('3', '自动过单'),
       ]
       order_status = models.CharField(max_length=200, choices=ORDER_STATUS_CHOICES,verbose_name='订单状态')
       order_is_special = models.BooleanField(verbose_name='是否专项',default="False")

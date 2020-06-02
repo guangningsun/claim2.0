@@ -13,7 +13,7 @@ class SupplierSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = SupplierAssetInfo
-        fields = ('id','supplier_name','price')
+        fields = ('id','supplier_name','supplier_name_id','price')
 
 class UserInfoSerializer(serializers.ModelSerializer):
     
