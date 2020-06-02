@@ -504,11 +504,18 @@ def submit_order(request):
         order_image = request.POST['order_image']
         order_item_list = request.POST['order_item_list']
         order_total_price = request.POST['order_total_price']
+        is_exceed = request.POST['is_exceed']
         try:
-            #判断是否超限，如果超限order_status='0'
-            #如果未超限 order_status='3',commodity_status=0
+            #判断是否超限，如果超限订单待审批order_status='0' commodity_status=3
+            #如果未超限订单直接审批通过order_status='3',commodity_status=0
+            if is_exceed == "True":
+                os='0'
+                cs='3'
+            else:
+                os='3'
+                cs='0'
             order_info = OrderInfo(order_apartment=Category.objects.get(id=order_apartment),
-                                    order_status='0',
+                                    order_status=os,
                                     order_is_special=order_is_special,
                                     order_create_time=int(time.time()),
                                     order_total_price=order_total_price,
@@ -531,7 +538,7 @@ def submit_order(request):
                                                 commodity_price=commodity_price,
                                                 commodity_count=commodity_num,
                                                 commodity_supplier=SupplierInfo.objects.get(id=supplier_id),
-                                                commodity_status="3",
+                                                commodity_status=cs,
                                                 sys_username=supplierassetinfo_list[0].sys_username
                                                 )
                 commodity_info.save()
