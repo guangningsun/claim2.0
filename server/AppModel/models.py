@@ -55,63 +55,6 @@ class AssetInfo(models.Model):
           return (("%s %s") % (self.asset_name,self.asset_type))
     
 
-# class Claimlist(models.Model):
-#     claim_count = models.CharField(max_length=200,verbose_name='申领数量')
-#     claim_name = models.CharField(max_length=200,verbose_name='物品名称')
-#     claim_unit =  models.CharField(max_length=200,verbose_name='物品名称')
-
-#     def __str__(self):
-#         return (("%s %s%s") % (self.claim_name,self.claim_count,self.claim_unit))
-
-#     class Meta:
-#         verbose_name = '物品清单'
-#         verbose_name_plural = '物品清单'
-
-# class ClaimRecord(models.Model):
-#     STATUS_CHOICES = [
-#     ('0', '待主管审批'),
-#     ('1', '待主任审批'),
-#     ('2', '待管理员审批'),
-#     ('3', '审批完成'),
-#     ('4', '已发放'),
-#     ('5', '未批准'),
-#     ]
-#     # claim_username = models.CharField(max_length=200,verbose_name='申领人')
-#     claim_weixin_openid = models.CharField(max_length=200,verbose_name='申领人微信OPENID')
-#     # claim_count = models.CharField(max_length=200,verbose_name='申领数量')
-#     # claim_phone_num = models.CharField(max_length=200,verbose_name='申领人手机')
-#     # claim_name = models.CharField(max_length=200,verbose_name='物品名称')
-#     # id = models.CharField(max_length=200,verbose_name='订单id',primary_key=True)
-#     claim_list = models.ManyToManyField(Claimlist) 
-#     claim_date = models.DateField(default=datetime.datetime.now(),verbose_name='申领时间')
-#     category = TreeForeignKey('Category',on_delete=models.CASCADE,null=True,blank=True,verbose_name='所属部门')
-#     approval_status = models.CharField(max_length=200, choices=STATUS_CHOICES,verbose_name='审批状态')
-#     desc =  models.CharField(max_length=200, verbose_name='申请理由',default="无理由")
-#     if_exceed_standard = models.BooleanField(verbose_name='是否超标',default="False") 
-
-#     class Meta:
-#         verbose_name = '领用记录'
-#         verbose_name_plural = '领用记录'
-#         # 自定义的权限，两参数分别是权限的名字和权限的描述
-#         permissions = (
-#             ("supervisor_approval", "第一主管审批"),
-#             ("director_approval", "办公室主任审批"),
-#             ("admin_approval", "管理员审批通过，等待发放"),
-#             ("issued_asset", "发放审批"),
-#             ("rejectted", "审批不通过"), 
-#         )
-
-
-# class MappingClaimLisToRecord(models.Model):
-#     claimlist = models.ForeignKey(Claimlist, models.DO_NOTHING,verbose_name='物品清单')
-#     claimrecord = models.ForeignKey(ClaimRecord, models.DO_NOTHING,verbose_name='申领记录')
-
-#     class Meta:
-#         managed = False
-#         db_table = 'AppModel_claimrecord_claim_list'
-#         unique_together = (('claimlist', 'claimrecord'),)
-
-
 # 组织机构详细信息
 class Post(models.Model):
       name = models.CharField(max_length=120,verbose_name='单位名称')
@@ -260,6 +203,7 @@ class OrderInfo(models.Model):
       order_image = models.ImageField(u'订单图片',null=True, blank=True, upload_to='order_image')
       order_apartment = models.ForeignKey('Category',on_delete=models.CASCADE,null=True,blank=True,verbose_name='所属部门')
       order_exceed_reason = models.CharField(max_length=200, verbose_name='超限原因描述',default="超限原因描述")
+      order_user = models.ForeignKey('UserInfo',on_delete=models.CASCADE,null=True,blank=True,verbose_name='提交用户')
 
       class Meta:
           verbose_name = '订单信息'

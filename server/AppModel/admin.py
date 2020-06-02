@@ -160,10 +160,10 @@ class UserInfoAdmin(ImportExportModelAdmin):
 # 订单管理
 @admin.register(OrderInfo)
 class OrderInfoAdmin(ImportExportModelAdmin): 
-    list_display=['id','order_status','order_is_special','order_create_time','get_desc','order_total_price','order_image','order_apartment','order_exceed_reason']
+    list_display=['id','order_status','order_is_special','order_create_time','get_desc','order_total_price','order_image','order_apartment','order_user','order_exceed_reason']
     # search_fields =('nick_name','user_name','weixin_openid','phone_number','category','auth','address')
     fieldsets = [
-       ('用户数据', {'fields': ['order_status','order_is_special','order_create_time','order_total_price','order_image','order_apartment','order_exceed_reason'], 'classes': ['']}),
+       ('用户数据', {'fields': ['order_status','order_is_special','order_create_time','order_total_price','order_image','order_apartment','order_user','order_exceed_reason'], 'classes': ['']}),
     ]
     list_per_page = 15
 

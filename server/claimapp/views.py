@@ -517,6 +517,7 @@ def submit_order(request):
         order_item_list = request.POST['order_item_list']
         order_total_price = request.POST['order_total_price']
         is_exceed = request.POST['is_exceed']
+        weixin_openid = request.POST['weixin_openid']
         try:
             #判断是否超限，如果超限订单待审批order_status='0' commodity_status=3
             #如果未超限订单直接审批通过order_status='3',commodity_status=0
@@ -533,6 +534,7 @@ def submit_order(request):
                                     order_total_price=order_total_price,
                                     order_image=order_image,
                                     order_exceed_reason=order_exceed_reason,
+                                    order_user= UserInfo.objects.get(weixin_openid=weixin_openid)
                                     )
             order_info.save()
             for order_item in json.loads(order_item_list):
