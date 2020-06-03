@@ -513,7 +513,7 @@ def submit_order(request):
         order_apartment = request.POST['order_apartment']
         order_exceed_reason = request.POST['order_exceed_reason']
         order_is_special = request.POST['order_is_special']
-        order_image = request.POST['order_image']
+        order_image = request.FILES.get('order_image',None)
         order_item_list = request.POST['order_item_list']
         order_total_price = request.POST['order_total_price']
         is_exceed = request.POST['is_exceed']
@@ -532,10 +532,11 @@ def submit_order(request):
                                     order_is_special=order_is_special,
                                     order_create_time=int(time.time()),
                                     order_total_price=order_total_price,
-                                    order_image=order_image,
+                                    # order_image=order_image,
                                     order_exceed_reason=order_exceed_reason,
                                     order_user= UserInfo.objects.get(weixin_openid=weixin_openid)
                                     )
+            order_info.order_image = order_image
             order_info.save()
             for order_item in json.loads(order_item_list):
                 asset_sn = order_item['item_sn']
