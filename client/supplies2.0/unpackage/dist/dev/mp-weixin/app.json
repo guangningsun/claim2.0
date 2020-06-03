@@ -3,7 +3,9 @@
     "pages/index/auth",
     "pages/category/category",
     "pages/index/user_info",
-    "pages/cart/cart"
+    "pages/cart/cart",
+    "pages/order/order_confirm",
+    "pages/category/search"
   ],
   "subPackages": [],
   "window": {
@@ -15,5 +17,6 @@
   "permission": {},
   "usingComponents": {
     "cu-custom": "/colorui/components/cu-custom"
-  }
+  },
+  "sitemapLocation": "sitemap27.json"
 }

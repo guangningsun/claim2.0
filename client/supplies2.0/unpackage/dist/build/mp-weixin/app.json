@@ -2,7 +2,10 @@
   "pages": [
     "pages/index/auth",
     "pages/category/category",
-    "pages/index/user_info"
+    "pages/index/user_info",
+    "pages/cart/cart",
+    "pages/order/order_confirm",
+    "pages/category/search"
   ],
   "subPackages": [],
   "window": {

@@ -4,6 +4,19 @@
 			<block slot="content">物品分类</block>
 		</cu-custom>
 
+		<view class="cu-bar bg-white search fixed" :style="[{top:CustomBar + 'px'}]">
+			<view class="search-form round">
+				<text class="cuIcon-search"></text>
+				<input class="padding-right-xl" type="text" placeholder="搜索物品" confirm-type="search" v-model="search_item" @input="onInput"></input>
+				<view >
+					<button class="cu-btn round bg-light-blue" @tap="onSearch">搜索</button>
+				</view>
+			</view>
+			<!-- <view class="action">
+				<button class="cu-btn bg-gradual-green round" @click="onClickSearchRoute">搜索</button>
+			</view> -->
+		</view>
+
 		<view v-show="showEmpty" style="margin-top: 200upx;">
 			<view class="flex justify-center align-center margin-left-xl">
 				<image src="../../static/empty_icon.png" style="width: 200upx; height: 200upx;" />
@@ -11,13 +24,13 @@
 			<view class="flex justify-center text-gray margin-top">空空如也</view>
 		</view>
 
-		<view class="VerticalBox">
+		<view class="VerticalBox" style="margin-top: 100upx;">
 			<scroll-view
 				class="VerticalNav nav"
 				scroll-y
 				scroll-with-animation
 				:scroll-top="verticalNavTop"
-				style="height:calc(100vh - 100upx)"
+				style="height:calc(100vh - 150upx)"
 			>
 				<view
 					class="cu-item"
@@ -70,9 +83,9 @@
 							<view class="content2" style="width: calc(100% - 70px);">
 								<view class="flex">
 									<view class="text-grey">{{ item2.asset_name }}</view>
-									<view class="text-grey text-sm margin-left-xs">
+									<!-- <view class="text-grey text-sm margin-left-xs">
 										| 库存:{{ item2.asset_count }}
-									</view>
+									</view> -->
 								</view>
 
 								<view class="flex">
@@ -97,7 +110,7 @@
 									class="text-gray text-sm flex"
 								>
 									<text class="text-cut cu-tag line-yellow round sm">
-										{{ item2.asset_limit_price }}
+										限价:{{ item2.asset_limit_price }}元
 									</text>
 								</view>
 
@@ -159,6 +172,7 @@
 						<text class="cuIcon-close text-light-purple"></text>
 					</view>
 				</view>
+				
 				<view class="margin-top cu-list menu-avatar">
 					<view class="cu-item padding-left" style="height: 250upx;">
 						<view
@@ -175,9 +189,9 @@
 						<view class="content3">
 							<view class="flex">
 								<view class="text-grey">{{ current_item_info.asset_name }}</view>
-								<view class="text-grey text-df margin-left-xs">
+								<!-- <view class="text-grey text-df margin-left-xs">
 									| 库存:{{ current_item_info.asset_count }}
-								</view>
+								</view> -->
 							</view>
 
 							<view class="flex">
@@ -213,6 +227,13 @@
 					</view>
 				</view>
 
+				<view v-show="showEmptySupplier" class="margin-top">
+					<view class="flex justify-center align-center margin-left-xl">
+						<image src="../../static/empty_icon.png" style="width: 100upx; height: 100upx;" />
+					</view>
+					<view class="flex justify-center text-gray margin-top">暂无供应商选择</view>
+				</view>
+
 				<radio-group class="block margin-bottom" @change="RadioChange">
 					<view
 						class="cu-form-group"
@@ -223,15 +244,15 @@
 							<view class="title margin-top-xs">{{ item.supplier_name }}</view>
 							<view class="flex margin-bottom-xs">
 								<text class="text-grey text-df">
-									单价: {{ item.asset_price }}元 / {{ item.asset_unit }}
+									单价: {{ item.price }}元 / {{ item.asset_unit }}
 								</text>
 								<!-- <text class="text-grey text-df">累计: {{ current_item_info.asset_band }}</text> -->
 							</view>
 						</view>
 						<radio
-							:class="supplier_id_radio == item.asset_supplier ? 'checked' : ''"
-							:checked="supplier_id_radio == item.asset_supplier ? true : false"
-							:value="item.asset_supplier"
+							:class="supplier_id_radio == item.id ? 'checked' : ''"
+							:checked="supplier_id_radio == item.id ? true : false"
+							:value="item.id"
 						></radio>
 					</view>
 				</radio-group>
@@ -239,7 +260,7 @@
 				<view class="cu-bar bg-white justify-end">
 					<view class="action">
 						<button class="cu-btn line-gray text-gray" @tap="hideModal">取消</button>
-						<button class="cu-btn bg-gradual-green margin-left" @tap="onAddToCart()">
+						<button  :disabled="showEmptySupplier" v-show="!is_no_supplier" class="cu-btn bg-gradual-green margin-left" @tap="onAddToCart()">
 							添加
 						</button>
 					</view>
@@ -257,9 +278,15 @@ export default {
 	},
 	data() {
 		return {
+			showEmptySupplier:false,
+			
+			CustomBar: this.CustomBar,
+			
 			modalName: null,
 			current_item_info: null,
 			supplier_id_radio: -1,
+			
+			is_no_supplier:false,
 
 			showEmpty: false,
 			showNoMore: false,
@@ -285,8 +312,8 @@ export default {
 			pattern: {
 				color: '#7A7E83',
 				backgroundColor: '#fff',
-				selectedColor: '#0b988f',
-				buttonColor: '#0b988f'
+				selectedColor: '#2481c4',
+				buttonColor: '#59aef9'
 			},
 			content: [
 				{
@@ -297,7 +324,8 @@ export default {
 				}
 			],
 
-			cateDetailAllList: []
+			cateDetailAllList: [],
+			
 		};
 	},
 	onLoad() {
@@ -316,12 +344,42 @@ export default {
 		this.loadData();
 	},
 	methods: {
+		onInput(e){
+			// console.log(e.detail.value);
+			var inputKeyword = e.detail.value;
+			this.search_item = inputKeyword;
+			getApp().globalData.search_item_name = inputKeyword;
+			console.log(getApp().globalData.search_item_name);
+		},
+		onSearch(){
+			uni.navigateTo({
+				url:'./search'
+			})
+		},
 		RadioChange(e) {
-			console.log(e);
 			this.supplier_id_radio = e.detail.value;
 			console.log('select supplier: ' + this.supplier_id_radio);
 			
+			var supplier =  this.getSupplierById(this.supplier_id_radio);
+			
+			this.selected_supplier_id = supplier.supplier_name_id;
+			this.selected_supplier_name = supplier.supplier_name;
+			this.select_supplier_price = supplier.price;
+			
 		},
+		
+		getSupplierById(supplier_id){
+			if(this.item_supplier_list.length > 0){
+				for(var i = 0; i < this.item_supplier_list.length; i++){
+					let id = this.item_supplier_list[i].id;
+					if(id == supplier_id){
+						return this.item_supplier_list[i];
+					}
+				}
+			}
+			return '';
+		},
+		
 		/**
 		 * 获取商品供应商列表
 		 */
@@ -338,10 +396,18 @@ export default {
 			);
 		},
 		successSupplierCb(rsp) {
+			var isEmpty = true;
+			for(var x in rsp.data){
+			    isEmpty = false;
+			}			
+			this.showEmptySupplier = isEmpty;
+
 			if (rsp.data.error === 0) {
 				this.item_supplier_list = rsp.data.msg.supplier_list;
 				console.log('supplier list:');
 				console.log(this.item_supplier_list);
+				
+				// this.supplier_id_radio = this.item_supplier_list[0].id;
 			}
 		},
 		failSupplierCb(err) {
@@ -365,6 +431,23 @@ export default {
 		},
 
 		onAddToCart() {
+			console.log("supplier: " + this.selected_supplier_name);
+			this.current_item_info.selected_supplier_name = this.selected_supplier_name;
+			this.current_item_info.selected_supplier = this.selected_supplier_id;
+			this.current_item_info.selected_supplier_price = this.select_supplier_price;
+			
+			let isExceed = false;
+			let item_limit_price = parseFloat(this.current_item_info.asset_limit_price);
+			let supplier_price = parseFloat(this.select_supplier_price);
+
+			if(item_limit_price == 0.0){
+				isExceed = false;
+			}else if(item_limit_price < supplier_price){
+				isExceed = true;
+			}
+			
+			this.current_item_info.is_exceed = isExceed;
+			
 			if (getApp().globalData.cart_list_info.length == 0) {
 				getApp().globalData.cart_list_info.push(this.current_item_info);
 				this.showToast('成功添加到物品篮');
@@ -374,15 +457,15 @@ export default {
 			}
 
 			for (var i = 0; i < getApp().globalData.cart_list_info.length; i++) {
-				if (getApp().globalData.cart_list_info[i].asset_name == this.current_item_info.asset_name) {
-					this.showToast(this.current_item_info.asset_name + ' 已添加过了，无须重复添加');
+				if (getApp().globalData.cart_list_info[i].asset_sn == this.current_item_info.asset_sn) {
+					this.showToast(this.current_item_info.asset_sn + ' 已添加过了，无须重复添加');
 					console.log(getApp().globalData.cart_list_info);
 					this.hideModal();
 					return;
 				}
 			}
 
-			getApp().globalData.cart_list_info.push(item);
+			getApp().globalData.cart_list_info.push(this.current_item_info);
 			console.log(getApp().globalData.cart_list_info);
 			this.showToast(this.current_item_info.asset_name + ' 成功添加到物品篮');
 			this.hideModal();
@@ -390,7 +473,7 @@ export default {
 
 		onMinus(item) {
 			for (var i = 0; i < getApp().globalData.cart_list_info.length; i++) {
-				if (getApp().globalData.cart_list_info[i].asset_name == item.asset_name) {
+				if (getApp().globalData.cart_list_info[i].asset_sn == item.asset_sn) {
 					getApp().globalData.cart_list_info.splice(i, 1);
 					this.showToast(item.asset_name + '成功从物品篮删除');
 					console.log(getApp().globalData.cart_list_info);
@@ -413,7 +496,6 @@ export default {
 		///////////////////////////////////
 
 		successCb(rsp) {
-			uni.hideLoading();
 			if (rsp.data.error === 0) {
 				this.catList = rsp.data.msg.commoditycategory;
 				console.log('commoditycategory:');
@@ -431,7 +513,15 @@ export default {
 
 				for (var i = 0; i < this.catList.length; i++) {
 					let newArr = this.catList[i].asset_info.map((item, stock, number) => {
-						return Object.assign(item, { stock: stock }, { number: 0 },{selected_supplier:-1},{selected_supplier_name:''});
+						return Object.assign(
+						item, 
+						{ stock: 999 }, 
+						{ number: 0 },
+						{ total_price: 0 },
+						{selected_supplier:0},
+						{selected_supplier_name:''},
+						{selected_supplier_price:''},
+						{is_exceed:false});
 					});
 					newArr.map(item => {
 						item.stock = parseInt(item.asset_count);
@@ -442,6 +532,7 @@ export default {
 				this.listCur = this.catList[0];
 				this.mainCur = this.catList[0].id;
 			}
+			uni.hideLoading();
 		},
 		failCb(err) {
 			uni.hideLoading();

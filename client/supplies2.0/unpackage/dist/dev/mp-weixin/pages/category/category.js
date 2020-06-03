@@ -130,7 +130,28 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _uniFab = function _uniFab() {__webpack_require__.e(/*! require.ensure | node-modules/@dcloudio/uni-ui/lib/uni-fab/uni-fab */ "node-modules/@dcloudio/uni-ui/lib/uni-fab/uni-fab").then((function () {return resolve(__webpack_require__(/*! @dcloudio/uni-ui/lib/uni-fab/uni-fab */ 39));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _uniFab = function _uniFab() {__webpack_require__.e(/*! require.ensure | node-modules/@dcloudio/uni-ui/lib/uni-fab/uni-fab */ "node-modules/@dcloudio/uni-ui/lib/uni-fab/uni-fab").then((function () {return resolve(__webpack_require__(/*! @dcloudio/uni-ui/lib/uni-fab/uni-fab */ 63));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -389,9 +410,15 @@ __webpack_require__.r(__webpack_exports__);
 
   data: function data() {
     return {
+      showEmptySupplier: false,
+
+      CustomBar: this.CustomBar,
+
       modalName: null,
       current_item_info: null,
       supplier_id_radio: -1,
+
+      is_no_supplier: false,
 
       showEmpty: false,
       showNoMore: false,
@@ -417,8 +444,8 @@ __webpack_require__.r(__webpack_exports__);
       pattern: {
         color: '#7A7E83',
         backgroundColor: '#fff',
-        selectedColor: '#0b988f',
-        buttonColor: '#0b988f' },
+        selectedColor: '#2481c4',
+        buttonColor: '#59aef9' },
 
       content: [
       {
@@ -430,6 +457,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
       cateDetailAllList: [] };
+
 
   },
   onLoad: function onLoad() {
@@ -448,12 +476,42 @@ __webpack_require__.r(__webpack_exports__);
     this.loadData();
   },
   methods: {
+    onInput: function onInput(e) {
+      // console.log(e.detail.value);
+      var inputKeyword = e.detail.value;
+      this.search_item = inputKeyword;
+      getApp().globalData.search_item_name = inputKeyword;
+      console.log(getApp().globalData.search_item_name);
+    },
+    onSearch: function onSearch() {
+      uni.navigateTo({
+        url: './search' });
+
+    },
     RadioChange: function RadioChange(e) {
-      console.log(e);
       this.supplier_id_radio = e.detail.value;
       console.log('select supplier: ' + this.supplier_id_radio);
 
+      var supplier = this.getSupplierById(this.supplier_id_radio);
+
+      this.selected_supplier_id = supplier.supplier_name_id;
+      this.selected_supplier_name = supplier.supplier_name;
+      this.select_supplier_price = supplier.price;
+
     },
+
+    getSupplierById: function getSupplierById(supplier_id) {
+      if (this.item_supplier_list.length > 0) {
+        for (var i = 0; i < this.item_supplier_list.length; i++) {
+          var id = this.item_supplier_list[i].id;
+          if (id == supplier_id) {
+            return this.item_supplier_list[i];
+          }
+        }
+      }
+      return '';
+    },
+
     /**
         * 获取商品供应商列表
         */
@@ -470,10 +528,18 @@ __webpack_require__.r(__webpack_exports__);
 
     },
     successSupplierCb: function successSupplierCb(rsp) {
+      var isEmpty = true;
+      for (var x in rsp.data) {
+        isEmpty = false;
+      }
+      this.showEmptySupplier = isEmpty;
+
       if (rsp.data.error === 0) {
         this.item_supplier_list = rsp.data.msg.supplier_list;
         console.log('supplier list:');
         console.log(this.item_supplier_list);
+
+        // this.supplier_id_radio = this.item_supplier_list[0].id;
       }
     },
     failSupplierCb: function failSupplierCb(err) {
@@ -497,6 +563,23 @@ __webpack_require__.r(__webpack_exports__);
     },
 
     onAddToCart: function onAddToCart() {
+      console.log("supplier: " + this.selected_supplier_name);
+      this.current_item_info.selected_supplier_name = this.selected_supplier_name;
+      this.current_item_info.selected_supplier = this.selected_supplier_id;
+      this.current_item_info.selected_supplier_price = this.select_supplier_price;
+
+      var isExceed = false;
+      var item_limit_price = parseFloat(this.current_item_info.asset_limit_price);
+      var supplier_price = parseFloat(this.select_supplier_price);
+
+      if (item_limit_price == 0.0) {
+        isExceed = false;
+      } else if (item_limit_price < supplier_price) {
+        isExceed = true;
+      }
+
+      this.current_item_info.is_exceed = isExceed;
+
       if (getApp().globalData.cart_list_info.length == 0) {
         getApp().globalData.cart_list_info.push(this.current_item_info);
         this.showToast('成功添加到物品篮');
@@ -506,15 +589,15 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       for (var i = 0; i < getApp().globalData.cart_list_info.length; i++) {
-        if (getApp().globalData.cart_list_info[i].asset_name == this.current_item_info.asset_name) {
-          this.showToast(this.current_item_info.asset_name + ' 已添加过了，无须重复添加');
+        if (getApp().globalData.cart_list_info[i].asset_sn == this.current_item_info.asset_sn) {
+          this.showToast(this.current_item_info.asset_sn + ' 已添加过了，无须重复添加');
           console.log(getApp().globalData.cart_list_info);
           this.hideModal();
           return;
         }
       }
 
-      getApp().globalData.cart_list_info.push(item);
+      getApp().globalData.cart_list_info.push(this.current_item_info);
       console.log(getApp().globalData.cart_list_info);
       this.showToast(this.current_item_info.asset_name + ' 成功添加到物品篮');
       this.hideModal();
@@ -522,7 +605,7 @@ __webpack_require__.r(__webpack_exports__);
 
     onMinus: function onMinus(item) {
       for (var i = 0; i < getApp().globalData.cart_list_info.length; i++) {
-        if (getApp().globalData.cart_list_info[i].asset_name == item.asset_name) {
+        if (getApp().globalData.cart_list_info[i].asset_sn == item.asset_sn) {
           getApp().globalData.cart_list_info.splice(i, 1);
           this.showToast(item.asset_name + '成功从物品篮删除');
           console.log(getApp().globalData.cart_list_info);
@@ -545,7 +628,6 @@ __webpack_require__.r(__webpack_exports__);
     ///////////////////////////////////
 
     successCb: function successCb(rsp) {
-      uni.hideLoading();
       if (rsp.data.error === 0) {
         this.catList = rsp.data.msg.commoditycategory;
         console.log('commoditycategory:');
@@ -563,7 +645,15 @@ __webpack_require__.r(__webpack_exports__);
 
         for (var i = 0; i < this.catList.length; i++) {
           var newArr = this.catList[i].asset_info.map(function (item, stock, number) {
-            return Object.assign(item, { stock: stock }, { number: 0 }, { selected_supplier: -1 }, { selected_supplier_name: '' });
+            return Object.assign(
+            item,
+            { stock: 999 },
+            { number: 0 },
+            { total_price: 0 },
+            { selected_supplier: 0 },
+            { selected_supplier_name: '' },
+            { selected_supplier_price: '' },
+            { is_exceed: false });
           });
           newArr.map(function (item) {
             item.stock = parseInt(item.asset_count);
@@ -574,6 +664,7 @@ __webpack_require__.r(__webpack_exports__);
         this.listCur = this.catList[0];
         this.mainCur = this.catList[0].id;
       }
+      uni.hideLoading();
     },
     failCb: function failCb(err) {
       uni.hideLoading();

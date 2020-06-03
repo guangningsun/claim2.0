@@ -1251,6 +1251,12 @@ button.cuIcon.lg {
 	line-height: 1.6em;
 }
 
+.cu-list.menu-avatar>.cu-item .content4 {
+	position: absolute;
+	left: 180upx;
+	line-height: 1.6em;
+}
+
 .cu-list.menu-avatar>.cu-item .content.flex-sub {
 	width: calc(100% - 96upx - 60upx - 20upx);
 }
@@ -3365,6 +3371,12 @@ scroll-view.cu-steps .cu-item {
 	border-color: #8dc63f;
 }
 
+
+.line-light-blue::after,
+.lines-light-blue::after {
+	border-color: #5ec1df;
+}
+
 .line-green::after,
 .lines-green::after {
 	border-color: #39b54a;
@@ -3870,6 +3882,12 @@ scroll-view.cu-steps .cu-item {
 .line-olive,
 .lines-olive {
 	color: #8dc63f;
+}
+
+.text-light-blue,
+.line-light-blue,
+.lines-light-blue {
+	color: #5ec1df;
 }
 
 .text-green,

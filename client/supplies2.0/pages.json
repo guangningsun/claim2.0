@@ -20,7 +20,15 @@
 			"style": {}
 		}
 
-	],
+	    ,{
+            "path" : "pages/order/order_confirm",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/category/search",
+            "style" : {}
+        }
+    ],
 	"globalStyle": {
 		"mp-alipay": {
 			/* 支付宝小程序特有相关 */

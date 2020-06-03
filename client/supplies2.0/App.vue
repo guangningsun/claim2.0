@@ -22,12 +22,17 @@
 			api_submit_user_info:'submit_user_info/',
 			api_get_supplier:'get_supplier/',
 			get_user_info:'get_user_info_by_wxid/',
+			get_apartment_balance:'get_category_surplus/',
+			get_asset_by_cname:'asset_by_cname/',
+			get_submit_order:'submit_order/',
 			
 			
 			// 物品篮物品
 			cart_list_info: [],
 			catList:[],
 			cart_item_id_list:[],
+			
+			search_item_name:''
 		},
 
 		onLaunch: function() {

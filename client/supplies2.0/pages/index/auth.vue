@@ -98,7 +98,7 @@ export default {
 		};
 	},
 	onLoad: function(options) {
-		console.log('==============');
+		console.log('======二维码解析参数========');
 		console.log(options.q);
 		var scene = decodeURIComponent(options.q); // 使用decodeURIComponent解析  获取当前二维码的网址
 		var arr1 = scene.split('/');
@@ -182,6 +182,7 @@ export default {
 				
 				let user_name = this.user_info[0].user_name;
 				console.log('user_name====' + user_name);
+				uni.setStorageSync('key_user_name',user_name);
 				if(this.isEmpty(user_name)){
 					uni.navigateTo({
 						url:'./user_info'
@@ -190,6 +191,7 @@ export default {
 					let user_auth = uni.getStorageSync('key_user_auth')
 					if (user_auth == 0) {
 						this.apartmentId = this.user_info[0].category;
+						uni.setStorageSync('key_cat',this.apartmentId);
 						console.log('apart: ' + this.apartmentId);
 						if(!this.isEmpty(this.apartmentId)){
 							uni.hideLoading();

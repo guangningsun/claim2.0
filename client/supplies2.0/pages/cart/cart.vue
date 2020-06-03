@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-gradual-green" :isBack="true">
+		<cu-custom bgColor="bg-gradual-blue" :isBack="true">
 			<block slot="content">物品篮</block>
 		</cu-custom>
 		
@@ -15,7 +15,7 @@
 			<view class="cu-card card-margin">
 				<view
 					class="cu-item padding-sm solids"
-					:class="[parseInt(item.number) > 0 ? 'line-olive' : '']"
+					:class="[parseInt(item.number) > 0 ? 'line-light-blue' : '']"
 				>
 					<view class="flex justify-between">
 						<!-- <img class="margin-left-xl" :src="domain + item.asset_image ../../static/default.png" :onerror="default_img" style="width: 150upx; height: 150upx;"></img> -->
@@ -27,36 +27,50 @@
 								style="width: 150upx; height: 150upx;"
 							/>
 							<view class="margin-left-xs">
-								<view>{{ item.asset_name }}</view>
-								<view class="flex align-center">
+								<view class="flex">
+									<view class="title text-df margin-right-sm">
+										{{ item.asset_name }} | 
+									</view>
+									<view class="text-orange text-df">
+										单价:{{item.selected_supplier_price}}
+									</view>
+								</view>
+								
+								<view>
 									<text class="text-gray margin-right-xs">
-										库存:{{ item.asset_count }}
+										型号: {{ item.asset_type }}
 									</text>
-									<view class="text-gray">{{ item.asset_unit }}</view>
 								</view>
 								<view>
 									<text class="text-gray margin-right-xs">
-										型号:{{ item.asset_type }}
+										规格: {{ item.asset_specification }}
 									</text>
 								</view>
 								<view>
 									<text class="text-gray margin-right-xs">
-										规格:{{ item.asset_specification }}
+										供应商: {{ item.selected_supplier_name }}
 									</text>
 								</view>
 							</view>
 						</view>
 
 						<view class="flex align-center">
-							<uni-number-box
+							<!-- <uni-number-box
 								class="step"
 								:min="0"
 								:max="item.stock"
 								:value="item.number > item.stock ? item.stock : item.number"
 								:id="item.item_id"
 								@change="numberChange($event, item, index)"
+							/> -->
+							<uni-number-box
+								class="step"
+								:min="0"
+								:max="9999"
+								:value="item.number > 9999 ? 9999 : item.number"
+								:id="item.item_id"
+								@change="numberChange($event, item, index)"
 							/>
-							<!-- <view class="cuIcon-close"></view> -->
 						</view>
 					</view>
 				</view>
@@ -97,14 +111,13 @@
 					<view class="cu-form-group">
 						<view class="title">理由</view>
 						<input class="text-left" placeholder="输入申请理由" name="input" v-model="reason"></input>
-						<!-- <textarea class="text-left" maxlength="-1" @input="textareaInput" placeholder="输入拒绝原因"></textarea> -->
 					</view>
 				</view>
 		
 				<view class="cu-bar bg-white justify-end">
 					<view class="action">
 						<button class="cu-btn line-gray text-gray" @tap="hideModal">取消</button>
-						<button class="cu-btn bg-olive margin-left" @tap="onConfirmReason()">确定</button>
+						<button class="cu-btn bg-light-blue margin-left" @tap="onConfirmReason()">确定</button>
 					</view>
 				</view>
 			</view>
@@ -143,14 +156,14 @@ export default {
 			pattern: {
 				color: '#7A7E83',
 				backgroundColor: '#fff',
-				selectedColor: '#0b988f',
-				buttonColor: '#0b988f'
+				selectedColor: '#2481c4',
+				buttonColor: '#59aef9'
 			},
 			content: [
 				{
 					iconPath: '/static/submit1.png',
 					selectedIconPath: '/static/submit1.png',
-					text: '提交选择',
+					text: '提交订单',
 					active: true
 				}
 			],
@@ -198,6 +211,13 @@ export default {
 			this.cartList[index].number = event;
 			let temp = this.cartList[index];
 			this.$set(this.cartList, index, temp);
+			
+			let num = parseInt(this.cartList[index].number);
+			let price = parseFloat(this.cartList[index].selected_supplier_price);
+			
+			let totalPrice = num * price;
+			console.log(totalPrice);
+			this.cartList[index].total_price = totalPrice;
 		},
 
 		showModal(e) {
@@ -217,7 +237,16 @@ export default {
 		},
 
 		trigger(e) {
-			this.exceedHint = '';
+			// this.exceedHint = '';
+			// let itemList = this.cartList.filter(item => {
+			// 	return item.number > 0;
+			// });
+			
+			// if(itemList.length == 0){
+			// 	this.showToast('请选择物品数量');
+			// 	return;
+			// }
+		
 			let itemList = this.cartList.filter(item => {
 				return item.number > 0;
 			});
@@ -227,43 +256,49 @@ export default {
 				return;
 			}
 			
-			let isExceedLimit = false;
-			for (let i = 0; i < itemList.length; i++) { 
-				console.log('current number: '+this.cartList[i].number);
-				console.log('lim num: '+itemList[i].asset_limit_nu);
+			getApp().globalData.cart_list_info = this.cartList;
+			
+			uni.navigateTo({
+				url:'../order/order_confirm'
+			})
+			
+			// let isExceedLimit = false;
+			// for (let i = 0; i < itemList.length; i++) { 
+			// 	console.log('current number: '+this.cartList[i].number);
+			// 	console.log('lim num: '+itemList[i].asset_limit_nu);
 				
-			    if(itemList[i].asset_limit_nu < itemList[i].number){
-					isExceedLimit = true;
-					if(i ==  itemList.length - 1){
-						this.exceedHint += itemList[i].asset_name.replace(/\s*/g,"") + ' | 限领:' + itemList[i].asset_limit_nu;
-					}else{
-						this.exceedHint += itemList[i].asset_name.replace(/\s*/g,"") + ' | 限领:' + itemList[i].asset_limit_nu +'\n';
-					}
-				}
-			 }
-			 console.log(this.exceedHint);
+			//     if(itemList[i].asset_limit_nu < itemList[i].number){
+			// 		isExceedLimit = true;
+			// 		if(i ==  itemList.length - 1){
+			// 			this.exceedHint += itemList[i].asset_name.replace(/\s*/g,"") + ' | 限领:' + itemList[i].asset_limit_nu;
+			// 		}else{
+			// 			this.exceedHint += itemList[i].asset_name.replace(/\s*/g,"") + ' | 限领:' + itemList[i].asset_limit_nu +'\n';
+			// 		}
+			// 	}
+			//  }
+			//  console.log(this.exceedHint);
 			 
-			 if(isExceedLimit){
-				 this.showModal('ReasonModal');
-			 }else{
-				 if (e.index === 0) {
-				 	uni.showModal({
-				 		title: '提示',
-				 		content: '是否申领选择的物品？',
-				 		success: res => {
-				 			if (res.confirm) {
-				 				this.submit();
-				 			} else if (res.cancel) {
-				 				console.log('用户点击取消');
-				 			}
-				 		}
-				 	});
-				 } else if (e.index === 1) {
-				 	uni.navigateTo({
-				 		url: '../history/history'
-				 	});
-				 }
-			 }
+			//  if(isExceedLimit){
+			// 	 this.showModal('ReasonModal');
+			//  }else{
+			// 	 if (e.index === 0) {
+			// 	 	uni.showModal({
+			// 	 		title: '提示',
+			// 	 		content: '是否申领选择的物品？',
+			// 	 		success: res => {
+			// 	 			if (res.confirm) {
+			// 	 				this.submit();
+			// 	 			} else if (res.cancel) {
+			// 	 				console.log('用户点击取消');
+			// 	 			}
+			// 	 		}
+			// 	 	});
+			// 	 } else if (e.index === 1) {
+			// 	 	uni.navigateTo({
+			// 	 		url: '../history/history'
+			// 	 	});
+			// 	 }
+			//  }
 		},
 
 		successCallback(rsp) {
@@ -309,6 +344,12 @@ export default {
 		},
 
 		submit() {
+			// uni.navigateTo({
+			// 	url:'../order/order_confirm'
+			// });
+			
+			// getApp().globalData.cart_list_info = 
+			
 			let itemList = this.cartList.filter(item => {
 				return item.number > 0;
 			});
@@ -317,46 +358,52 @@ export default {
 				this.showToast('请选择物品数量');
 				return;
 			}
-
-			uni.showLoading({
-				title: '正在提交'
-			});
 			
-			this.hideModal();
+			getApp().globalData.cart_list_info = itemList;
+			
+			uni.navigateTo({
+				url:'../order/order_confirm'
+			});
 
-			var cat = uni.getStorageSync('key_cat');
-			console.log('===cat: ',cat);
-			if(cat){
-				let result_list = itemList.map(item => {
-					return Object.assign(
-						{ claim_count: item.number },
-						{ claim_name: item.asset_name },
-						{ claim_unit: item.asset_unit},
-						{ id: item.id }
-					);
-				});
+			// uni.showLoading({
+			// 	title: '正在提交'
+			// });
+			
+			// this.hideModal();
+
+			// var cat = uni.getStorageSync('key_cat');
+			// console.log('===cat: ',cat);
+			// if(cat){
+			// 	let result_list = itemList.map(item => {
+			// 		return Object.assign(
+			// 			{ claim_count: item.number },
+			// 			{ claim_name: item.asset_name },
+			// 			{ claim_unit: item.asset_unit},
+			// 			{ id: item.id }
+			// 		);
+			// 	});
 				
-				console.log(result_list);
+			// 	console.log(result_list);
 				
-				let params = {
-					choose_list: JSON.stringify(result_list),
-					category: cat,
-					reason: this.reason,
-					claim_weixin_openid: uni.getStorageSync('key_wx_openid')
-				};
+			// 	let params = {
+			// 		choose_list: JSON.stringify(result_list),
+			// 		category: cat,
+			// 		reason: this.reason,
+			// 		claim_weixin_openid: uni.getStorageSync('key_wx_openid')
+			// 	};
 				
-				this.requestWithMethod(
-					getApp().globalData.api_claim_asset,
-					'POST',
-					params,
-					this.successCallback,
-					this.failCallback,
-					this.completeCallback
-				);
-			}
-			else{
-				this.showToast('部门号为空，请扫部门提供的二维码进行申请')
-			}
+			// 	this.requestWithMethod(
+			// 		getApp().globalData.api_claim_asset,
+			// 		'POST',
+			// 		params,
+			// 		this.successCallback,
+			// 		this.failCallback,
+			// 		this.completeCallback
+			// 	);
+			// }
+			// else{
+			// 	this.showToast('部门号为空，请扫部门提供的二维码进行申请')
+			// }
 		}
 	}
 };

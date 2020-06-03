@@ -94,7 +94,8 @@ export default {
 			apartment_picker: [],
 			apartment_info_list:[],
 
-			btn_disabled: true
+			btn_disabled: true,
+			apartment_id: -1
 		};
 	},
 
@@ -168,6 +169,9 @@ export default {
 			
 			let info = this.apartment_info_list[this.apartment_picker_index];
 			let apart_id = info.id;
+			this.apartment_id = apart_id;
+			
+			uni.setStorageSync('key_user_name',this.user_name);
 			
 			let params = {
 				openid: uni.getStorageSync('key_wx_openid'),
@@ -188,9 +192,10 @@ export default {
 		successCallback(rsp) {
 			uni.hideLoading();
 			if (rsp.data.error === 0) {
+				uni.setStorageSync('key_cat',this.commoditycategory);
 				uni.showToast({
 					title:'提交成功'
-				})
+				});
 				uni.navigateTo({
 					url:'../category/category'
 				})
