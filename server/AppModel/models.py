@@ -230,3 +230,34 @@ class SupplierAssetInfo(models.Model):
     class Meta:
           verbose_name = '供应商库存管理'
           verbose_name_plural = '供应商库存管理'
+
+
+# 部门预算表
+class BudgetInfo(models.Model):
+    STATUS_CHOICES = [
+      ('1', '一月'),
+      ('2', '二月'),
+      ('3', '三月'),
+      ('4', '四月'),
+      ('5', '五月'),
+      ('6', '六月'),
+      ('7', '七月'),
+      ('8', '八月'),
+      ('9', '九月'),
+      ('10', '十月'),
+      ('11', '十一月'),
+      ('12', '十二月'),
+      ]
+    BUDGET_CHOICES = [
+      ('0', '未执行'),
+      ('1', '已执行'),
+      ('2', '执行中'),
+      ]
+    category = models.ForeignKey('Category',on_delete=models.CASCADE,null=True,blank=True,verbose_name='部门')
+    year = models.CharField(max_length=200, verbose_name='年度',default="年度")
+    month = models.CharField(max_length=200, choices=STATUS_CHOICES,verbose_name='月度')
+    budget = models.CharField(max_length=200,verbose_name='预算')
+    cost_num = models.CharField(max_length=200,verbose_name='花销')
+    surplus = models.CharField(max_length=200, verbose_name='余额')
+    status = models.CharField(max_length=200, choices=BUDGET_CHOICES,verbose_name='执行状态')
+

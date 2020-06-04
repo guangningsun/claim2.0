@@ -225,6 +225,10 @@ SIMPLEUI_CONFIG = {
             'name': '用户管理',
             'url': 'AppModel/userinfo/',
             'icon': 'fa fa-server'
+        },{
+            'name': '部门预算',
+            'url': 'AppModel/budgetinfo/',
+            'icon': 'fa fa-server'
         }]
         },{
         'app': 'auth',

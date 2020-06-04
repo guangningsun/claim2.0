@@ -174,6 +174,16 @@ class SupplierInfoAdmin(ImportExportModelAdmin):
     ]
     list_per_page = 15
 
+# 部门预算管理
+
+@admin.register(BudgetInfo)
+class BudgetInfoAdmin(ImportExportModelAdmin): 
+    list_display=['id','category','year','month','budget','cost_num','surplus','status']
+    search_fields =('category','year','month','budget','cost_num','surplus','status')
+    fieldsets = [
+       ('用户数据', {'fields': ['category','year','month','budget','cost_num','surplus','status'], 'classes': ['']}),
+    ]
+    list_per_page = 15
 
 # 供应商库存管理
 @admin.register(SupplierAssetInfo)
