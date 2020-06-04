@@ -521,6 +521,8 @@ def submit_order(request):
         try:
             #判断是否超限，如果超限订单待审批order_status='0' commodity_status=3
             #如果未超限订单直接审批通过order_status='3',commodity_status=0
+            msg = {"提交订单成功"}
+            error = 0
             if is_exceed == "True":
                 os='0'
                 cs='3'
@@ -559,9 +561,19 @@ def submit_order(request):
                 commodity_info.save()
                 order_info.order_items.add(commodity_info)
                 order_info.save()
-
-
-            res_json = {"error": 0,"msg": {"提交订单成功"}}
+                
+            # 部门花销增加，余额减少
+            current_month = datetime.datetime.now().month
+            try:
+                budgetinfo = BudgetInfo.objects.get(category=Category.objects.get(id=order_apartment),month=current_month)
+                current_cost = budgetinfo.cost_num
+                budgetinfo.cost_num = float(current_cost)+float(order_total_price)
+                budgetinfo.surplus = float(budgetinfo.budget) - float(budgetinfo.cost_num)
+                budgetinfo.save()
+            except:
+                error=1
+                msg={"该部门 "+current_month+"月份未做预算"}
+            res_json = {"error": error ,"msg": msg }
             return Response(res_json)
         except:
             res_json = {"error": 0,"msg": {"提交订单失败"}}
