@@ -113,7 +113,6 @@ class OrderInfoAdmin(ImportExportModelAdmin):
     # 拒绝订单
     def rejectted(self, request, queryset):
         rows_updated = queryset.update(order_status='2')
-        import pdb;pdb.set_trace()
         #部门预算金额回退
         current_month = datetime.datetime.now().month
         for orderinfo in queryset:
@@ -121,6 +120,7 @@ class OrderInfoAdmin(ImportExportModelAdmin):
             current_cost = budgetinfo.cost_num
             budgetinfo.cost_num = float(current_cost)-float(orderinfo.order_total_price)
             budgetinfo.surplus = float(budgetinfo.budget) - float(budgetinfo.cost_num) 
+            budgetinfo.save()
         if rows_updated == 1:
             message_bit = "1 条订单申请"
         else:

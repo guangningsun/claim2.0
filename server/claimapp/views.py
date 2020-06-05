@@ -74,11 +74,15 @@ def asset_by_cid(request,cid):
 @api_view(['GET'])
 def asset_by_cname(request,cname):
     if request.method == 'GET':
-        assetset = AssetInfo.objects.filter(asset_name__contains=cname)
-        serializer = AssetSerializer(assetset, many=True)
-        res_json = {"error": 0,"msg": {
-                    "asset_info": serializer.data }}
-        return Response(res_json)
+        try:
+            assetset = AssetInfo.objects.filter(asset_name__contains=cname)
+            serializer = AssetSerializer(assetset, many=True)
+            res_json = {"error": 0,"msg": {
+                        "asset_info": serializer.data }}
+            return Response(res_json)
+        except:
+            res_json = {"error": 1,"msg": {"没有该商品"}}
+            return Response(res_json)
 
 
 # 获取部门列表
@@ -561,7 +565,7 @@ def submit_order(request):
                 commodity_info.save()
                 order_info.order_items.add(commodity_info)
                 order_info.save()
-                
+
             # 部门花销增加，余额减少
             current_month = datetime.datetime.now().month
             try:
@@ -585,10 +589,12 @@ def submit_order(request):
 @api_view(['GET'])
 def get_category_surplus(request,cid):
     if request.method == 'GET':
-        categoryset = Category.objects.filter(id=cid)
-        serializer = CategorySerializer(categoryset, many=True)
+        category = Category.objects.gei(id=cid)
+        current_month = datetime.datetime.now().month
+        budgetinfo = BudgetInfo.objects.get(category=category,month=current_month)
+        serializer = BudgetInfoSerializer(budgetinfo, many=True)
         res_json = {"error": 0,"msg": {
-                    "claim_record_info": serializer.data }}
+                    "budget_info": serializer.data }}
         return Response(res_json)
 
 # 获取供应商列表

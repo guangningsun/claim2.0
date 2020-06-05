@@ -15,6 +15,12 @@ class SupplierSerializer(serializers.ModelSerializer):
         model = SupplierAssetInfo
         fields = ('id','supplier_name','supplier_name_id','price')
 
+class BudgetInfoSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = BudgetInfo
+        fields = ('category','year','month','budget','cost_num','surplus','status')
+
 class UserInfoSerializer(serializers.ModelSerializer):
     
     class Meta:
