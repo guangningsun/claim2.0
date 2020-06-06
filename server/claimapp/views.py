@@ -548,15 +548,16 @@ def submit_order(request):
                 asset_sn = order_item['item_sn']
                 supplier_id = order_item['item_supplier_id']
                 commodity_num = order_item['item_num']
-                commodity_price = order_item['item_price']
+                commodity_total_price = order_item['item_price']
                 asset_info = AssetInfo.objects.get(asset_sn=asset_sn)
                 supplierassetinfo_list = SupplierAssetInfo.objects.filter(supplier_name=supplier_id)
                 commodity_info = CommodityInfo(commodity_name=asset_info.asset_name ,
                                                 commodity_unit=asset_info.asset_unit ,
                                                 commodity_image=asset_info.asset_image ,
-                                                commodity_total_price=float(commodity_price)*int(commodity_num),
+                                                # commodity_total_price=float(commodity_price)*int(commodity_num),
+                                                commodity_total_price=commodity_total_price,
                                                 commodity_specification=asset_info.asset_specification,
-                                                commodity_price=commodity_price,
+                                                commodity_price=supplierassetinfo_list[0].price,
                                                 commodity_count=commodity_num,
                                                 commodity_supplier=SupplierInfo.objects.get(id=supplier_id),
                                                 commodity_status=cs,
@@ -589,7 +590,7 @@ def submit_order(request):
 @api_view(['GET'])
 def get_category_surplus(request,cid):
     if request.method == 'GET':
-        category = Category.objects.gei(id=cid)
+        category = Category.objects.get(id=cid)
         current_month = datetime.datetime.now().month
         budgetinfo = BudgetInfo.objects.get(category=category,month=current_month)
         serializer = BudgetInfoSerializer(budgetinfo, many=True)
