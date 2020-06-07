@@ -97,6 +97,22 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
+  var l0 = _vm.__map(_vm.assetList, function(item2, index2) {
+    var m0 = parseFloat(item2.asset_limit_price)
+    return {
+      $orig: _vm.__get_orig(item2),
+      m0: m0
+    }
+  })
+
+  _vm.$mp.data = Object.assign(
+    {},
+    {
+      $root: {
+        l0: l0
+      }
+    }
+  )
 }
 var recyclableRender = false
 var staticRenderFns = []
@@ -130,7 +146,7 @@ __webpack_require__.r(__webpack_exports__);
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _uniFab = function _uniFab() {__webpack_require__.e(/*! require.ensure | node-modules/@dcloudio/uni-ui/lib/uni-fab/uni-fab */ "node-modules/@dcloudio/uni-ui/lib/uni-fab/uni-fab").then((function () {return resolve(__webpack_require__(/*! @dcloudio/uni-ui/lib/uni-fab/uni-fab */ 63));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
+/* WEBPACK VAR INJECTION */(function(uni) {Object.defineProperty(exports, "__esModule", { value: true });exports.default = void 0;var _uniFab = function _uniFab() {__webpack_require__.e(/*! require.ensure | node-modules/@dcloudio/uni-ui/lib/uni-fab/uni-fab */ "node-modules/@dcloudio/uni-ui/lib/uni-fab/uni-fab").then((function () {return resolve(__webpack_require__(/*! @dcloudio/uni-ui/lib/uni-fab/uni-fab */ 77));}).bind(null, __webpack_require__)).catch(__webpack_require__.oe);};var _default =
 
 
 
@@ -479,6 +495,9 @@ __webpack_require__.r(__webpack_exports__);
       if (rsp.data.error === 0) {
         this.item_supplier_list = rsp.data.msg.supplier_list;
         console.log('supplier list:');
+        this.item_supplier_list.sort(function (a, b) {
+          return parseFloat(a.price) - parseFloat(b.price);
+        });
         console.log(this.item_supplier_list);
       }
     },
@@ -525,6 +544,7 @@ __webpack_require__.r(__webpack_exports__);
         this.showToast('成功添加到物品篮');
         console.log(getApp().globalData.cart_list_info);
         this.hideModal();
+        this.supplier_id_radio = -1;
         return;
       }
 
@@ -536,6 +556,7 @@ __webpack_require__.r(__webpack_exports__);
           this.showToast(this.current_item_info.asset_sn + ' 已添加过了，无须重复添加');
           console.log(getApp().globalData.cart_list_info);
           this.hideModal();
+          this.supplier_id_radio = -1;
           return;
         }
       }
@@ -544,6 +565,7 @@ __webpack_require__.r(__webpack_exports__);
       console.log(getApp().globalData.cart_list_info);
       this.showToast(this.current_item_info.asset_name + ' 成功添加到物品篮');
       this.hideModal();
+      this.supplier_id_radio = -1;
     },
 
     onMinus: function onMinus(item) {

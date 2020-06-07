@@ -25,14 +25,26 @@
 			get_apartment_balance:'get_category_surplus/',
 			get_asset_by_cname:'asset_by_cname/',
 			get_submit_order:'submit_order/',
+			get_all_order_info_list:'get_all_order_info_list/',
 			
+			image_upload_url:'https://brilliantlife.com.cn:8016/media/order_image',
 			
 			// 物品篮物品
 			cart_list_info: [],
 			catList:[],
 			cart_item_id_list:[],
 			
-			search_item_name:''
+			search_item_name:'',
+			
+			// key 值
+			key_user_name:'key_user_name',
+			key_cat:'key_cat',
+			key_user_auth:'key_user_auth',
+			key_wx_openid:'key_wx_openid',
+			key_user_head:'key_user_head',
+			key_user_nickname:'key_user_nickname',
+			key_phone_num:'key_phone_num'
+			
 		},
 
 		onLaunch: function() {

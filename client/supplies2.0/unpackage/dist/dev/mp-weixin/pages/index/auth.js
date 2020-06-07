@@ -242,12 +242,12 @@ var _default =
     var apartId = arr1[arr1.length - 1];
     this.apartmentId = apartId;
     console.log(this.apartmentId);
-    uni.setStorageSync('key_cat', this.apartmentId);
+    uni.setStorageSync(getApp().globalData.key_cat, this.apartmentId);
   },
   onShow: function onShow() {var _this = this;
-    this.user_phone = uni.getStorageSync('key_phone_num');
-    this.openid = uni.getStorageSync('key_wx_openid');
-    this.user_auth = uni.getStorageSync('key_user_auth');
+    this.user_phone = uni.getStorageSync(getApp().globalData.key_phone_num);
+    this.openid = uni.getStorageSync(getApp().globalData.key_wx_openid);
+    this.user_auth = uni.getStorageSync(getApp().globalData.key_user_auth);
 
     uni.login({
       provider: 'weixin',
@@ -283,15 +283,9 @@ var _default =
 
         // console.log(this.openid);
 
-        uni.setStorage({
-          key: 'key_user_auth',
-          data: user_auth });
+        uni.setStorageSync(getApp().globalData.key_user_auth, user_auth);
 
-
-        uni.setStorage({
-          key: 'key_wx_openid',
-          data: rsp.data.openid });
-
+        uni.setStorageSync(getApp().globalData.key_wx_openid, rsp.data.openid);
 
         ////////
         console.log('is_login:' + is_login);
@@ -319,16 +313,19 @@ var _default =
 
         var user_name = this.user_info[0].user_name;
         console.log('user_name====' + user_name);
-        uni.setStorageSync('key_user_name', user_name);
+        uni.setStorageSync(getApp().globalData.key_user_name, user_name);
         if (this.isEmpty(user_name)) {
           uni.navigateTo({
             url: './user_info' });
 
         } else {
-          var user_auth = uni.getStorageSync('key_user_auth');
+          var user_auth = uni.getStorageSync(getApp().globalData.key_user_auth);
           if (user_auth == 0) {
             this.apartmentId = this.user_info[0].category;
-            uni.setStorageSync('key_cat', this.apartmentId);
+            uni.setStorageSync(getApp().globalData.key_cat, this.apartmentId);
+            uni.setStorageSync(getApp().globalData.key_user_name, this.user_info[0].user_name);
+            uni.setStorageSync(getApp().globalData.key_phone_num, this.user_info[0].phone_number);
+
             console.log('apart: ' + this.apartmentId);
             if (!this.isEmpty(this.apartmentId)) {
               uni.hideLoading();
@@ -383,7 +380,7 @@ var _default =
           if (_this2.containsStr(res.result, 'http')) {
             var cat = res.result.split('/');
             console.log('cat: ' + cat);
-            uni.setStorageSync('key_cat', cat[cat.length - 1]);
+            uni.setStorageSync(getApp().globalData.key_cat, cat[cat.length - 1]);
 
             // uni.navigateTo({
             // 	url: '../category/category_all'
@@ -404,14 +401,8 @@ var _default =
       console.log(e.detail.userInfo.avatarUrl);
       this.headImg = e.detail.userInfo.avatarUrl;
       this.user_nickname = e.detail.userInfo.nickName;
-      uni.setStorage({
-        key: 'key_user_head',
-        data: e.detail.userInfo.avatarUrl });
-
-      uni.setStorage({
-        key: 'key_user_nickname',
-        data: e.detail.userInfo.nickName });
-
+      uni.setStorageSync(getApp().globalData.key_user_head, e.detail.userInfo.avatarUrl);
+      uni.setStorageSync(getApp().globalData.key_user_nickname, e.detail.userInfo.nickName);
     },
 
     ///////////////
@@ -423,14 +414,8 @@ var _default =
       this.showCenterIcon = false;
 
       if (this.containsStr(rsp.errMsg, 'ok')) {
-        uni.setStorage({
-          key: 'key_phone_num',
-          data: rsp.data.purePhoneNumber });
-
-        uni.setStorage({
-          key: 'key_user_auth',
-          data: rsp.data.auth });
-
+        uni.setStorageSync(getApp().globalData.key_phone_num, rsp.data.purePhoneNumber);
+        uni.setStorageSync(getApp().globalData.key_user_auth, rsp.data.auth);
 
         var auth = rsp.data.auth;
         console.log('phone cb auth: ' + auth);

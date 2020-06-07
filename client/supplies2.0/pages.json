@@ -28,6 +28,14 @@
             "path" : "pages/category/search",
             "style" : {}
         }
+        ,{
+            "path" : "pages/order/order_list",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/order/order_detail",
+            "style" : {}
+        }
     ],
 	"globalStyle": {
 		"mp-alipay": {

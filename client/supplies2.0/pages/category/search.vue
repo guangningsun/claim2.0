@@ -64,7 +64,7 @@
 								class="text-gray text-sm flex"
 							>
 								<text class="text-cut cu-tag line-yellow round sm">
-									限价:{{ item2.asset_limit_price }}元
+									{{ parseFloat(item2.asset_limit_price) > 0.0 ? '限价:' + item2.asset_limit_price : '单价不限'}}元
 								</text>
 							</view>
 
@@ -215,7 +215,7 @@
 					<view class="action">
 						<button class="cu-btn line-gray text-gray" @tap="hideModal">取消</button>
 						<button
-							:disabled="showEmptySupplier"
+							:disabled="showEmptySupplier || supplier_id_radio == -1"
 							v-show="!is_no_supplier"
 							class="cu-btn bg-gradual-green margin-left"
 							@tap="onAddToCart()"
@@ -347,6 +347,9 @@ export default {
 			if (rsp.data.error === 0) {
 				this.item_supplier_list = rsp.data.msg.supplier_list;
 				console.log('supplier list:');
+				this.item_supplier_list.sort(function(a,b){
+					return parseFloat(a.price) - parseFloat(b.price);
+				})
 				console.log(this.item_supplier_list);
 			}
 		},
@@ -393,6 +396,7 @@ export default {
 				this.showToast('成功添加到物品篮');
 				console.log(getApp().globalData.cart_list_info);
 				this.hideModal();
+				this.supplier_id_radio = -1;
 				return;
 			}
 
@@ -404,6 +408,7 @@ export default {
 					this.showToast(this.current_item_info.asset_sn + ' 已添加过了，无须重复添加');
 					console.log(getApp().globalData.cart_list_info);
 					this.hideModal();
+					this.supplier_id_radio = -1;
 					return;
 				}
 			}
@@ -412,6 +417,7 @@ export default {
 			console.log(getApp().globalData.cart_list_info);
 			this.showToast(this.current_item_info.asset_name + ' 成功添加到物品篮');
 			this.hideModal();
+			this.supplier_id_radio = -1;
 		},
 
 		onMinus(item) {

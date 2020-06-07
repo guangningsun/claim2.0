@@ -101,7 +101,7 @@ export default {
 
 	onLoad() {
 		this.requestApartment();
-		this.tel_num = uni.getStorageSync('key_phone_num');
+		this.tel_num = uni.getStorageSync(getApp().globalData.key_phone_num);
 	},
 
 	methods: {
@@ -171,10 +171,10 @@ export default {
 			let apart_id = info.id;
 			this.apartment_id = apart_id;
 			
-			uni.setStorageSync('key_user_name',this.user_name);
+			uni.setStorageSync(getApp().globalData.key_user_name,this.user_name);
 			
 			let params = {
-				openid: uni.getStorageSync('key_wx_openid'),
+				openid: uni.getStorageSync(getApp().globalData.key_wx_openid),
 				nickname: this.nickname,
 				username: this.user_name,
 				address: this.address,
@@ -192,7 +192,7 @@ export default {
 		successCallback(rsp) {
 			uni.hideLoading();
 			if (rsp.data.error === 0) {
-				uni.setStorageSync('key_cat',this.commoditycategory);
+				uni.setStorageSync(getApp().globalData.key_cat,this.commoditycategory);
 				uni.showToast({
 					title:'提交成功'
 				});

@@ -271,6 +271,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 var _default =
 {
   data: function data() {
@@ -281,26 +284,36 @@ var _default =
 
       imgList: [],
 
-      switchIsSpeciall: undefined,
+      switchIsSpeciall: true,
 
       order_item_list: [],
 
       exceed_reason: '',
-      tel: uni.getStorageSync('key_phone_num'),
+      tel: uni.getStorageSync(getApp().globalData.key_phone_num),
       apart_name: '',
-      name: uni.getStorageSync('key_user_name'),
+      name: uni.getStorageSync(getApp().globalData.key_user_name),
 
       totalPrice: 0,
       balance: this.apartment_balance - this.totalPrice,
 
       exceed_hint: '无',
       is_exceed: false,
-      is_item_price_exceed: false };
+      is_item_price_exceed: false,
 
+      imgFileList: [],
+
+      imageFile: null };
 
   },
   onLoad: function onLoad() {
     this.order_item_list = getApp().globalData.cart_list_info;
+
+    var itemList = this.order_item_list.filter(function (item) {
+      return item.number > 0;
+    });
+
+    this.order_item_list = itemList;
+
     console.log(this.order_item_list);
 
     var sum = 0;
@@ -329,14 +342,15 @@ var _default =
 
   },
   methods: {
+
     successCb: function successCb(rsp) {
 
       if (rsp.data.error === 0) {
         console.log(rsp.data);
-        var aparInfo = rsp.data.msg.claim_record_info[0];
+        var aparInfo = rsp.data.msg.budget_info[0];
         this.apartment_balance = aparInfo.surplus;
-        this.apart_name = aparInfo.name;
-        this.apart_id = aparInfo.id;
+        this.apart_name = aparInfo.category_name;
+        this.apart_id = aparInfo.category;
 
         this.balance = this.apartment_balance - this.totalPrice;
 
@@ -353,7 +367,7 @@ var _default =
 
     requestBalance: function requestBalance() {
       this.requestWithMethod(
-      getApp().globalData.get_apartment_balance + uni.getStorageSync('key_cat'),
+      getApp().globalData.get_apartment_balance + uni.getStorageSync(getApp().globalData.key_cat),
       'GET',
       '',
       this.successCb,
@@ -388,11 +402,28 @@ var _default =
         sizeType: ['original', 'compressed'], //可以指定是原图还是压缩图，默认二者都有
         sourceType: ['album', 'camera'],
         success: function success(res) {
+          console.log(res);
+
           if (_this2.imgList.length != 0) {
             _this2.imgList = _this2.imgList.concat(res.tempFilePaths);
+            _this2.imgFileList = _this2.imgFileList.concat(res.tempFiles);
           } else {
             _this2.imgList = res.tempFilePaths;
+            _this2.imgFileList = res.tempFiles;
           }
+
+          console.log(_this2.imgFileList);
+
+          // var test = document.getElementById('test');
+          // test.addEventListener('change', function() {
+          // 	var t_files = this.files;
+          // 	var str = '';
+          // 	for(var i = 0, len = t_files.length; i < len; i++) {
+          // 		console.log(t_files[i]);
+          // 		str += '<a href="javascript:void(0)">' + t_files[i].name + '</a><br/>';
+          // 	};
+          // 	document.getElementById('content').innerHTML = str;
+          // }, false);
         } });
 
     },
@@ -452,21 +483,21 @@ var _default =
         }
       }
 
-      // var uper = uni.uploadFile({
-      //     // 需要上传的地址
-      //     url:'http://demo.hcoder.net/index.php?c=uperTest',
-      //     // filePath  需要上传的文件
-      //     filePath: imgFiles,
-      //     name: 'file',
-      //     success(res1) {
-      // 		// 显示上传信息
-      // 		console.log(res1)
-      //     }
-      // });
-
-
       uni.showLoading({
         title: '正在提交订单' });
+
+
+      console.log(this.imgList);
+
+      // uni.uploadFile({
+      // 	url: getApp().globalData.image_upload_url,
+      // 	filePath: this.imgList[0],
+      // 	name: 'file',
+      // 	success: (uploadFileRes) => {
+      // 		console.log("upload:");
+      // 		console.log(uploadFileRes.data);
+      // 	}
+      // });
 
       var itemList = [];
 
@@ -478,24 +509,42 @@ var _default =
       });
       itemList = newArr;
 
+
       var params = {
-        weixin_openid: uni.getStorageSync('key_wx_openid'),
+        weixin_openid: uni.getStorageSync(getApp().globalData.key_wx_openid),
         order_apartment: this.apart_id,
         order_exceed_reason: this.exceed_reason,
         order_is_special: this.switchIsSpeciall ? 'True' : 'False',
-        order_image: '1',
+        order_image: '',
         order_item_list: JSON.stringify(itemList),
         order_total_price: this.totalPrice,
         is_exceed: this.is_exceed ? 'True' : 'False' };
 
 
-      this.requestWithMethod(
-      getApp().globalData.get_submit_order,
-      "POST",
-      params,
-      this.successCallback,
-      this.failCallback,
-      this.completeCallback);
+      if (this.imgList.length > 0) {
+        uni.uploadFile({
+          url: getApp().globalData.get_submit_order,
+          filePath: this.imgList[0],
+          name: 'file',
+          formData: params,
+          success: function success(uploadFileRes) {
+            // this.successCallback(uploadFileRes);
+            console.log('upload success');
+            console.log(uploadFileRes);
+          },
+          fail: function fail(res) {
+            console.log('upload failed');
+          } });
+
+      } else {
+        this.requestWithMethod(
+        getApp().globalData.get_submit_order,
+        "POST",
+        params,
+        this.successCallback,
+        this.failCallback,
+        this.completeCallback);
+      }
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 
