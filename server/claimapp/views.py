@@ -634,7 +634,7 @@ def get_all_order_info_list(request,weixin_id):
     order_user_id = userinfo.id
     # orderinfo = OrderInfo.objects.filter(order_user_id=order_user_id)
     # 通过用户id拿到订单id list
-    orderinfo_list = OrderInfo.objects.filter(order_user_id=order_user_id)
+    orderinfo_list = OrderInfo.objects.filter(order_user_id=order_user_id).order_by("order_create_time")
     serializer = OrderInfoSerializer(orderinfo_list, many=True)
     for i in range (0,len(serializer.data)):
         for k,v in serializer.data[i].items():
