@@ -5,6 +5,7 @@ from django.urls import path,re_path
 from django.views.static import serve
 from django.conf import settings
 from AppModel import admin as appadmin
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
     url('admin/', admin.site.urls),
@@ -27,7 +28,9 @@ urlpatterns = [
     path('get_category_surplus/<int:cid>', views.get_category_surplus),
     path('get_supplier/<int:sn>', views.get_supplier),
     path('submit_user_info/', views.submit_user_info),
-    path('get_user_info_by_wxid/<int:weixin_id>', views.get_user_info_by_wxid),
+    path('get_user_info_by_wxid/<weixin_id>', views.get_user_info_by_wxid),
+    path('submit_order/', views.submit_order),
+    path('asset_by_cname/<cname>', views.asset_by_cname)
     
 
     

@@ -70,6 +70,17 @@ def asset_by_cid(request,cid):
                     "asset_info": serializer.data }}
         return Response(res_json)
 
+# 通过物品分类 category id获取商品列表
+@api_view(['GET'])
+def asset_by_cname(request,cname):
+    if request.method == 'GET':
+        assetset = AssetInfo.objects.filter(asset_name__contains=cname)
+        serializer = AssetSerializer(assetset, many=True)
+        res_json = {"error": 0,"msg": {
+                    "asset_info": serializer.data }}
+        return Response(res_json)
+
+
 # 获取部门列表
 @api_view(['GET'])
 def get_category(request):
@@ -155,7 +166,6 @@ def submit_user_info(request):
         username = request.POST['username']
         apartment = request.POST['apartment']
         address = request.POST['address']
-        import pdb;pdb.set_trace()
         try:
             userinfo = UserInfo.objects.get(weixin_openid=openid)
             userinfo.nick_name=nickname
@@ -482,7 +492,6 @@ def commoditycategory_detail(request):
     if request.method == 'GET':
         commoditycategoryset = CommodityCategory.objects.all()
         serializer = CommodityCategorySerializer(commoditycategoryset, many=True)
-        # import pdb;pdb.set_trace()
         for i in range(0,len(serializer.data)):
             assetset = AssetInfo.objects.filter(asset_ccategory=serializer.data[i]['id'])
             asset_serializer = AssetSerializer(assetset, many=True)
@@ -494,6 +503,70 @@ def commoditycategory_detail(request):
         res_json = {"error": 0,"msg": {
                     "commoditycategory": serializer.data }}
         return Response(res_json)
+
+
+
+# 提交订单
+@api_view(['POST'])
+def submit_order(request):
+    if request.method == 'POST':
+        order_apartment = request.POST['order_apartment']
+        order_exceed_reason = request.POST['order_exceed_reason']
+        order_is_special = request.POST['order_is_special']
+        order_image = request.FILES.get('order_image',None)
+        order_item_list = request.POST['order_item_list']
+        order_total_price = request.POST['order_total_price']
+        is_exceed = request.POST['is_exceed']
+        weixin_openid = request.POST['weixin_openid']
+        try:
+            #判断是否超限，如果超限订单待审批order_status='0' commodity_status=3
+            #如果未超限订单直接审批通过order_status='3',commodity_status=0
+            if is_exceed == "True":
+                os='0'
+                cs='3'
+            else:
+                os='3'
+                cs='0'
+            order_info = OrderInfo(order_apartment=Category.objects.get(id=order_apartment),
+                                    order_status=os,
+                                    order_is_special=order_is_special,
+                                    order_create_time=int(time.time()),
+                                    order_total_price=order_total_price,
+                                    # order_image=order_image,
+                                    order_exceed_reason=order_exceed_reason,
+                                    order_user= UserInfo.objects.get(weixin_openid=weixin_openid)
+                                    )
+            order_info.order_image = order_image
+            order_info.save()
+            for order_item in json.loads(order_item_list):
+                asset_sn = order_item['item_sn']
+                supplier_id = order_item['item_supplier_id']
+                commodity_num = order_item['item_num']
+                commodity_price = order_item['item_price']
+                asset_info = AssetInfo.objects.get(asset_sn=asset_sn)
+                supplierassetinfo_list = SupplierAssetInfo.objects.filter(supplier_name=supplier_id)
+                commodity_info = CommodityInfo(commodity_name=asset_info.asset_name ,
+                                                commodity_unit=asset_info.asset_unit ,
+                                                commodity_image=asset_info.asset_image ,
+                                                commodity_total_price=float(commodity_price)*int(commodity_num),
+                                                commodity_specification=asset_info.asset_specification,
+                                                commodity_price=commodity_price,
+                                                commodity_count=commodity_num,
+                                                commodity_supplier=SupplierInfo.objects.get(id=supplier_id),
+                                                commodity_status=cs,
+                                                sys_username=supplierassetinfo_list[0].sys_username
+                                                )
+                commodity_info.save()
+                order_info.order_items.add(commodity_info)
+                order_info.save()
+
+
+            res_json = {"error": 0,"msg": {"提交订单成功"}}
+            return Response(res_json)
+        except:
+            res_json = {"error": 0,"msg": {"提交订单失败"}}
+            return Response(res_json)
+
 
 
 # 获取部门余额
@@ -510,18 +583,23 @@ def get_category_surplus(request,cid):
 @api_view(['GET'])
 def get_supplier(request,sn):
     if request.method == 'GET':
-        assetset = AssetInfo.objects.filter(asset_sn=sn)
-        serializer = SupplierSerializer(assetset, many=True)
+        assetinfo = AssetInfo.objects.get(asset_sn=sn)
+        supplierset = SupplierAssetInfo.objects.filter(assetinfo = assetinfo.id)
+        serializer = SupplierSerializer(supplierset, many=True)
+        res_json={}
         for i in range (0,len(serializer.data)):
             sup_name=""
-            for k,v in serializer.data[i].items():
-                if k == "asset_supplier":
-                    supplier_obj = SupplierInfo.objects.get(id=v)
-                    sup_name = supplier_obj.supplier_name
-            serializer.data[i]['supplier_name']=sup_name
-                        # supplier_name.append(supplier_obj.supplier_name)
-        res_json = {"error": 0,"msg": {
-                    "supplier_list": serializer.data }}
+            try:
+                for k,v in serializer.data[i].items():
+                    if k == "supplier_name":
+                        supplier_obj = SupplierInfo.objects.get(id=v)
+                        sup_name = supplier_obj.supplier_name
+                serializer.data[i]['supplier_name']=sup_name
+                serializer.data[i]['asset_unit']=assetinfo.asset_unit
+                res_json = {"error": 0,"msg": {
+                        "supplier_list": serializer.data }}
+            except:
+                res_json = {"error": 1,"msg": "暂无供应商" }
         return Response(res_json)
 
 

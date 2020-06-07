@@ -44,72 +44,16 @@ class AssetInfo(models.Model):
     asset_ccategory = models.ForeignKey('CommodityCategory',on_delete=models.CASCADE,null=True,blank=True,verbose_name='类别标签')
     asset_limit_nu = models.CharField(max_length=200,verbose_name='申领数量限制')
     asset_limit_price = models.CharField(max_length=200,verbose_name='申领单价限制')
-    asset_supplier = models.ForeignKey('SupplierInfo',on_delete=models.CASCADE,null=True,blank=True,verbose_name='供应商')
-    asset_price = models.CharField(max_length=200,verbose_name='报价')
-
-
+    # asset_supplier = models.ForeignKey('SupplierInfo',on_delete=models.CASCADE,null=True,blank=True,verbose_name='供应商')
+    # asset_price = models.CharField(max_length=200,verbose_name='报价')
 
     class Meta:
         verbose_name = '物品信息'
         verbose_name_plural = '物品信息'
     
-
-class Claimlist(models.Model):
-    claim_count = models.CharField(max_length=200,verbose_name='申领数量')
-    claim_name = models.CharField(max_length=200,verbose_name='物品名称')
-    claim_unit =  models.CharField(max_length=200,verbose_name='物品名称')
-
     def __str__(self):
-        return (("%s %s%s") % (self.claim_name,self.claim_count,self.claim_unit))
-
-    class Meta:
-        verbose_name = '物品清单'
-        verbose_name_plural = '物品清单'
-
-class ClaimRecord(models.Model):
-    STATUS_CHOICES = [
-    ('0', '待主管审批'),
-    ('1', '待主任审批'),
-    ('2', '待管理员审批'),
-    ('3', '审批完成'),
-    ('4', '已发放'),
-    ('5', '未批准'),
-    ]
-    # claim_username = models.CharField(max_length=200,verbose_name='申领人')
-    claim_weixin_openid = models.CharField(max_length=200,verbose_name='申领人微信OPENID')
-    # claim_count = models.CharField(max_length=200,verbose_name='申领数量')
-    # claim_phone_num = models.CharField(max_length=200,verbose_name='申领人手机')
-    # claim_name = models.CharField(max_length=200,verbose_name='物品名称')
-    # id = models.CharField(max_length=200,verbose_name='订单id',primary_key=True)
-    claim_list = models.ManyToManyField(Claimlist) 
-    claim_date = models.DateField(default=datetime.datetime.now(),verbose_name='申领时间')
-    category = TreeForeignKey('Category',on_delete=models.CASCADE,null=True,blank=True,verbose_name='所属部门')
-    approval_status = models.CharField(max_length=200, choices=STATUS_CHOICES,verbose_name='审批状态')
-    desc =  models.CharField(max_length=200, verbose_name='申请理由',default="无理由")
-    if_exceed_standard = models.BooleanField(verbose_name='是否超标',default="False") 
-
-    class Meta:
-        verbose_name = '领用记录'
-        verbose_name_plural = '领用记录'
-        # 自定义的权限，两参数分别是权限的名字和权限的描述
-        permissions = (
-            ("supervisor_approval", "第一主管审批"),
-            ("director_approval", "办公室主任审批"),
-            ("admin_approval", "管理员审批通过，等待发放"),
-            ("issued_asset", "发放审批"),
-            ("rejectted", "审批不通过"), 
-        )
-
-
-class MappingClaimLisToRecord(models.Model):
-    claimlist = models.ForeignKey(Claimlist, models.DO_NOTHING,verbose_name='物品清单')
-    claimrecord = models.ForeignKey(ClaimRecord, models.DO_NOTHING,verbose_name='申领记录')
-
-    class Meta:
-        managed = False
-        db_table = 'AppModel_claimrecord_claim_list'
-        unique_together = (('claimlist', 'claimrecord'),)
-
+          return (("%s %s") % (self.asset_name,self.asset_type))
+    
 
 # 组织机构详细信息
 class Post(models.Model):
@@ -209,10 +153,80 @@ class SupplierInfo(models.Model):
   supplier_short = models.CharField(max_length=120,verbose_name='供应商简称')
   if_deactivate = models.BooleanField(verbose_name='是否停用',default="False") 
 
-
   class Meta:
         verbose_name = '供应商信息'
         verbose_name_plural = '供应商信息'
   
   def __str__(self):
         return self.supplier_name
+
+
+# 商品
+class CommodityInfo(models.Model):
+      ITEM_STATUS_CHOICES = [
+      ('0', '备货中'),
+      ('1', '已派送'),
+      ('2', '已签收'),
+      ('3', '待审批通过'),
+      ]
+      commodity_name = models.CharField(max_length=200,verbose_name='商品名称',default="商品名称")
+      commodity_unit = models.CharField(max_length=200, verbose_name='商品单位',default="商品单位")
+      commodity_image = models.ImageField(u'商品图片',null=True, blank=True, upload_to='commodity_image')
+      commodity_total_price = models.CharField(max_length=200, verbose_name='商品总价',default="商品总价")
+      commodity_specification = models.CharField(max_length=200, verbose_name='商品规格',default="商品规格")
+      commodity_price = models.CharField(max_length=200, verbose_name='商品单价',default="商品单价")
+      commodity_count = models.CharField(max_length=200, verbose_name='商品数量',default="商品数量")
+      commodity_supplier = models.ForeignKey('SupplierInfo',on_delete=models.CASCADE,null=True,blank=True,verbose_name='所属供应商')
+      commodity_status = models.CharField(max_length=200, choices=ITEM_STATUS_CHOICES ,verbose_name='商品状态')
+      sys_username = models.CharField(max_length=200, verbose_name='系统用户名',default="系统用户名")
+    
+      class Meta:
+          verbose_name = '商品信息'
+          verbose_name_plural = '商品信息'
+    
+      def __str__(self):
+          return self.commodity_name
+
+# 订单表
+class OrderInfo(models.Model):
+      ORDER_STATUS_CHOICES = [
+      ('0', '待审批'),
+      ('1', '审批通过'),
+      ('2', '未通过'),
+      ('3', '自动过单'),
+      ]
+      order_status = models.CharField(max_length=200, choices=ORDER_STATUS_CHOICES,verbose_name='订单状态')
+      order_is_special = models.BooleanField(verbose_name='是否专项',default="False")
+      order_create_time = models.CharField(max_length=200, verbose_name='创建时间',default="创建时间")
+      order_items = models.ManyToManyField(CommodityInfo)
+      order_total_price = models.CharField(max_length=200, verbose_name='商品总价',default="商品总价")
+      order_image = models.ImageField(u'订单图片',null=True, blank=True, upload_to='order_image')
+      order_apartment = models.ForeignKey('Category',on_delete=models.CASCADE,null=True,blank=True,verbose_name='所属部门')
+      order_exceed_reason = models.CharField(max_length=200, verbose_name='超限原因描述',default="超限原因描述")
+      order_user = models.ForeignKey('UserInfo',on_delete=models.CASCADE,null=True,blank=True,verbose_name='提交用户')
+
+      class Meta:
+          verbose_name = '订单信息'
+          verbose_name_plural = '订单信息'
+
+# 订单对应商品列表类
+class MappingCommodityToOrder(models.Model):
+    commodityinfo = models.ForeignKey(CommodityInfo, models.DO_NOTHING,verbose_name='商品清单')
+    orderinfo = models.ForeignKey(OrderInfo, models.DO_NOTHING,verbose_name='订单')
+
+    class Meta:
+        managed = False
+        db_table = 'AppModel_orderinfo_order_items'
+        unique_together = (('commodityinfo', 'orderinfo'),)
+
+# 供应商库存表
+class SupplierAssetInfo(models.Model):
+    supplier_name = models.ForeignKey('SupplierInfo',on_delete=models.CASCADE,null=True,blank=True,verbose_name='供应商名称')
+    price = models.CharField(max_length=200, verbose_name='商品价格',default="商品价格")
+    assetinfo = models.ForeignKey('AssetInfo',on_delete=models.CASCADE,null=True,blank=True,verbose_name='对应商品')
+    asset_num = models.CharField(max_length=200, verbose_name='商品库存',default="商品库存")
+    sys_username = models.CharField(max_length=200, verbose_name='系统用户名',default="系统用户名")
+
+    class Meta:
+          verbose_name = '供应商库存管理'
+          verbose_name_plural = '供应商库存管理'
