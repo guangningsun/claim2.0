@@ -625,8 +625,8 @@ def get_supplier(request,sn):
 
 # 获取历史订单列表
 @api_view(['GET'])
-def get_all_order_info_list(request,openid):
-    userinfo = UserInfo.objects.get(weixin_openid = openid)
+def get_all_order_info_list(request,weixin_id):
+    userinfo = UserInfo.objects.get(weixin_openid=weixin_id)
     order_user_id = userinfo.id
     orderinfo = OrderInfo.objects.filter(order_user_id=order_user_id)
     serializer = OrderInfoSerializer(orderinfo, many=True)
