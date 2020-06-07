@@ -645,12 +645,12 @@ def get_all_order_info_list(request,weixin_id):
                     commodityinfo = CommodityInfo.objects.get(id=commodity_id) 
                     item["commodity_name"] = commodityinfo.commodity_name
                     item["commodity_unit"] = commodityinfo.commodity_unit
-                    # item["commodity_image"] = commodityinfo.commodity_image
+                    item["commodity_image"] = commodityinfo.commodity_image.name
                     item["commodity_total_price"] = commodityinfo.commodity_total_price
                     item["commodity_specification"] = commodityinfo.commodity_specification
                     item["commodity_price"] = commodityinfo.commodity_price
                     item["commodity_count"] = commodityinfo.commodity_count
-                    # item["commodity_supplier"] = commodityinfo.commodity_supplier
+                    item["commodity_supplier"] = commodityinfo.commodity_supplier.supplier_name
                     cstatus ="-"
                     if commodityinfo.commodity_status == "0":
                         cstatus = "备货中"
