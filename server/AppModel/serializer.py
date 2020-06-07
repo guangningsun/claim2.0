@@ -34,13 +34,6 @@ class UserSerializer(serializers.ModelSerializer):
         model = UserInfo
         fields = ('login_name','weixin_id','phone_number','category','address')
 
-# class ClaimSerializer(serializers.ModelSerializer):
-    
-#     class Meta:
-#         model = ClaimRecord
-#         # fields = ('claim_username','claim_count','claim_phone_num','claim_name','claim_date','category')
-#         fields = ('id','claim_list','claim_date','category','approval_status','desc')
-
 
 class CommodityCategorySerializer(serializers.ModelSerializer):
     
@@ -54,3 +47,9 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ('id','name','parent','slug','surplus')
+
+class OrderInfoSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = OrderInfo
+        fields = ('id','order_status','order_is_special','get_order_create_time','order_items','order_total_price','order_image','order_apartment','order_user','order_exceed_reason')

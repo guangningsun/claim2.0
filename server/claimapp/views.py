@@ -592,8 +592,10 @@ def get_category_surplus(request,cid):
     if request.method == 'GET':
         category = Category.objects.get(id=cid)
         current_month = datetime.datetime.now().month
-        budgetinfo = BudgetInfo.objects.get(category=category,month=current_month)
+        budgetinfo = BudgetInfo.objects.filter(category=category).filter(month=current_month)
         serializer = BudgetInfoSerializer(budgetinfo, many=True)
+        for i in range(0,len(serializer.data)):
+            serializer.data[i]["category_name"]= category.name
         res_json = {"error": 0,"msg": {
                     "budget_info": serializer.data }}
         return Response(res_json)
@@ -620,6 +622,17 @@ def get_supplier(request,sn):
             except:
                 res_json = {"error": 1,"msg": "暂无供应商" }
         return Response(res_json)
+
+# 获取历史订单列表
+@api_view(['GET'])
+def get_all_order_info_list(request,openid):
+    userinfo = UserInfo.objects.get(weixin_openid = openid)
+    order_user_id = userinfo.id
+    orderinfo = OrderInfo.objects.filter(order_user_id=order_user_id)
+    serializer = OrderInfoSerializer(orderinfo, many=True)
+    res_json = {"error": 0,"msg": {
+                "order_info": serializer.data }}
+    return Response(res_json)
 
 
 

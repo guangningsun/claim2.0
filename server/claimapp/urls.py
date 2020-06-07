@@ -30,7 +30,9 @@ urlpatterns = [
     path('submit_user_info/', views.submit_user_info),
     path('get_user_info_by_wxid/<weixin_id>', views.get_user_info_by_wxid),
     path('submit_order/', views.submit_order),
-    path('asset_by_cname/<cname>', views.asset_by_cname)
+    path('asset_by_cname/<cname>', views.asset_by_cname),
+    path('get_all_order_info_list/<weixin_id>', views.get_all_order_info_list),
+    
     
 
     
