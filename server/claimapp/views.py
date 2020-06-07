@@ -626,12 +626,59 @@ def get_supplier(request,sn):
 # 获取历史订单列表
 @api_view(['GET'])
 def get_all_order_info_list(request,weixin_id):
+    # 通过微信id拿到用户id
     userinfo = UserInfo.objects.get(weixin_openid=weixin_id)
     order_user_id = userinfo.id
-    orderinfo = OrderInfo.objects.filter(order_user_id=order_user_id)
-    serializer = OrderInfoSerializer(orderinfo, many=True)
+    # orderinfo = OrderInfo.objects.filter(order_user_id=order_user_id)
+    # 通过用户id拿到订单id list
+    orderinfo_list = OrderInfo.objects.filter(order_user_id=order_user_id)
+    serializer = OrderInfoSerializer(orderinfo_list, many=True)
+    for i in range (0,len(serializer.data)):
+        for k,v in serializer.data[i].items():
+            if k=="order_items":
+                relist = []
+                for commodity_id in v:
+                    item = {}
+                    commodityinfo = CommodityInfo.objects.get(id=commodity_id) 
+                    item["commodity_name"] = commodityinfo.commodity_name
+                    item["commodity_unit"] = commodityinfo.commodity_unit
+                    # item["commodity_image"] = commodityinfo.commodity_image
+                    item["commodity_total_price"] = commodityinfo.commodity_total_price
+                    item["commodity_specification"] = commodityinfo.commodity_specification
+                    item["commodity_price"] = commodityinfo.commodity_price
+                    item["commodity_count"] = commodityinfo.commodity_count
+                    # item["commodity_supplier"] = commodityinfo.commodity_supplier
+                    cstatus ="-"
+                    if commodityinfo.commodity_status == "0":
+                        cstatus = "备货中"
+                    elif commodityinfo.commodity_status == "1":
+                        cstatus = "已派送"
+                    elif commodityinfo.commodity_status == "2":
+                        cstatus = "已签收"
+                    elif commodityinfo.commodity_status == "3":
+                        cstatus = "待审批通过"
+                    item["commodity_status"] = cstatus
+                    item["sys_username"] = commodityinfo.sys_username
+                    relist.append(item)
+                serializer.data[i]['order_items'] = relist
+            if k=="order_apartment":
+                serializer.data[i]['order_apartment'] = Category.objects.get(id=v).name
+            if k=="order_user":
+                serializer.data[i]['order_user'] = UserInfo.objects.get(id=v).user_name
+            if k=="order_status":
+                order_status = "-"
+                if v=="0":
+                    order_status="待审批"
+                elif v=="1":
+                    order_status="审批通过"
+                elif v=="2":
+                    order_status="未通过"
+                elif v=="3":
+                    order_status="自动过单"
+                serializer.data[i]['order_status'] = order_status
+
     res_json = {"error": 0,"msg": {
-                "order_info": serializer.data }}
+                "order_info_list": serializer.data }}
     return Response(res_json)
 
 
