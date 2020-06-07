@@ -199,7 +199,7 @@ class SupplierAssetInfoAdmin(ImportExportModelAdmin):
     list_display=['supplier_name','price','assetinfo','asset_num','sys_username']
     search_fields =('supplier_name__supplier_name','price','assetinfo__asset_name','asset_num','sys_username')
     fieldsets = [
-       ('用户数据', {'fields': ['supplier_name','price','assetinfo','asset_num','sys_username'], 'classes': ['']}),
+       ('用户数据', {'fields': ['supplier_name','price','assetinfo','asset_num'], 'classes': ['']}),
     ]
 
     def get_queryset(self,request):
@@ -207,8 +207,11 @@ class SupplierAssetInfoAdmin(ImportExportModelAdmin):
         if request.user.is_superuser:
             return qs
         return qs.filter(sys_username=request.user.username)
-        
-        # super().queryset(self)
+    
+    def save_model(self, request, obj, form, change):
+        obj.sys_username = request.user
+        super().save_model(request, obj, form, change)
+
     list_per_page = 15
     list_display_links = ('supplier_name',)
 

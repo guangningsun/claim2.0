@@ -489,7 +489,8 @@ def get_approval_list(request):
             res_json = {"error": 0,"msg": {
                         "approval_list_info": serializer.data }}
             return Response(res_json)
-   
+
+
 # 物品分类管理
 @api_view(['GET'])
 def commoditycategory_detail(request):
@@ -600,6 +601,7 @@ def get_category_surplus(request,cid):
                     "budget_info": serializer.data }}
         return Response(res_json)
 
+
 # 获取供应商列表
 @api_view(['GET'])
 def get_supplier(request,sn):
@@ -622,6 +624,7 @@ def get_supplier(request,sn):
             except:
                 res_json = {"error": 1,"msg": "暂无供应商" }
         return Response(res_json)
+
 
 # 获取历史订单列表
 @api_view(['GET'])
@@ -680,7 +683,6 @@ def get_all_order_info_list(request,weixin_id):
     res_json = {"error": 0,"msg": {
                 "order_info_list": serializer.data }}
     return Response(res_json)
-
 
 
 # weixin 登录
