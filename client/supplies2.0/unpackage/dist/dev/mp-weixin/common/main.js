@@ -110,6 +110,17 @@ Array.prototype.indexOf = function (val) {
   return -1;
 };
 
+// Array.prototype.timestampToTime = function(timestamp) {
+// 	var date = new Date(timestamp * 1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+// 	var Y = date.getFullYear() + '-';
+// 	var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+// 	var D = date.getDate() + ' ';
+// 	var h = date.getHours() + ':';
+// 	var m = date.getMinutes() + ':';
+// 	var s = date.getSeconds();
+// 	return Y+M+D+h+m+s;
+// };
+
 Array.prototype.remove = function (val) {
   var index = this.indexOf(val);
   if (index > -1) {
@@ -211,6 +222,7 @@ var _vue = _interopRequireDefault(__webpack_require__(/*! vue */ 2));function _i
 
     domain_port: 'https://brilliantlife.com.cn:8016/',
     domain: 'https://brilliantlife.com.cn:8016',
+    image_prefix: 'https://brilliantlife.com.cn:8016/media',
 
     // API 接口
     api_login: 'weixin_sns/',

@@ -308,7 +308,7 @@ export default {
 					title:'提交成功',
 					success() {
 						uni.navigateTo({
-							url:'../category/category'
+							url:'./order_list'
 						})
 					}
 				})
@@ -355,8 +355,6 @@ export default {
 				title: '正在提交订单',
 			})
 			
-			console.log(this.imgList);
-			
 			// uni.uploadFile({
 			// 	url: getApp().globalData.image_upload_url,
 			// 	filePath: this.imgList[0],
@@ -377,34 +375,64 @@ export default {
 			});
 			itemList = newArr;
 		
-			
 			let params = {
 				weixin_openid:uni.getStorageSync( getApp().globalData.key_wx_openid),
 				order_apartment: this.apart_id,
 				order_exceed_reason: this.exceed_reason,
 				order_is_special:this.switchIsSpeciall ? 'True' : 'False',
-				order_image:'',
 				order_item_list:JSON.stringify(itemList),
 				order_total_price:this.totalPrice,
 				is_exceed: this.is_exceed ? 'True' : 'False'
 			};
 
+			let url = getApp().globalData.domain_port + getApp().globalData.get_submit_order;
+
 			if(this.imgList.length > 0){
+				console.log(this.imgList);
 				uni.uploadFile({
-					url: getApp().globalData.get_submit_order,
+					url: url,
 					filePath: this.imgList[0],
-					name: 'file',
+					name: 'order_image',
 					formData: params,
+					header: {
+						'content-type': 'multipart/form-data'
+					},
 					success: (uploadFileRes) => {
-						// this.successCallback(uploadFileRes);
+						this.successCallback(uploadFileRes);
 						console.log('upload success');
-						console.log(uploadFileRes);
+						console.log(uploadFileRes.statusCode);
+						let data = JSON.parse(uploadFileRes.data);
+						if (uploadFileRes.statusCode == 200 && data.error == 0) {
+							uni.showToast({
+								title:'提交成功',
+								success() {
+									uni.navigateTo({
+										url:'./order_list'
+									})
+								}
+							})
+							getApp().globalData.cart_list_info = [];
+						}
 					},
 					fail: (res) => {
+						console.log(res);
 						console.log('upload failed');
+						uni.hideLoading();
+						this.showToast('提交失败');
 					}
 				});
 			}else{
+				let params = {
+					weixin_openid:uni.getStorageSync( getApp().globalData.key_wx_openid),
+					order_apartment: this.apart_id,
+					order_exceed_reason: this.exceed_reason,
+					order_is_special:this.switchIsSpeciall ? 'True' : 'False',
+					order_image:'',
+					order_item_list:JSON.stringify(itemList),
+					order_total_price:this.totalPrice,
+					is_exceed: this.is_exceed ? 'True' : 'False'
+				};
+				
 				this.requestWithMethod(
 					getApp().globalData.get_submit_order,
 					"POST",

@@ -8,6 +8,7 @@
 			
 			domain_port: 'https://brilliantlife.com.cn:8016/',
 			domain:'https://brilliantlife.com.cn:8016',
+			image_prefix:'https://brilliantlife.com.cn:8016/media',
 			
 			// API 接口
 			api_login: 'weixin_sns/',

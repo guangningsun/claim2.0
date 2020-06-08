@@ -191,7 +191,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 var _default =
 
 {
@@ -214,10 +213,22 @@ var _default =
   },
   methods: {
 
-    successCb: function successCb(rsp) {
+    successCb: function successCb(rsp) {var _this = this;
       console.log(rsp.data);
       if (rsp.data.error === 0) {
-        this.order_list = rsp.data.msg.order_info;
+        this.order_list = rsp.data.msg.order_info_list;
+
+        var newArr = this.order_list.map(function (item, stock, number) {
+          return Object.assign(
+          item,
+          { timeStr: '' },
+          { order_image_real: '' });
+        });
+        newArr.map(function (item) {
+          item.timeStr = _this.timestampToTime(item.order_create_time);
+          item.order_image_real = getApp().globalData.domain + item.order_image;
+        });
+        this.order_list = newArr;
 
         if (this.order_list.length == 0) {
           this.showEmpty = true;
@@ -264,6 +275,17 @@ var _default =
       uni.navigateTo({
         url: 'order_detail?orderDetailInfo=' + encodeURIComponent(JSON.stringify(item)) });
 
+    },
+
+    timestampToTime: function timestampToTime(timestamp) {
+      var date = new Date(timestamp * 1000); //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+      var Y = date.getFullYear() + '-';
+      var M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+      var D = date.getDate() + ' ';
+      var h = date.getHours() + ':';
+      var m = date.getMinutes() + ':';
+      var s = date.getSeconds();
+      return Y + M + D + h + m + s;
     } } };exports.default = _default;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./node_modules/@dcloudio/uni-mp-weixin/dist/index.js */ 1)["default"]))
 

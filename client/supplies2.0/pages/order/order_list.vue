@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<cu-custom bgColor="bg-gradual-blue" :isBack="false">
+		<cu-custom bgColor="bg-gradual-blue" :isBack="true">
 			<block slot="content">历史订单</block>
 		</cu-custom>
 
@@ -24,7 +24,7 @@
 		<view class="cu-card" v-for="(item, index) in order_list" :key="index" @tap="goToDetail(item)">
 			<view class="cu-item" style="margin-bottom: -10upx;">
 				<view class="flex justify-between">
-					<view class="margin-top margin-left title text-bold">{{item.order_apartment_name}}</view>
+					<view class="margin-top margin-left title text-bold">{{item.order_apartment}}</view>
 					<view class="margin-top margin-right title text-gray">状态{{item.order_status}}</view>
 				</view>
 				<view class=" cu-list menu-avatar" >
@@ -35,8 +35,7 @@
 								item.order_image === null
 									? 'background-image:url(../../static/default.png);'
 									: 'background-image:url(' +
-									  domain +
-									  item.order_image +
+									  item.order_image_real +
 									  ');'
 							"
 						></view>
@@ -47,7 +46,7 @@
 							</view>
 							
 							<view class="text-grey ">
-									{{ item.order_create_time }}
+									{{ item.timeStr }}
 								</text>
 							</view>
 							
@@ -85,7 +84,19 @@ export default {
 		successCb(rsp) {
 			console.log(rsp.data);
 			if (rsp.data.error === 0) {
-				this.order_list = rsp.data.msg.order_info;
+				this.order_list = rsp.data.msg.order_info_list;
+				
+				let newArr = this.order_list.map((item, stock, number) => {
+					return Object.assign(
+					item, 
+					{ timeStr: '' },
+					{ order_image_real:''});
+				});
+				newArr.map(item => {
+					item.timeStr = this.timestampToTime(item.order_create_time);
+					item.order_image_real = getApp().globalData.domain + item.order_image;
+				});
+				this.order_list = newArr;
 				
 				if (this.order_list.length == 0) {
 					this.showEmpty = true;
@@ -132,6 +143,17 @@ export default {
 			uni.navigateTo({
 				url: 'order_detail?orderDetailInfo=' + encodeURIComponent(JSON.stringify(item))
 			})
+		},
+		
+		timestampToTime(timestamp){
+			var date = new Date(timestamp * 1000);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+			var Y = date.getFullYear() + '-';
+			var M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
+			var D = date.getDate() + ' ';
+			var h = date.getHours() + ':';
+			var m = date.getMinutes() + ':';
+			var s = date.getSeconds();
+			return Y+M+D+h+m+s;
 		}
 	}
 };

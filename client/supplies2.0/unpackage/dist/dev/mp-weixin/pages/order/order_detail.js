@@ -214,17 +214,20 @@ Object.defineProperty(exports, "__esModule", { value: true });exports.default = 
 //
 //
 //
+//
+//
 var _default =
 {
   data: function data() {
-    return {};
-
+    return {
+      order_detail_info: null };
 
   },
   onLoad: function onLoad(option) {
     console.log(option);
     if (option.orderDetailInfo !== undefined) {
       var info = JSON.parse(decodeURIComponent(option.orderDetailInfo));
+      this.order_detail_info = info;
       console.log('order detail');
       console.log(info);
     }

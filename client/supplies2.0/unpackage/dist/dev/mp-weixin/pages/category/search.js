@@ -425,6 +425,12 @@ __webpack_require__.r(__webpack_exports__);
         iconPath: '/static/cart.png',
         selectedIconPath: '/static/cart.png',
         text: '物品篮',
+        active: true },
+
+      {
+        iconPath: '/static/order_list.png',
+        selectedIconPath: '/static/order_list.png',
+        text: '历史订单',
         active: true }],
 
 
@@ -586,6 +592,11 @@ __webpack_require__.r(__webpack_exports__);
       if (e.index === 0) {
         uni.navigateTo({
           url: '../cart/cart' });
+
+      } else
+      if (e.index === 1) {
+        uni.navigateTo({
+          url: '../order/order_list' });
 
       }
     },
