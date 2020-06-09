@@ -534,7 +534,7 @@ def submit_order(request):
             else:
                 os='3'
                 cs='0'
-            order_user = UserInfo.objects.get(weixin_openid=weixin_openid)
+            userinfo = UserInfo.objects.get(weixin_openid=weixin_openid)
             order_info = OrderInfo(order_apartment=Category.objects.get(id=order_apartment),
                                     order_status=os,
                                     order_is_special=order_is_special,
@@ -542,7 +542,7 @@ def submit_order(request):
                                     order_total_price=order_total_price,
                                     order_image=order_image,
                                     order_exceed_reason=order_exceed_reason,
-                                    order_user= order_user
+                                    order_user= userinfo
                                     )
             order_info.order_image = order_image
             order_info.save()
@@ -564,10 +564,10 @@ def submit_order(request):
                                                 commodity_supplier=SupplierInfo.objects.get(id=supplier_id),
                                                 commodity_status=cs,
                                                 sys_username=supplierassetinfo_list[0].sys_username,
-                                                commodity_username=order_user.username,
-                                                commodity_apartment=order_user.category.name,
-                                                commodity_phonenum=order_user.phone_number,
-                                                commodity_address=order_user.address
+                                                commodity_username=userinfo.user_name,
+                                                commodity_apartment=Category.objects.get(id=userinfo.category_id),
+                                                commodity_phonenum=userinfo.phone_number,
+                                                commodity_address=userinfo.address
                                                 )
                 commodity_info.save()
                 order_info.order_items.add(commodity_info)
