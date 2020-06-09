@@ -179,6 +179,10 @@ class CommodityInfo(models.Model):
       commodity_supplier = models.ForeignKey('SupplierInfo',on_delete=models.CASCADE,null=True,blank=True,verbose_name='所属供应商')
       commodity_status = models.CharField(max_length=200, choices=ITEM_STATUS_CHOICES ,verbose_name='商品状态')
       sys_username = models.CharField(max_length=200, verbose_name='系统用户名',default="系统用户名")
+      commodity_username = models.CharField(max_length=200, verbose_name='订单用户',default="订单用户")
+      commodity_apartment = models.CharField(max_length=200, verbose_name='订单部门',default="订单部门")
+      commodity_phonenum = models.CharField(max_length=200, verbose_name='用户电话',default="用户电话")
+      commodity_address = models.CharField(max_length=200, verbose_name='用户地址',default="用户地址")
     
       class Meta:
           verbose_name = '商品信息'

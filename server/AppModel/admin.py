@@ -219,7 +219,7 @@ class SupplierAssetInfoAdmin(ImportExportModelAdmin):
 # 供应商订单管理
 @admin.register(CommodityInfo)
 class CommodityInfoAdmin(admin.ModelAdmin): 
-    list_display=['commodity_name','commodity_unit','commodity_image','commodity_total_price','commodity_specification','commodity_price','commodity_count','commodity_supplier','commodity_status','sys_username']
+    list_display=['commodity_name','commodity_unit','commodity_image','commodity_total_price','commodity_specification','commodity_price','commodity_count','commodity_supplier','commodity_status','commodity_username','commodity_apartment','commodity_phonenum','commodity_address','sys_username']
     # search_fields =('supplier_name','price','assetinfo','asset_num','sys_username')
     fieldsets = [
        ('用户数据', {'fields': ['commodity_name','commodity_unit','commodity_image','commodity_total_price','commodity_specification','commodity_price','commodity_count','commodity_supplier','commodity_status','sys_username'], 'classes': ['']}),
