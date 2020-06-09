@@ -44,6 +44,7 @@ class AssetInfo(models.Model):
     asset_ccategory = models.ForeignKey('CommodityCategory',on_delete=models.CASCADE,null=True,blank=True,verbose_name='类别标签')
     asset_limit_nu = models.CharField(max_length=200,verbose_name='申领数量限制')
     asset_limit_price = models.CharField(max_length=200,verbose_name='申领单价限制')
+    asset_if_deduct = models.BooleanField(verbose_name='是否抵扣部门余额',default="False") 
     # asset_supplier = models.ForeignKey('SupplierInfo',on_delete=models.CASCADE,null=True,blank=True,verbose_name='供应商')
     # asset_price = models.CharField(max_length=200,verbose_name='报价')
 
