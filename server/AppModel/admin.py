@@ -71,7 +71,7 @@ class OrderInfoAdmin(ImportExportModelAdmin):
     def get_desc(self, obj):
         if obj.id is not None:
             commodity_list = [CommodityInfo.objects.filter(id = cl.commodityinfo_id) for cl in MappingCommodityToOrder.objects.filter(orderinfo_id=obj.id)]
-            return [ (("%s%s%s*%s%s") % (cl[0].commodity_supplier,cl[0].commodity_name,cl[0].commodity_price,cl[0].commodity_count,cl[0].commodity_unit)) for cl in commodity_list]
+            return [ (("%s%s%s*%s%s") % (cc[0].commodity_supplier,cc[0].commodity_name,cc[0].commodity_price,cc[0].commodity_count,cc[0].commodity_unit)) for cc in commodity_list]
         else:
             return "-"
     get_desc.short_description = "订单商品列表"

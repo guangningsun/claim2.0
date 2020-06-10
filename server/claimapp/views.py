@@ -546,40 +546,42 @@ def submit_order(request):
                                     )
             order_info.order_image = order_image
             order_info.save()
-            for order_item in json.loads(order_item_list):
-                asset_sn = order_item['item_sn']
-                supplier_id = order_item['item_supplier_id']
-                commodity_num = order_item['item_num']
-                commodity_total_price = order_item['item_price']
-                asset_info = AssetInfo.objects.get(asset_sn=asset_sn)
-                supplierassetinfo_list = SupplierAssetInfo.objects.filter(supplier_name=supplier_id)
-                commodity_info = CommodityInfo(commodity_name=asset_info.asset_name ,
-                                                commodity_unit=asset_info.asset_unit ,
-                                                commodity_image=asset_info.asset_image ,
-                                                # commodity_total_price=float(commodity_price)*int(commodity_num),
-                                                commodity_total_price=commodity_total_price,
-                                                commodity_specification=asset_info.asset_specification,
-                                                commodity_price=supplierassetinfo_list[0].price,
-                                                commodity_count=commodity_num,
-                                                commodity_supplier=SupplierInfo.objects.get(id=supplier_id),
-                                                commodity_status=cs,
-                                                sys_username=supplierassetinfo_list[0].sys_username,
-                                                commodity_username=userinfo.user_name,
-                                                commodity_apartment=Category.objects.get(id=userinfo.category_id),
-                                                commodity_phonenum=userinfo.phone_number,
-                                                commodity_address=userinfo.address
-                                                )
-                commodity_info.save()
-                order_info.order_items.add(commodity_info)
-                order_info.save()
-
             # 部门花销增加，余额减少
             current_month = datetime.datetime.now().month
             try:
                 budgetinfo = BudgetInfo.objects.get(category=Category.objects.get(id=order_apartment),month=current_month)
                 current_cost = budgetinfo.cost_num
-                budgetinfo.cost_num = float(current_cost)+float(order_total_price)
-                budgetinfo.surplus = float(budgetinfo.budget) - float(budgetinfo.cost_num)
+                commodity_cost_num = 0
+                for order_item in json.loads(order_item_list):
+                    asset_sn = order_item['item_sn']
+                    supplier_id = order_item['item_supplier_id']
+                    commodity_num = order_item['item_num']
+                    commodity_total_price = order_item['item_price']
+                    asset_info = AssetInfo.objects.get(asset_sn=asset_sn)
+                    supplierassetinfo_list = SupplierAssetInfo.objects.filter(supplier_name=supplier_id)
+                    commodity_info = CommodityInfo(commodity_name=asset_info.asset_name ,
+                                                    commodity_unit=asset_info.asset_unit ,
+                                                    commodity_image=asset_info.asset_image ,
+                                                    commodity_total_price=float(supplierassetinfo_list[0].price)*int(commodity_num),
+                                                    # commodity_total_price=commodity_total_price,
+                                                    commodity_specification=asset_info.asset_specification,
+                                                    commodity_price=supplierassetinfo_list[0].price,
+                                                    commodity_count=commodity_num,
+                                                    commodity_supplier=SupplierInfo.objects.get(id=supplier_id),
+                                                    commodity_status=cs,
+                                                    sys_username=supplierassetinfo_list[0].sys_username,
+                                                    commodity_username=userinfo.user_name,
+                                                    commodity_apartment=Category.objects.get(id=userinfo.category_id),
+                                                    commodity_phonenum=userinfo.phone_number,
+                                                    commodity_address=userinfo.address
+                                                    )
+                    commodity_info.save()
+                    order_info.order_items.add(commodity_info)
+                    order_info.save()
+                    # 如果该物品要抵扣部门余额则增加部门余额消费
+                    if asset_info.asset_if_deduct == "True":
+                        commodity_cost_num = commodity_cost_num + float(supplierassetinfo_list[0].price)*int(commodity_num)
+                budgetinfo.surplus = budgetinfo.surplus - commodity_cost_num
                 budgetinfo.save()
             except:
                 error=1
