@@ -552,6 +552,7 @@ def submit_order(request):
                 budgetinfo = BudgetInfo.objects.get(category=Category.objects.get(id=order_apartment),month=current_month)
                 current_cost = budgetinfo.cost_num
                 commodity_cost_num = 0
+                deduct_cost_num = 0
                 for order_item in json.loads(order_item_list):
                     asset_sn = order_item['item_sn']
                     supplier_id = order_item['item_supplier_id']
@@ -579,9 +580,11 @@ def submit_order(request):
                     order_info.order_items.add(commodity_info)
                     order_info.save()
                     # 如果该物品要抵扣部门余额则增加部门余额消费
-                    if asset_info.asset_if_deduct == "True":
-                        commodity_cost_num = commodity_cost_num + float(supplierassetinfo_list[0].price)*int(commodity_num)
-                budgetinfo.surplus = budgetinfo.surplus - commodity_cost_num
+                    if asset_info.asset_if_deduct == True:
+                        deduct_cost_num = deduct_cost_num + float(supplierassetinfo_list[0].price)*int(commodity_num)
+                    commodity_cost_num = commodity_cost_num + float(supplierassetinfo_list[0].price)*int(commodity_num)
+                budgetinfo.surplus = float(budgetinfo.surplus) - deduct_cost_num
+                budgetinfo.cost_num = float(budgetinfo.cost_num) + commodity_cost_num
                 budgetinfo.save()
             except:
                 error=1
