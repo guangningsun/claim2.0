@@ -13,6 +13,7 @@ from django.utils.html import format_html,escape, mark_safe
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 import time
+import decimal
 
 
 logger = logging.getLogger(__name__)
@@ -127,7 +128,7 @@ class OrderInfoAdmin(ImportExportModelAdmin):
             #根据商品是否抵扣余额减少对应花销
             #根据商品是否抵扣余额增加对应余额
             budgetinfo.cost_num = float(budgetinfo.cost_num) - float(orderinfo.order_total_price)
-            budgetinfo.surplus = float(budgetinfo.surplus) + commodity_cost_num
+            budgetinfo.surplus = Decimal(float(budgetinfo.surplus) + commodity_cost_num).quantize(Decimal("0.00"))
             budgetinfo.save()
         if rows_updated == 1:
             message_bit = "1 条订单申请"
