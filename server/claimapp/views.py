@@ -588,7 +588,7 @@ def submit_order(request):
                         deduct_cost_num = deduct_cost_num + float(commodity_total_price)
                     commodity_cost_num = commodity_cost_num + float(commodity_total_price)
                 budgetinfo.surplus = float(budgetinfo.surplus) - deduct_cost_num
-                budgetinfo.cost_num = float(budgetinfo.cost_num) + commodity_cost_num
+                budgetinfo.cost_num = float('%.2f' %(float(budgetinfo.cost_num) + commodity_cost_num))
                 budgetinfo.save()
             except:
                 error=1
