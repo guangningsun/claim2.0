@@ -117,9 +117,9 @@ class OrderInfoAdmin(ImportExportModelAdmin):
         current_month = datetime.datetime.now().month
         for orderinfo in queryset:
             budgetinfo = BudgetInfo.objects.get(category=orderinfo.order_apartment,month=current_month)
-            current_cost = budgetinfo.cost_num
-            budgetinfo.cost_num = float(current_cost)-float(orderinfo.order_total_price)
-            budgetinfo.surplus = float(budgetinfo.budget) - float(budgetinfo.cost_num) 
+            commodity_cost_num = 0
+            budgetinfo.cost_num = float(budgetinfo.cost_num)+float(orderinfo.order_total_price)
+            budgetinfo.surplus = float(budgetinfo.surplus) + float(commodity_cost_num)
             budgetinfo.save()
         if rows_updated == 1:
             message_bit = "1 条订单申请"
@@ -196,10 +196,10 @@ class BudgetInfoAdmin(ImportExportModelAdmin):
 # 供应商库存管理
 @admin.register(SupplierAssetInfo)
 class SupplierAssetInfoAdmin(ImportExportModelAdmin): 
-    list_display=['supplier_name','price','assetinfo','asset_num','sys_username']
-    search_fields =('supplier_name__supplier_name','price','assetinfo__asset_name','asset_num','sys_username')
+    list_display=['supplier_name','price','assetinfo','asset_num','if_off_shelf','sys_username']
+    search_fields =('supplier_name__supplier_name','price','assetinfo__asset_name','asset_num','if_off_shelf','sys_username')
     fieldsets = [
-       ('用户数据', {'fields': ['supplier_name','price','assetinfo','asset_num'], 'classes': ['']}),
+       ('用户数据', {'fields': ['supplier_name','price','assetinfo','asset_num','if_off_shelf'], 'classes': ['']}),
     ]
 
     def get_queryset(self,request):
