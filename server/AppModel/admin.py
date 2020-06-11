@@ -209,8 +209,10 @@ class SupplierAssetInfoAdmin(ImportExportModelAdmin):
         return qs.filter(sys_username=request.user.username)
     
     def save_model(self, request, obj, form, change):
-        obj.sys_username = request.user
-        super().save_model(request, obj, form, change)
+        if obj.sys_username == request.user.username:
+            super().save_model(request, obj, form, change)
+        else:
+            self.message_user(request,"非供应商系统用户没有权限更改商品库存" , level=messages.SUCCESS)
 
     list_per_page = 15
     list_display_links = ('supplier_name',)
