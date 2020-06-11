@@ -515,6 +515,7 @@ def commoditycategory_detail(request):
 @api_view(['POST'])
 def submit_order(request):
     if request.method == 'POST':
+        #import pdb;pdb.set_trace()
         order_apartment = request.POST['order_apartment']
         order_exceed_reason = request.POST['order_exceed_reason']
         order_is_special = request.POST['order_is_special']
@@ -563,10 +564,11 @@ def submit_order(request):
                     commodity_info = CommodityInfo(commodity_name=asset_info.asset_name ,
                                                     commodity_unit=asset_info.asset_unit ,
                                                     commodity_image=asset_info.asset_image ,
-                                                    commodity_total_price=float(supplierassetinfo_list[0].price)*int(commodity_num),
-                                                    # commodity_total_price=commodity_total_price,
+                                                    #commodity_total_price=float(supplierassetinfo_list[0].price)*int(commodity_num),
+                                                    commodity_total_price=commodity_total_price,
                                                     commodity_specification=asset_info.asset_specification,
-                                                    commodity_price=supplierassetinfo_list[0].price,
+                                                    #commodity_price=supplierassetinfo_list[0].price,
+                                                    commodity_price=float(commodity_total_price)/int(commodity_num),
                                                     commodity_count=commodity_num,
                                                     commodity_supplier=SupplierInfo.objects.get(id=supplier_id),
                                                     commodity_status=cs,
@@ -581,8 +583,9 @@ def submit_order(request):
                     order_info.save()
                     # 如果该物品要抵扣部门余额则增加部门余额消费
                     if asset_info.asset_if_deduct == True:
-                        deduct_cost_num = deduct_cost_num + float(supplierassetinfo_list[0].price)*int(commodity_num)
-                    commodity_cost_num = commodity_cost_num + float(supplierassetinfo_list[0].price)*int(commodity_num)
+                        #deduct_cost_num = deduct_cost_num + float(supplierassetinfo_list[0].price)*int(commodity_num)
+                        deduct_cost_num = deduct_cost_num + float(commodity_total_price)
+                    commodity_cost_num = commodity_cost_num + float(commodity_total_price)
                 budgetinfo.surplus = float(budgetinfo.surplus) - deduct_cost_num
                 budgetinfo.cost_num = float(budgetinfo.cost_num) + commodity_cost_num
                 budgetinfo.save()
