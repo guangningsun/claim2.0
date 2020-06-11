@@ -118,8 +118,15 @@ class OrderInfoAdmin(ImportExportModelAdmin):
         for orderinfo in queryset:
             budgetinfo = BudgetInfo.objects.get(category=orderinfo.order_apartment,month=current_month)
             commodity_cost_num = 0
-            budgetinfo.cost_num = float(budgetinfo.cost_num)+float(orderinfo.order_total_price)
-            budgetinfo.surplus = float(budgetinfo.surplus) + float(commodity_cost_num)
+            #通过订单查询到所有商品
+            commodity_list = [CommodityInfo.objects.filter(id = cl.commodityinfo_id) for cl in MappingCommodityToOrder.objects.filter(orderinfo_id=obj.id)]
+            for ci in commodity_list:
+                if ci.commodity_if_deduct == True:
+                    commodity_cost_num = commodity_cost_num + ci.commodity_total_price
+            #根据商品是否抵扣余额减少对应花销
+            #根据商品是否抵扣余额增加对应余额
+            budgetinfo.cost_num = float(budgetinfo.cost_num) - float(orderinfo.order_total_price)
+            budgetinfo.surplus = float(budgetinfo.surplus) + commodity_cost_num
             budgetinfo.save()
         if rows_updated == 1:
             message_bit = "1 条订单申请"

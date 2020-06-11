@@ -576,7 +576,8 @@ def submit_order(request):
                                                     commodity_username=userinfo.user_name,
                                                     commodity_apartment=Category.objects.get(id=userinfo.category_id),
                                                     commodity_phonenum=userinfo.phone_number,
-                                                    commodity_address=userinfo.address
+                                                    commodity_address=userinfo.address,
+                                                    commodity_if_deduct=asset_info.asset_if_deduct
                                                     )
                     commodity_info.save()
                     order_info.order_items.add(commodity_info)

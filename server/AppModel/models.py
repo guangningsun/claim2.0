@@ -184,6 +184,7 @@ class CommodityInfo(models.Model):
       commodity_apartment = models.CharField(max_length=200, verbose_name='订单部门',default="订单部门")
       commodity_phonenum = models.CharField(max_length=200, verbose_name='用户电话',default="用户电话")
       commodity_address = models.CharField(max_length=200, verbose_name='用户地址',default="用户地址")
+      commodity_if_deduct = models.BooleanField(verbose_name='是否抵扣部门余额',default="False") 
     
       class Meta:
           verbose_name = '商品信息'
