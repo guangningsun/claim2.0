@@ -620,7 +620,7 @@ def get_category_surplus(request,cid):
 def get_supplier(request,sn):
     if request.method == 'GET':
         assetinfo = AssetInfo.objects.get(asset_sn=sn)
-        supplierset = SupplierAssetInfo.objects.filter(assetinfo = assetinfo.id).order_by('price')
+        supplierset = SupplierAssetInfo.objects.filter(assetinfo = assetinfo.id).order_by('price').filter(if_off_shelf=False)
         serializer = SupplierSerializer(supplierset, many=True)
         res_json={}
         for i in range (0,len(serializer.data)):

@@ -230,6 +230,7 @@ class SupplierAssetInfo(models.Model):
     price = models.CharField(max_length=200, verbose_name='商品价格',default="商品价格")
     assetinfo = models.ForeignKey('AssetInfo',on_delete=models.CASCADE,null=True,blank=True,verbose_name='对应商品')
     asset_num = models.CharField(max_length=200, verbose_name='商品库存',default="商品库存")
+    if_off_shelf = models.BooleanField(verbose_name='是否下架',default="False") 
     sys_username = models.CharField(max_length=200, verbose_name='系统用户名',default="系统用户名")
 
     class Meta:
