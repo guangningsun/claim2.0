@@ -217,6 +217,9 @@ class SupplierAssetInfoAdmin(ImportExportModelAdmin):
     def save_model(self, request, obj, form, change):
         if obj.sys_username == request.user.username:
             super().save_model(request, obj, form, change)
+        elif obj.sys_username == "系统用户名":
+            obj.sys_username = request.user.username
+            super().save_model(request, obj, form, change)
         else:
             self.message_user(request,"非供应商系统用户没有权限更改商品库存" , level=messages.SUCCESS)
 
