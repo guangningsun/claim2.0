@@ -583,7 +583,7 @@ def submit_order(request):
                     order_info.order_items.add(commodity_info)
                     order_info.save()
                     # 如果该物品要抵扣部门余额则增加部门余额消费
-                    if asset_info.asset_if_deduct == True:
+                    if asset_info.asset_if_deduct == True and order_info.order_is_special == False:
                         #deduct_cost_num = deduct_cost_num + float(supplierassetinfo_list[0].price)*int(commodity_num)
                         deduct_cost_num = deduct_cost_num + float(commodity_total_price)
                     commodity_cost_num = commodity_cost_num + float(commodity_total_price)

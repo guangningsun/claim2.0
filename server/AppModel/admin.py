@@ -122,7 +122,7 @@ class OrderInfoAdmin(ImportExportModelAdmin):
             #通过订单查询到所有商品
             for cl in MappingCommodityToOrder.objects.filter(orderinfo_id=orderinfo.id):
                 ci = CommodityInfo.objects.get(id = cl.commodityinfo_id)
-                if ci.commodity_if_deduct == True:
+                if ci.commodity_if_deduct == True and orderinfo.order_is_special == False:
                     commodity_cost_num = commodity_cost_num + float(ci.commodity_total_price)
             budgetinfo.cost_num = float('%.2f' %(float(budgetinfo.cost_num) - float(orderinfo.order_total_price)))
             budgetinfo.surplus = float('%.2f' %(float(budgetinfo.surplus) + commodity_cost_num)) 
