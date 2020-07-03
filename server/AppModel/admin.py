@@ -251,18 +251,18 @@ class CommodityInfoResources(resources.ModelResource):
 
     class Meta:
         model = CommodityInfo
-        fields = ('commodity_name','commodity_unit','commodity_image','commodity_total_price','commodity_specification','commodity_price','commodity_count','commodity_supplier','commodity_status','commodity_username','commodity_apartment','commodity_phonenum','commodity_address','sys_username')   #要导出的字段
-        export_order = ('commodity_name','commodity_unit','commodity_image','commodity_total_price','commodity_specification','commodity_price','commodity_count','commodity_supplier','commodity_status','commodity_username','commodity_apartment','commodity_phonenum','commodity_address','sys_username')   #导出的字段的排序     
+        fields = ('commodity_name','commodity_unit','commodity_image','commodity_create_time','commodity_total_price','commodity_specification','commodity_price','commodity_count','commodity_supplier','commodity_status','commodity_username','commodity_apartment','commodity_phonenum','commodity_address','sys_username')   #要导出的字段
+        export_order = ('commodity_name','commodity_unit','commodity_image','commodity_create_time','commodity_total_price','commodity_specification','commodity_price','commodity_count','commodity_supplier','commodity_status','commodity_username','commodity_apartment','commodity_phonenum','commodity_address','sys_username')   #导出的字段的排序     
 
 
 
 # 供应商订单管理
 @admin.register(CommodityInfo)
 class CommodityInfoAdmin(ImportExportModelAdmin): 
-    list_display=['commodity_name','commodity_unit','commodity_image','commodity_total_price','commodity_specification','commodity_price','commodity_count','commodity_supplier','commodity_status','commodity_username','commodity_apartment','commodity_phonenum','commodity_address','sys_username']
+    list_display=['commodity_name','commodity_unit','commodity_image','commodity_create_time','commodity_total_price','commodity_specification','commodity_price','commodity_count','commodity_supplier','commodity_status','commodity_username','commodity_apartment','commodity_phonenum','commodity_address','sys_username']
     # search_fields =('supplier_name','price','assetinfo','asset_num','sys_username')
     fieldsets = [
-       ('用户数据', {'fields': ['commodity_name','commodity_unit','commodity_image','commodity_total_price','commodity_specification','commodity_price','commodity_count','commodity_supplier','commodity_status','sys_username'], 'classes': ['']}),
+       ('用户数据', {'fields': ['commodity_name','commodity_unit','commodity_image','commodity_create_time','commodity_total_price','commodity_specification','commodity_price','commodity_count','commodity_supplier','commodity_status','sys_username'], 'classes': ['']}),
     ]
     resource_class = CommodityInfoResources
 
