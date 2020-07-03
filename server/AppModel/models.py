@@ -175,6 +175,7 @@ class CommodityInfo(models.Model):
       commodity_image = models.ImageField(u'商品图片',null=True, blank=True, upload_to='commodity_image')
       commodity_total_price = models.CharField(max_length=200, verbose_name='商品总价',default="商品总价")
       commodity_specification = models.CharField(max_length=200, verbose_name='商品规格',default="商品规格")
+      commodity_create_time = models.CharField(max_length=200, verbose_name='创建时间',default="创建时间")
       commodity_price = models.CharField(max_length=200, verbose_name='商品单价',default="商品单价")
       commodity_count = models.CharField(max_length=200, verbose_name='商品数量',default="商品数量")
       commodity_supplier = models.ForeignKey('SupplierInfo',on_delete=models.CASCADE,null=True,blank=True,verbose_name='所属供应商')

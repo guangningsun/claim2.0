@@ -566,6 +566,7 @@ def submit_order(request):
                                                     commodity_image=asset_info.asset_image ,
                                                     #commodity_total_price=float(supplierassetinfo_list[0].price)*int(commodity_num),
                                                     commodity_total_price=commodity_total_price,
+                                                    commodity_create_time=order_info.order_create_time,
                                                     commodity_specification=asset_info.asset_specification,
                                                     #commodity_price=supplierassetinfo_list[0].price,
                                                     commodity_price=float(commodity_total_price)/int(commodity_num),
