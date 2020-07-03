@@ -226,15 +226,45 @@ class SupplierAssetInfoAdmin(ImportExportModelAdmin):
     list_per_page = 15
     list_display_links = ('supplier_name',)
 
+# 供应商订单资源管理
+class CommodityInfoResources(resources.ModelResource):
+    def __init__(self):
+        super(CommodityInfoResources, self).__init__()
+
+        field_list = CommodityInfo._meta.fields
+        self.vname_dict = {}
+        for i in field_list:
+            self.vname_dict[i.name] = i.verbose_name
+
+    def get_export_fields(self):
+        fields = self.get_fields()
+        for i, field in enumerate(fields):
+            field_name = self.get_field_name(field)
+            if field_name.find("__") > 0:
+                _field_name = field_name.split("__")[0]
+                if _field_name in self.vname_dict.keys():
+                    field.column_name = self.vname_dict[_field_name]
+            elif field_name in self.vname_dict.keys():
+                field.column_name = self.vname_dict[field_name]
+        return fields
+
+
+    class Meta:
+        model = CommodityInfo
+        fields = ('commodity_name','commodity_unit','commodity_image','commodity_total_price','commodity_specification','commodity_price','commodity_count','commodity_supplier','commodity_status','commodity_username','commodity_apartment','commodity_phonenum','commodity_address','sys_username')   #要导出的字段
+        export_order = ('commodity_name','commodity_unit','commodity_image','commodity_total_price','commodity_specification','commodity_price','commodity_count','commodity_supplier','commodity_status','commodity_username','commodity_apartment','commodity_phonenum','commodity_address','sys_username')   #导出的字段的排序     
+
+
 
 # 供应商订单管理
 @admin.register(CommodityInfo)
-class CommodityInfoAdmin(admin.ModelAdmin): 
+class CommodityInfoAdmin(ImportExportModelAdmin): 
     list_display=['commodity_name','commodity_unit','commodity_image','commodity_total_price','commodity_specification','commodity_price','commodity_count','commodity_supplier','commodity_status','commodity_username','commodity_apartment','commodity_phonenum','commodity_address','sys_username']
     # search_fields =('supplier_name','price','assetinfo','asset_num','sys_username')
     fieldsets = [
        ('用户数据', {'fields': ['commodity_name','commodity_unit','commodity_image','commodity_total_price','commodity_specification','commodity_price','commodity_count','commodity_supplier','commodity_status','sys_username'], 'classes': ['']}),
     ]
+    resource_class = CommodityInfoResources
 
     def get_queryset(self,request):
         qs = super(CommodityInfoAdmin, self).get_queryset(request)
