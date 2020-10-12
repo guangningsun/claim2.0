@@ -199,6 +199,43 @@ class BudgetInfoAdmin(ImportExportModelAdmin):
     ]
     list_per_page = 15
 
+    actions = ['deploy_budget']
+
+    def deploy_budget(self, request, queryset):
+        rows_updated = queryset
+        catagory_budget_mapping = [[140,13],[105,15],[315,6],[175,14],[245,7],[175,9],[99999,21],[210,18],[140,5],
+                [105,11],[315,3],[70,10],[105,8],[140,20],[140,16],[140,12],[280,2], [9999,1],[140,4], [175,17],[300,19],[9999,22],[1087.6,23],[400,24]]          
+        #部门预算金额回退
+        current_month = datetime.datetime.now().month
+        current_year = datetime.datetime.now().year
+        # 判断当前年份月份是否有预算
+        budgetinfolist = BudgetInfo.objects.filter(month=current_month,year=current_year)
+        # 如果已经有预算则不做操作
+        if budgetinfolist.exists():
+            pass
+        else:
+        # 如果没有预算
+        # 将以往月份预算状态全部修改为已执行
+            #BudgetInfo.objects.all().update(status='1')
+            queryset.update(status='1')
+        # 则生成当月预算
+            import pdb;pdb.set_trace()
+            for catagory_budget in catagory_budget_mapping:
+                BudgetInfo.objects.create(year=current_year,
+                                        budget=catagory_budget[0],
+                                        cost_num='0',
+                                        category=Category.objects.get(id=catagory_budget[1]),
+                                        surplus=catagory_budget[0],
+                                        status=2,
+                                        month=current_month)
+        
+        if rows_updated == 1:
+            message_bit = "1 条订单申请"
+        else:
+            message_bit = "%s 条订单申请" % rows_updated
+        self.message_user(request," %s 成功拒绝." % message_bit, level=messages.SUCCESS)
+    deploy_budget.short_description = "生成预算"
+
 # 供应商库存管理
 @admin.register(SupplierAssetInfo)
 class SupplierAssetInfoAdmin(ImportExportModelAdmin): 
