@@ -268,7 +268,7 @@ class CommodityInfoAdmin(ImportExportModelAdmin):
 
     # 转换订单创建时间格式
     def get_order_create_time(self, obj):
-        if obj.commodity_create_time is not None:
+        if obj.commodity_create_time is not None and obj.commodity_create_time != '-':
             timeArray = time.localtime(int(obj.commodity_create_time))
             otherStyleTime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
             return otherStyleTime
