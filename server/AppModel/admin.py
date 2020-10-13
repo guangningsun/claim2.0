@@ -195,14 +195,13 @@ class BudgetInfoAdmin(ImportExportModelAdmin):
     list_display=['id','category','year','month','budget','cost_num','surplus','status']
     search_fields =('category','year','month','budget','cost_num','surplus','status')
     fieldsets = [
-       ('用户数据', {'fields': ['category','year','month','budget','cost_num','surplus','status'], 'classes': ['']}),
+       #('用户数据', {'fields': ['category','year','month','budget','cost_num','surplus','status'], 'classes': ['']}),
+       ('用户数据', {'fields': ['year'], 'classes': ['']}),
     ]
     list_per_page = 15
 
-    actions = ['deploy_budget']
-
-    def deploy_budget(self, request, queryset):
-        rows_updated = queryset
+    # actions = ['deploy_budget']
+    def save_model(self, request, obj, form, change):
         catagory_budget_mapping = [[140,13],[105,15],[315,6],[175,14],[245,7],[175,9],[99999,21],[210,18],[140,5],
                 [105,11],[315,3],[70,10],[105,8],[140,20],[140,16],[140,12],[280,2], [9999,1],[140,4], [175,17],[300,19],[9999,22],[1087.6,23],[400,24]]          
         #部门预算金额回退
@@ -211,15 +210,15 @@ class BudgetInfoAdmin(ImportExportModelAdmin):
         # 判断当前年份月份是否有预算
         budgetinfolist = BudgetInfo.objects.filter(month=current_month,year=current_year)
         # 如果已经有预算则不做操作
+        #import pdb;pdb.set_trace()
         if budgetinfolist.exists():
             pass
         else:
         # 如果没有预算
         # 将以往月份预算状态全部修改为已执行
-            #BudgetInfo.objects.all().update(status='1')
-            queryset.update(status='1')
+            BudgetInfo.objects.all().update(status='1')
+            #queryset.update(status='1')
         # 则生成当月预算
-            import pdb;pdb.set_trace()
             for catagory_budget in catagory_budget_mapping:
                 BudgetInfo.objects.create(year=current_year,
                                         budget=catagory_budget[0],
@@ -229,12 +228,10 @@ class BudgetInfoAdmin(ImportExportModelAdmin):
                                         status=2,
                                         month=current_month)
         
-        if rows_updated == 1:
-            message_bit = "1 条订单申请"
-        else:
-            message_bit = "%s 条订单申请" % rows_updated
-        self.message_user(request," %s 成功拒绝." % message_bit, level=messages.SUCCESS)
-    deploy_budget.short_description = "生成预算"
+            self.message_user(request," 成功生成%s 月 预算." % current_month, level=messages.SUCCESS)
+        #super().save_model(request, obj, form, change)
+    save_model.short_description = "生成预算"
+    
 
 # 供应商库存管理
 @admin.register(SupplierAssetInfo)

@@ -269,3 +269,7 @@ class BudgetInfo(models.Model):
     surplus = models.CharField(max_length=200, verbose_name='余额')
     status = models.CharField(max_length=200, choices=BUDGET_CHOICES,verbose_name='执行状态')
 
+    class Meta:
+          verbose_name = '部门预算'
+          verbose_name_plural = '部门预算'
+
