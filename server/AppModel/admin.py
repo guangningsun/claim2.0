@@ -190,6 +190,31 @@ class SupplierInfoAdmin(ImportExportModelAdmin):
 
 # 部门预算管理
 
+class BudgetResource(resources.ModelResource):
+
+    def __init__(self):
+        super(BudgetResource, self).__init__()
+        field_list = BudgetInfo._meta.fields
+        self.vname_dict = {}
+        for i in field_list:
+            self.vname_dict[i.name] = i.verbose_name
+
+
+    def get_export_fields(self):
+        fields = self.get_fields()
+        for field in fields:
+            field_name = self.get_field_name(field)
+            if field_name in self.vname_dict.keys():
+                field.column_name = self.vname_dict[field_name]
+        return fields
+
+
+    class Meta:
+        model = BudgetInfo
+        skip_unchanged = True
+        report_skipped = True
+        fields = ('id','category','year','month','budget','cost_num','surplus','status')
+
 @admin.register(BudgetInfo)
 class BudgetInfoAdmin(ImportExportModelAdmin): 
     list_display=['id','category','year','month','budget','cost_num','surplus','status']
@@ -199,6 +224,7 @@ class BudgetInfoAdmin(ImportExportModelAdmin):
        ('用户数据', {'fields': ['year'], 'classes': ['']}),
     ]
     list_per_page = 15
+    resource_class = BudgetResource
 
     # actions = ['deploy_budget']
     def save_model(self, request, obj, form, change):
