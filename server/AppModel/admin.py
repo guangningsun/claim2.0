@@ -220,13 +220,18 @@ class BudgetInfoAdmin(ImportExportModelAdmin):
             #queryset.update(status='1')
         # 则生成当月预算
             for catagory_budget in catagory_budget_mapping:
-                BudgetInfo.objects.create(year=current_year,
+                try:
+                    cyinfo = Category.objects.get(id=catagory_budget[1])
+                    BudgetInfo.objects.create(year=current_year,
                                         budget=catagory_budget[0],
                                         cost_num='0',
-                                        category=Category.objects.get(id=catagory_budget[1]),
+                                        #category=Category.objects.get(id=catagory_budget[1]),
+                                        category=cyinfo,
                                         surplus=catagory_budget[0],
                                         status=2,
                                         month=current_month)
+                except:
+                    pass
         
             self.message_user(request," 成功生成%s 月 预算." % current_month, level=messages.SUCCESS)
         #super().save_model(request, obj, form, change)
