@@ -107,16 +107,20 @@ def claim_asset(request):
         reason = request.POST['reason']
         claim_weixin_openid = request.POST['claim_weixin_openid']
         # if_need_explanation = False
+        logger.info("微信id为: %s 单位为： %s 申领原因为： %s 申领商品列表为 %s   " % (claim_weixin_openid , category,reason,claim_list))
         try:
             cr = ClaimRecord(category=Category.objects.get(id=category))
             cr.save()
+            logger.info("创建空白的申领记录cr成功 %s " % (cr))
             for claim_submmit in json.loads(claim_list):
                 claim_count = claim_submmit['claim_count']
                 claim_name = claim_submmit['claim_name']
                 claim_unit = claim_submmit['claim_unit']
                 assetinfo = AssetInfo.objects.get(asset_name=claim_name)
+                logger.info("申领数量: %s 物品名称： %s 申领物品单元 %s 申领物品 %s   " % (claim_count , claim_name,claim_unit,assetinfo))
                 # 查看申领物品剩余是否足量
                 if int(assetinfo.asset_count)<int(claim_count):
+                    logger.info("申领数量: %s 物品库存数量：%s 数量不足申领失败  " % (claim_count , assetinfo.asset_count))
                     return _generate_json_message(False,""+claim_name+"库存商品不足")
                 # 如果申请数量大于该物品限制则超限标准设置为true，转交主管审批
                 if int(claim_count) > int(assetinfo.asset_limit_nu):
@@ -126,18 +130,22 @@ def claim_asset(request):
                 #     return _generate_json_message(False,"抱歉,该部门没有权限申请过多商品")
                 assetinfo.asset_count = int(assetinfo.asset_count) - int(claim_count)
                 # 资产管理减少指定数量物品
+                logger.info("库存资产减掉: %s 剩余： %s " % (claim_count , assetinfo.asset_count))
                 assetinfo.save()
                 # 创建申领物品
                 cs = Claimlist(claim_count=claim_count,claim_name=claim_name,claim_unit=claim_unit)
                 cs.save()
+                logger.info("创建申领物品对象cs %s  " % (cs))
                 # 申领物品加入该条申领记录中
                 cr.claim_list.add(cs)
+                logger.info("===========申领物品对象cs加入到申领列表cr中==========")
             # 修改申领记录的所属部门和申领状态参数
             cr.category=Category.objects.get(id=category)
             cr.desc = reason
             cr.claim_weixin_openid = claim_weixin_openid
             # 通知申领结果
             ret = __weixin_send_message(claim_weixin_openid,str(cr.claim_date),"物品申领","待审批")
+            logger.info("===========配置申领列表cr的单位%s  描述 %s 微信id %s 并发微信通知成功 ==========" % (cr.category,cr.desc,cr.claim_weixin_openid))
             # 通知审批人结果
             #ret1 = __weixin_send_message(openid, str(clr.claim_date),"物品申领","您有一条待审批通知")
             # if if_need_explanation:
@@ -148,16 +156,20 @@ def claim_asset(request):
             if cr.if_exceed_standard == 'True':
                 cr.approval_status = '0'
                 zhuguanlist = UserInfo.objects.filter(auth='1').filter(category=category)
+                logger.info("申领物品超限给主管神品，修改该记录的状态为0")
                 for zhuguan in zhuguanlist:
                     ret1 = __weixin_send_message(zhuguan.weixin_openid, str(cr.claim_date),"物品申领","您有一条待审批通知")
             else:
                 cr.approval_status = '2'
                 userinfoset = UserInfo.objects.filter(auth='3')
+                logger.info("申领物品超限给主管神品，修改该记录的状态为2")
                 for userinfo in userinfoset:
                     ret1 = __weixin_send_message(userinfo.weixin_openid, str(cr.claim_date),"物品申领","您有一条待审批通知")
             cr.save()
+            logger.info("保存记录申请成功")
             return _generate_json_message(True, "申领成功")
         except :
+            logger.info("申请失败，仓库中没有该类型商品")
             return _generate_json_message(False, "仓库中没有该类型商品")
 
 
@@ -524,6 +536,8 @@ def submit_order(request):
         order_total_price = request.POST['order_total_price']
         is_exceed = request.POST['is_exceed']
         weixin_openid = request.POST['weixin_openid']
+        logger.info("提交订单详情=== 订单aparment: %s 订单超限原因： %s 是否是专项： %s 订单详细列表 %s 订单总价：%s 是否exceed： %s 微信id： %s  " % 
+        (order_apartment , order_exceed_reason,order_is_special,order_item_list,order_total_price,is_exceed,weixin_openid))
         try:
             #判断是否超限，如果超限订单待审批order_status='0' commodity_status=3
             #如果未超限订单直接审批通过order_status='3',commodity_status=0
@@ -547,6 +561,7 @@ def submit_order(request):
                                     )
             order_info.order_image = order_image
             order_info.save()
+            logger.info("保存订单成功=== 用户为: %s 订单为： %s " % (userinfo , order_info))
             # 部门花销增加，余额减少
             current_month = datetime.datetime.now().month
             try:
@@ -582,7 +597,9 @@ def submit_order(request):
                                                     )
                     commodity_info.save()
                     order_info.order_items.add(commodity_info)
+                    logger.info("*important***该订单，根据前端提交的详细商品列表，%s 将manytomany的商品加入到订单中 %s " % (order_item_list , order_info))
                     order_info.save()
+                    logger.info("该订单内详细商品信息增加成功。后续进行部门预算的计算工作" )
                     # 如果该物品要抵扣部门余额则增加部门余额消费
                     if asset_info.asset_if_deduct == True and order_info.order_is_special == 'False':
                         #deduct_cost_num = deduct_cost_num + float(supplierassetinfo_list[0].price)*int(commodity_num)
