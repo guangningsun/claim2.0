@@ -228,7 +228,7 @@ class BudgetInfoAdmin(ImportExportModelAdmin):
 
     # actions = ['deploy_budget']
     def save_model(self, request, obj, form, change):
-        catagory_budget_mapping = [[420,13],[105,15],[315,6],[175,14],[210,7],[175,9],[99999,21],[210,18],[175,5],
+        catagory_budget_mapping = [[210,13],[105,15],[315,6],[175,14],[175,7],[175,9],[99999,21],[210,18],[175,5],
                 [105,11],[350,3],[105,10],[140,8],[140,20],[140,16],[105,12],[280,2], [99999,1],[140,4], [175,17],[300,19],[9999,22],[1087.6,23],[400,24],[70,25]]          
         #部门预算金额回退
         current_month = datetime.datetime.now().month
