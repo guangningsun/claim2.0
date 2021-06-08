@@ -565,12 +565,13 @@ def submit_order(request):
             # 部门花销增加，余额减少
             current_month = datetime.datetime.now().month
             current_year = datetime.datetime.now().year
-            try:
-                
+            try:           
                 # current_cost = budgetinfo.cost_num
                 commodity_cost_num = 0
                 deduct_cost_num = 0
+                logger.info("*important***开始进行订单处理 %s  " % (order_item_list ))
                 for order_item in json.loads(order_item_list):
+                    logger.info("*important*** 开始循环处理订单  %s  " % (order_item ))
                     asset_sn = order_item['item_sn']
                     supplier_id = order_item['item_supplier_id']
                     commodity_num = order_item['item_num']
