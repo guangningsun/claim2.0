@@ -564,6 +564,7 @@ def submit_order(request):
             logger.info("保存订单成功=== 用户为: %s 订单为： %s " % (userinfo , order_info))
             # 部门花销增加，余额减少
             current_month = datetime.datetime.now().month
+            current_year = datetime.datetime.now().year
             try:
                 
                 # current_cost = budgetinfo.cost_num
@@ -607,7 +608,7 @@ def submit_order(request):
                     commodity_cost_num = commodity_cost_num + float(commodity_total_price)
                 logger.info("*important***开始处理部门预算，获取当月 %s  " % (current_month ))
                 try:
-                    budgetinfo = BudgetInfo.objects.get(category=Category.objects.get(id=order_apartment),month=current_month)
+                    budgetinfo = BudgetInfo.objects.get(category=Category.objects.get(id=order_apartment),month=current_month,year=current_year)
                     logger.info("*important*** 当月该部门的预算信息为，%s " % ( budgetinfo ))
                     budgetinfo.surplus = float(budgetinfo.surplus) - deduct_cost_num
                     budgetinfo.cost_num = float('%.2f' %(float(budgetinfo.cost_num) + commodity_cost_num))
