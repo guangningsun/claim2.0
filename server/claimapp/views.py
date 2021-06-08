@@ -24,7 +24,7 @@ from django.conf import settings
 
 logger = logging.getLogger(__name__)
 logger.setLevel(level = logging.DEBUG)
-handler = logging.FileHandler("claimapp.log")
+handler = logging.FileHandler("/var/log/claim2.0/claimapp.log")
 handler.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
