@@ -605,12 +605,16 @@ def submit_order(request):
                         #deduct_cost_num = deduct_cost_num + float(supplierassetinfo_list[0].price)*int(commodity_num)
                         deduct_cost_num = deduct_cost_num + float(commodity_total_price)
                     commodity_cost_num = commodity_cost_num + float(commodity_total_price)
-                logger.info("*important***开始处理部门预算，获取当月 %s 该部门预算信息 " % (current_month ))
-                budgetinfo = BudgetInfo.objects.get(category=Category.objects.get(id=order_apartment),month=current_month)
-                logger.info("*important*** 当月该部门的预算信息为，%s " % ( budgetinfo ))
-                budgetinfo.surplus = float(budgetinfo.surplus) - deduct_cost_num
-                budgetinfo.cost_num = float('%.2f' %(float(budgetinfo.cost_num) + commodity_cost_num))
-                budgetinfo.save()
+                logger.info("*important***开始处理部门预算，获取当月 %s  " % (current_month ))
+                try:
+                    budgetinfo = BudgetInfo.objects.get(category=Category.objects.get(id=order_apartment),month=current_month)
+                    logger.info("*important*** 当月该部门的预算信息为，%s " % ( budgetinfo ))
+                    budgetinfo.surplus = float(budgetinfo.surplus) - deduct_cost_num
+                    budgetinfo.cost_num = float('%.2f' %(float(budgetinfo.cost_num) + commodity_cost_num))
+                    budgetinfo.save()
+                    logger.info("*important***部门预算处理完毕 ")
+                except:
+                    logger.info("*important*** budgetinfo获取失败 ")
             except:
                 error=1
                 msg={"该部门 "+current_month+"月份未做预算"}
