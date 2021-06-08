@@ -565,8 +565,8 @@ def submit_order(request):
             # 部门花销增加，余额减少
             current_month = datetime.datetime.now().month
             try:
-                budgetinfo = BudgetInfo.objects.get(category=Category.objects.get(id=order_apartment),month=current_month)
-                current_cost = budgetinfo.cost_num
+                
+                # current_cost = budgetinfo.cost_num
                 commodity_cost_num = 0
                 deduct_cost_num = 0
                 for order_item in json.loads(order_item_list):
@@ -605,6 +605,9 @@ def submit_order(request):
                         #deduct_cost_num = deduct_cost_num + float(supplierassetinfo_list[0].price)*int(commodity_num)
                         deduct_cost_num = deduct_cost_num + float(commodity_total_price)
                     commodity_cost_num = commodity_cost_num + float(commodity_total_price)
+                logger.info("*important***开始处理部门预算，获取当月 %s 该部门预算信息 " % (current_month ))
+                budgetinfo = BudgetInfo.objects.get(category=Category.objects.get(id=order_apartment),month=current_month)
+                logger.info("*important*** 当月该部门的预算信息为，%s " % ( budgetinfo ))
                 budgetinfo.surplus = float(budgetinfo.surplus) - deduct_cost_num
                 budgetinfo.cost_num = float('%.2f' %(float(budgetinfo.cost_num) + commodity_cost_num))
                 budgetinfo.save()
