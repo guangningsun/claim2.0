@@ -634,12 +634,14 @@ def get_category_surplus(request,cid):
     if request.method == 'GET':
         category = Category.objects.get(id=cid)
         current_month = datetime.datetime.now().month
-        budgetinfo = BudgetInfo.objects.filter(category=category).filter(month=current_month)
+        current_year = datetime.datetime.now().year
+        budgetinfo = BudgetInfo.objects.filter(category=category).filter(month=current_month).filter(year=current_year)
         serializer = BudgetInfoSerializer(budgetinfo, many=True)
         for i in range(0,len(serializer.data)):
             serializer.data[i]["category_name"]= category.name
         res_json = {"error": 0,"msg": {
                     "budget_info": serializer.data }}
+        logger.info("给手机端返回部门余额为 %s " % (res_json))
         return Response(res_json)
 
 
